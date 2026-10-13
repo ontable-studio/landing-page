@@ -42,6 +42,10 @@ function preloadFonts(): Plugin {
 	};
 }
 
+// The preview tool assigns a free port through PORT; plain `npm run dev` keeps Vite's default.
+const port = process.env.PORT ? Number(process.env.PORT) : undefined;
+
 export default defineConfig({
 	plugins: [react(), tailwindcss(), preloadFonts()],
+	server: { port, strictPort: port !== undefined },
 });
