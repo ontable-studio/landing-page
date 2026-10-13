@@ -9,6 +9,8 @@ interface ProjectCardProps {
 	imageAlt?: string;
 	/** Makes the whole card a link. */
 	href?: string;
+	/** Component used for the link (default `a`), e.g. a router link. */
+	linkAs?: React.ElementType;
 	className?: string;
 }
 
@@ -20,6 +22,7 @@ export function ProjectCard({
 	image,
 	imageAlt,
 	href,
+	linkAs: LinkComponent = "a",
 	className,
 }: ProjectCardProps): React.JSX.Element {
 	const classes = cn(
@@ -57,9 +60,9 @@ export function ProjectCard({
 	);
 
 	return href ? (
-		<a href={href} className={classes}>
+		<LinkComponent href={href} className={classes}>
 			{content}
-		</a>
+		</LinkComponent>
 	) : (
 		<div className={classes}>{content}</div>
 	);

@@ -17,6 +17,37 @@ describe("ProjectCard", () => {
 		expect(screen.getByRole("link")).toHaveAttribute("href", "/projects/domo");
 	});
 
+	it("renders through linkAs when given", () => {
+		function Probe({
+			href,
+			className,
+			children,
+		}: {
+			href: string;
+			className?: string;
+			children: React.ReactNode;
+		}) {
+			return (
+				<a data-probe="" href={href} className={className}>
+					{children}
+				</a>
+			);
+		}
+		const { container } = render(
+			<ProjectCard {...base} href="/x" linkAs={Probe} />
+		);
+		expect(container.querySelector("[data-probe]")).toHaveAttribute(
+			"href",
+			"/x"
+		);
+	});
+
+	it("renders a plain anchor without linkAs", () => {
+		const { container } = render(<ProjectCard {...base} href="/x" />);
+		expect(container.querySelector("[data-probe]")).toBeNull();
+		expect(screen.getByRole("link")).toHaveAttribute("href", "/x");
+	});
+
 	it("has no link without href", () => {
 		render(<ProjectCard {...base} />);
 		expect(screen.queryByRole("link")).not.toBeInTheDocument();
