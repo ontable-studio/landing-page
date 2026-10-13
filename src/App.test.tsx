@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
+import { SITE } from "./common/constants";
 import App from "./App";
 
 function renderAt(path: string) {
@@ -15,7 +16,7 @@ describe("App routes", () => {
 	it("renders the home page at /", () => {
 		renderAt("/");
 		expect(
-			screen.getByRole("heading", { level: 1, name: "OnTable" })
+			screen.getByRole("heading", { level: 1, name: SITE.tagline })
 		).toBeInTheDocument();
 	});
 
