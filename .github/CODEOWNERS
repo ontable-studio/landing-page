@@ -1,6 +1,5 @@
 # CODEOWNERS — automatic review requests for PRs
-#
-# Not filled in yet. Replace the placeholder with a GitHub handle or a team in
-# the ontable-studio org, then remove this comment.
+# The OnTable Studio team owns the whole repo.
+# The team must exist in the org and have write access to this repo.
 
-# * @ontable-studio/frontend
+* @ontable-studio/ontable-studio
