@@ -9,77 +9,109 @@ import NotFound from "./NotFound";
 
 function ProjectView({ project }: { project: Project }): React.JSX.Element {
 	useDocumentTitle(`${project.title} — OnTable`);
+	const hasCredits = project.credits.length > 0;
 
 	return (
-		<Container size="wide" className="py-section lg:py-section-lg">
-			<Link
-				to="/projects"
-				className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+		<>
+			<section
+				data-hero=""
+				className="bg-ink-900 relative h-[70svh] min-h-96 w-full overflow-hidden text-white"
 			>
-				Back
-			</Link>
-
-			<div className="bg-ink-900 relative mt-8 aspect-video overflow-hidden rounded-3xl">
 				{project.image ? (
 					<img
 						src={project.image}
-						alt={project.title}
-						className="size-full object-cover"
+						alt=""
+						className="absolute inset-0 size-full object-cover"
 					/>
 				) : (
 					<div
 						aria-hidden="true"
-						className="from-ink-700 to-ink-900 size-full bg-linear-to-br"
+						className="from-ink-700 to-ink-900 absolute inset-0 bg-linear-to-br"
 					/>
 				)}
-			</div>
-
-			<div className="mt-10 max-w-3xl">
-				<h1 className="text-h1 font-display max-[720px]:text-h3 wrap-break-word">
-					{project.title}
-				</h1>
-				<Badge variant="brand" className="mt-4">
-					{project.category}
-				</Badge>
-				<p className="text-body-lg text-text-secondary mt-6">
-					{project.summary}
-				</p>
-			</div>
-
-			{project.credits.length > 0 && (
-				<dl className="border-surface-border mt-10 grid max-w-3xl gap-6 border-t pt-8 sm:grid-cols-2">
-					{project.credits.map((credit) => (
-						<div key={credit.label}>
-							<dt className="text-label text-text-secondary font-mono tracking-wide uppercase">
-								{credit.label}
-							</dt>
-							<dd className="text-body mt-1 font-medium">{credit.value}</dd>
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent"
+				/>
+				<Container
+					size="wide"
+					className="relative flex h-full flex-col justify-between py-6 lg:py-8"
+				>
+					<Link
+						to="/projects"
+						className={cn(
+							buttonVariants({ variant: "outline", size: "sm" }),
+							"self-start border-white/50 bg-white/10 text-white hover:bg-white/20"
+						)}
+					>
+						Back
+					</Link>
+					<div>
+						<div className="flex items-center gap-3">
+							<Badge variant="brand">{project.category}</Badge>
+							<span className="text-body-sm text-white/80">{project.year}</span>
 						</div>
-					))}
-				</dl>
-			)}
+						<h1 className="font-display mt-4 max-w-4xl text-[clamp(2rem,6vw,5rem)] leading-none font-bold wrap-break-word">
+							{project.title}
+						</h1>
+					</div>
+				</Container>
+			</section>
 
-			{project.gallery.length > 0 && (
-				<div data-gallery className="mt-12 grid gap-6 sm:grid-cols-2">
-					{project.gallery.map((item, index) =>
-						item.src ? (
-							<img
-								key={index}
-								src={item.src}
-								alt={item.alt}
-								className="aspect-16/10 w-full rounded-2xl object-cover"
-							/>
-						) : (
-							<div
-								key={index}
-								aria-hidden="true"
-								className="from-ink-100 to-ink-200 aspect-16/10 rounded-2xl bg-linear-to-br"
-							/>
-						)
+			<Container size="wide" className="py-8 lg:py-12">
+				<div
+					data-body=""
+					className={cn(
+						"grid gap-8",
+						hasCredits && "lg:grid-cols-[1fr_20rem] lg:gap-16"
+					)}
+				>
+					<p className="text-body-lg text-text-secondary max-w-prose">
+						{project.summary}
+					</p>
+					{hasCredits && (
+						<dl className="grid gap-5 self-start">
+							{project.credits.map((credit) => (
+								<div key={credit.label}>
+									<dt className="text-body-sm text-text-secondary">
+										{credit.label}
+									</dt>
+									<dd className="text-body mt-1 font-medium">{credit.value}</dd>
+								</div>
+							))}
+						</dl>
 					)}
 				</div>
-			)}
-		</Container>
+
+				{project.gallery.length > 0 && (
+					<div data-gallery="" className="mt-10 grid gap-6 sm:grid-cols-2">
+						{project.gallery.map((item, index) => {
+							const span = index === 0 ? "sm:col-span-2" : "";
+							return item.src ? (
+								<img
+									key={index}
+									src={item.src}
+									alt={item.alt}
+									className={cn(
+										"aspect-16/10 w-full rounded-2xl object-cover",
+										span
+									)}
+								/>
+							) : (
+								<div
+									key={index}
+									aria-hidden="true"
+									className={cn(
+										"from-ink-100 to-ink-200 aspect-16/10 rounded-2xl bg-linear-to-br",
+										span
+									)}
+								/>
+							);
+						})}
+					</div>
+				)}
+			</Container>
+		</>
 	);
 }
 

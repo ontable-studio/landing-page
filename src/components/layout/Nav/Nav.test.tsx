@@ -28,11 +28,10 @@ describe("Nav", () => {
 		).toHaveAttribute("href", "/projects");
 	});
 
-	it("bar variant scrolls away with the page: not sticky, not blurred", () => {
+	it("bar variant scrolls away with the page: not sticky, not blurred, no border", () => {
 		setup();
 		const cls = screen.getByRole("navigation").className;
-		expect(cls).not.toMatch(/sticky|fixed|backdrop-blur/);
-		expect(cls).toMatch(/border-b/);
+		expect(cls).not.toMatch(/sticky|fixed|backdrop-blur|border/);
 	});
 
 	it("overlay variant is plain: no sticky, no blur, no border", () => {
@@ -43,6 +42,14 @@ describe("Nav", () => {
 			"href",
 			"/"
 		);
+	});
+
+	it("opens the bar's mobile menu without a border", async () => {
+		setup();
+		await userEvent.click(screen.getByRole("button", { name: /menu/i }));
+		const menu = document.getElementById("mobile-menu");
+		expect(menu).toBeInTheDocument();
+		expect(menu?.className).not.toMatch(/border/);
 	});
 
 	it("toggles the menu and closes it on Escape, returning focus", async () => {

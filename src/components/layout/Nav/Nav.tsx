@@ -75,11 +75,7 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 	}, [open]);
 
 	return (
-		<nav
-			className={
-				overlay ? "relative z-20" : "bg-canvas border-surface-border border-b"
-			}
-		>
+		<nav className={overlay ? "relative z-20" : "bg-canvas"}>
 			<Wrapper overlay={overlay}>
 				<Link to="/" className="flex items-center gap-3">
 					<img
@@ -116,7 +112,7 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 					className={
 						overlay
 							? "bg-canvas absolute inset-x-6 top-full z-30 flex flex-col gap-4 rounded-2xl p-5 min-[721px]:hidden"
-							: "border-surface-border flex flex-col gap-4 border-t px-6 py-4 min-[721px]:hidden"
+							: "flex flex-col gap-4 px-6 py-4 min-[721px]:hidden"
 					}
 				>
 					<NavLinks onNavigate={() => setOpen(false)} />
