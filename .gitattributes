@@ -1,0 +1,12 @@
+# Normalisasi line ending: LF di semua OS (Windows/Mac/Linux).
+# mencegah diff palsu (CRLF vs LF) dan konflik antar anggota tim.
+* text=auto eol=lf
+
+# Biner — jangan pernah dinormalisasi atau dianggap teks.
+*.png binary
+*.ico binary
+*.woff2 binary
+*.webp binary
+*.jpg binary
+*.jpeg binary
+*.gif binary

@@ -1,0 +1,24 @@
+# EditorConfig — konsistensi editor untuk seluruh anggota tim
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = tab
+
+# package-lock.json ditulis npm (11.x) dengan indentasi 2 spasi.
+# Memaksakan tab membuat npm menulis ulang lockfile tiap install.
+[package-lock.json]
+indent_style = space
+indent_size = 2
+
+# YAML (termasuk GitHub Actions) mengikuti gaya umum: 2 spasi.
+# JSON lain (tsconfig, .prettierrc, package.json, dll) memakai tab global
+# di atas — sesuai perilaku Prettier repo ini.
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2

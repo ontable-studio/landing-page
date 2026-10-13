@@ -1,0 +1,11 @@
+/* ============================================================
+   MAIN STYLESHEET — Tailwind CSS v4 (CSS-first config)
+   Utilities are written inline in TSX. This file holds only the
+   theme tokens (@theme) and the base layer. The design system
+   tokens will be added here.
+   ============================================================ */
+
+@import "tailwindcss";
+
+@theme {
+}

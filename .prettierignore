@@ -1,0 +1,6 @@
+# package-lock.json is written by npm with 2-space indentation.
+package-lock.json
+
+dist
+coverage
+node_modules
