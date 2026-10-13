@@ -123,11 +123,17 @@
 	/* ---- Entrances ---- */
 	--animate-rise: rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	--animate-rise-quick: rise 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	--animate-line-rise: line-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	--animate-fade-in: fade-in 450ms ease-out both;
 	@keyframes rise {
 		from {
 			opacity: 0;
 			translate: 0 20px;
+		}
+	}
+	@keyframes line-rise {
+		from {
+			translate: 0 105%;
 		}
 	}
 	@keyframes fade-in {

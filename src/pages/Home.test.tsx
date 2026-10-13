@@ -28,12 +28,13 @@ describe("Home", () => {
 		);
 	});
 
-	it("has a contact link by email", () => {
+	it("has contact links by email, in the nav and under the headline", () => {
 		setup();
-		expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
-			"href",
-			`mailto:${SITE.email}`
-		);
+		const links = screen.getAllByRole("link", { name: "Contact" });
+		expect(links).toHaveLength(2);
+		for (const link of links) {
+			expect(link).toHaveAttribute("href", `mailto:${SITE.email}`);
+		}
 	});
 
 	it("sets the tab title", () => {
@@ -48,14 +49,46 @@ describe("Home", () => {
 		expect(mark).toHaveAttribute("aria-hidden", "true");
 	});
 
-	it("shows the description and buttons together with the headline, quickly", () => {
+	it("raises the headline in three masked lines that join into the tagline", () => {
 		const { container } = setup();
-		const entering = container.querySelectorAll("[class*=animate-rise]");
-		expect(entering.length).toBeGreaterThanOrEqual(3);
-		for (const el of entering) {
-			expect(el.className).toContain("animate-rise-quick");
-			expect(el.className).not.toContain("animation-delay");
+		const lines = [...container.querySelectorAll("h1 [data-line]")];
+		expect(lines).toHaveLength(3);
+		expect(lines.map((l) => l.textContent?.trim()).join(" ")).toBe(
+			SITE.tagline
+		);
+		for (const line of lines) {
+			expect(line.className).toContain("animate-line-rise");
 		}
+	});
+
+	it("shows the description and buttons at once, without an entrance", () => {
+		const { container } = setup();
+		const description = screen.getByText(/small team building games/i);
+		const buttons = screen.getByRole("link", { name: "View projects" });
+		expect(description.className).not.toMatch(/animate-/);
+		expect(buttons.parentElement?.className).not.toMatch(/animate-/);
+		expect(container.querySelectorAll("[class*=animate-rise]")).toHaveLength(0);
+	});
+
+	it("holds the nav and the footer inside the one full-screen section", () => {
+		const { container } = setup();
+		const section = container.querySelector("section");
+		expect(container.querySelectorAll("nav")).toHaveLength(1);
+		expect(container.querySelectorAll("footer")).toHaveLength(1);
+		expect(section).toContainElement(container.querySelector("nav"));
+		expect(section).toContainElement(container.querySelector("footer"));
+		expect(section?.className).toContain("min-h-svh");
+	});
+
+	it("uses a plain nav, with no sticky bar or blur", () => {
+		const { container } = setup();
+		const nav = container.querySelector("nav");
+		expect(nav?.className).not.toMatch(/sticky|backdrop-blur|border-b/);
+	});
+
+	it("draws a flat orange disc with no gradient wash", () => {
+		const { container } = setup();
+		expect(container.innerHTML).not.toMatch(/bg-radial|bg-linear/);
 	});
 
 	it("is a single section", () => {

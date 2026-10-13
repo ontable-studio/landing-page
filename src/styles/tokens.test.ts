@@ -15,6 +15,7 @@ describe("main.css tokens", () => {
 		"--spacing-section-lg:",
 		"--animate-rise:",
 		"--animate-rise-quick:",
+		"--animate-line-rise:",
 		"@utility cut-corner",
 	])("defines %s", (token) => {
 		expect(css.toLowerCase()).toContain(token.toLowerCase());

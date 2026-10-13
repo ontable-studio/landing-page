@@ -32,8 +32,33 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 	);
 }
 
-/** Sticky top bar: logo and links, collapsing to a menu on small screens. */
-export function Nav(): React.JSX.Element {
+interface NavProps {
+	/** `bar`: sticky blurred bar. `overlay`: plain row that sits inside a full-screen section. */
+	variant?: "bar" | "overlay";
+}
+
+/** Centred container for the bar, full-bleed padded row for the overlay. */
+function Wrapper({
+	overlay,
+	children,
+}: {
+	overlay: boolean;
+	children: React.ReactNode;
+}) {
+	return overlay ? (
+		<div className="flex h-20 w-full items-center justify-between px-6 lg:px-10">
+			{children}
+		</div>
+	) : (
+		<Container className="flex h-16 items-center justify-between">
+			{children}
+		</Container>
+	);
+}
+
+/** Top navigation: logo and links, collapsing to a menu on small screens. */
+export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
+	const overlay = variant === "overlay";
 	const [open, setOpen] = useState(false);
 	const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -50,8 +75,14 @@ export function Nav(): React.JSX.Element {
 	}, [open]);
 
 	return (
-		<nav className="bg-canvas/90 border-surface-border sticky top-0 z-50 border-b backdrop-blur">
-			<Container className="flex h-16 items-center justify-between">
+		<nav
+			className={
+				overlay
+					? "relative z-20"
+					: "bg-canvas/90 border-surface-border sticky top-0 z-50 border-b backdrop-blur"
+			}
+		>
+			<Wrapper overlay={overlay}>
 				<Link to="/" className="flex items-center gap-3">
 					<img
 						src="/images/ontable-logo.svg"
@@ -79,12 +110,16 @@ export function Nav(): React.JSX.Element {
 						{open ? "×" : "≡"}
 					</span>
 				</button>
-			</Container>
+			</Wrapper>
 
 			{open && (
 				<div
 					id="mobile-menu"
-					className="border-surface-border flex flex-col gap-4 border-t px-6 py-4 min-[721px]:hidden"
+					className={
+						overlay
+							? "bg-canvas absolute inset-x-6 top-full z-30 flex flex-col gap-4 rounded-2xl p-5 min-[721px]:hidden"
+							: "border-surface-border flex flex-col gap-4 border-t px-6 py-4 min-[721px]:hidden"
+					}
 				>
 					<NavLinks onNavigate={() => setOpen(false)} />
 				</div>

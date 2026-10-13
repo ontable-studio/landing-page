@@ -1,48 +1,76 @@
 import { Link } from "react-router";
 import { SITE } from "../common/constants";
+import { Footer } from "../components/layout/Footer";
+import { Nav } from "../components/layout/Nav";
 import { buttonVariants } from "../components/ui/Button";
-import { Container } from "../components/ui/Container";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import { cn } from "../lib/cn";
 
-/** The home page: one Hero section. */
+/** The home page: one full-screen section holding the nav, the hero and the footer. */
 export default function Home(): React.JSX.Element {
 	useDocumentTitle("OnTable");
 
 	return (
-		<section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
-			<div
-				aria-hidden="true"
-				className="absolute inset-0 bg-radial-[at_75%_30%] from-orange-200/70 via-orange-50/40 to-transparent"
-			/>
-			<img
-				src="/images/ontable-logo.svg"
-				alt=""
-				aria-hidden="true"
-				className="absolute -right-20 -bottom-20 size-112 opacity-90 max-[720px]:size-56"
-			/>
-			<Container className="py-section relative">
-				<h1 className="animate-rise-quick font-display text-h1 lg:text-display max-[720px]:text-h2 max-w-3xl">
-					{SITE.tagline}
-				</h1>
-				<p className="animate-rise-quick text-body-lg text-text-secondary mt-6 max-w-xl">
-					A small team building games, products and projects.
-				</p>
-				<div className="animate-rise-quick mt-10 flex flex-wrap gap-3">
-					<Link
-						to="/projects"
-						className={cn(buttonVariants({ variant: "primary", size: "lg" }))}
-					>
-						View projects
-					</Link>
-					<a
-						href={`mailto:${SITE.email}`}
-						className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-					>
-						Contact
-					</a>
+		<main>
+			<section className="relative flex min-h-svh flex-col overflow-x-clip">
+				<img
+					src="/images/ontable-logo.svg"
+					alt=""
+					aria-hidden="true"
+					className="absolute top-[8%] -right-32 size-112 max-[720px]:top-20 max-[720px]:-right-24 max-[720px]:size-56"
+				/>
+				<Nav variant="overlay" />
+
+				<div className="relative z-10 flex flex-1 items-end px-6 pb-10 lg:px-10 lg:pb-14">
+					<div className="grid w-full items-end gap-10 lg:grid-cols-[1fr_22rem]">
+						<h1
+							aria-label={SITE.tagline}
+							className="font-display text-[clamp(1.75rem,8.5vw,2.75rem)] leading-[0.95] font-bold tracking-tight lg:text-[clamp(3rem,7vw,6.5rem)]"
+						>
+							{SITE.taglineLines.map((line, index) => (
+								<span
+									key={line}
+									className="mb-[-0.1em] block overflow-hidden pb-[0.1em]"
+								>
+									<span
+										data-line=""
+										className="animate-line-rise block"
+										style={{ animationDelay: `${index * 70}ms` }}
+									>
+										{line}
+									</span>
+								</span>
+							))}
+						</h1>
+
+						<div className="flex flex-col gap-6 lg:pb-3">
+							<p className="text-body-lg text-text-secondary max-w-sm">
+								A small team building games, products and projects.
+							</p>
+							<div className="flex flex-wrap gap-3">
+								<Link
+									to="/projects"
+									className={cn(
+										buttonVariants({ variant: "primary", size: "lg" })
+									)}
+								>
+									View projects
+								</Link>
+								<a
+									href={`mailto:${SITE.email}`}
+									className={cn(
+										buttonVariants({ variant: "outline", size: "lg" })
+									)}
+								>
+									Contact
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
-			</Container>
-		</section>
+
+				<Footer variant="overlay" />
+			</section>
+		</main>
 	);
 }

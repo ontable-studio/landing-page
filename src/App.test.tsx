@@ -60,6 +60,18 @@ describe("App routes", () => {
 		).toBeInTheDocument();
 	});
 
+	it("has exactly one nav and one footer on the home page", () => {
+		renderAt("/");
+		expect(document.querySelectorAll("nav")).toHaveLength(1);
+		expect(document.querySelectorAll("footer")).toHaveLength(1);
+	});
+
+	it("has exactly one nav and one footer on /projects", () => {
+		renderAt("/projects");
+		expect(document.querySelectorAll("nav")).toHaveLength(1);
+		expect(document.querySelectorAll("footer")).toHaveLength(1);
+	});
+
 	it("keeps the nav and footer on every page", () => {
 		renderAt("/nope");
 		expect(screen.getByRole("navigation")).toBeInTheDocument();

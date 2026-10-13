@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import { Footer } from "./components/layout/Footer";
 import { Nav } from "./components/layout/Nav";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
@@ -8,21 +8,32 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 
+/** Nav, page and footer around every page except Home, which holds its own inside one screen. */
+function SiteLayout(): React.JSX.Element {
+	return (
+		<>
+			<Nav />
+			<main>
+				<Outlet />
+			</main>
+			<Footer />
+		</>
+	);
+}
+
 export default function App(): React.JSX.Element {
 	return (
 		<>
 			<ScrollToTop />
-			<Nav />
-			<main>
-				<Routes>
-					<Route path="/" element={<Home />} />
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route element={<SiteLayout />}>
 					<Route path="/projects" element={<Projects />} />
 					<Route path="/projects/:slug" element={<ProjectDetail />} />
 					<Route path="/design-system" element={<DesignSystem />} />
 					<Route path="*" element={<NotFound />} />
-				</Routes>
-			</main>
-			<Footer />
+				</Route>
+			</Routes>
 		</>
 	);
 }
