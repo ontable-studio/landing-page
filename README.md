@@ -40,11 +40,18 @@ npm run dev
 
 ```
 src/
-├── lib/        # Core utilities (cn)
-├── styles/     # Global styles and theme tokens
+├── components/
+│   ├── ui/       # Primitives (Button, Badge, Card, Container, ProjectCard)
+│   └── layout/   # SectionHeader, Nav, Footer
+├── pages/        # Routes: / and /design-system (living style guide)
+├── common/       # Site constants
+├── lib/          # Core utilities (cn)
+├── styles/       # Theme tokens and base styles
 ├── App.tsx
 └── main.tsx
 ```
+
+Open `/design-system` in dev to see every token and component.
 
 ## Docker
 

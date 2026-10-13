@@ -17,10 +17,27 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 
 ## Styling
 
-- `src/styles/main.css` holds only `@theme` tokens and the base layer. No `@layer components`.
+- `src/styles/main.css` holds only `@theme` tokens, `@font-face`, the base layer and the `cut-corner` utility. No `@layer components`.
 - Use inline Tailwind utilities in TSX, not custom CSS classes.
 - Write classes as-is; `npm run lint:fix` + `npm run format` (pre-commit) canonicalize and sort them.
-- The design system tokens will be added to `@theme`.
+- Tokens: orange (brand) and ink (warm neutral) scales plus semantic aliases (`brand`, `surface`, `text-*`). No blue. Light theme only.
+- `font-display` (Blippo Black, via the one `--font-display` token) is for the hero and headings only; body is Instrument Sans, small labels IBM Plex Mono.
+- Type uses the named scale (`text-display`, `text-h1`…`text-caption`). New text sizes must also be added to `TEXT_SIZE_TOKENS` in `src/lib/cn.ts`.
+- White on `orange-500` is about 3.3:1: keep labels on it semibold and 16px or larger.
+- Radius: `rounded-2xl`, `rounded-3xl`, `rounded-full`.
+
+## Structure
+
+- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard), `cva` + `cn()`, router-free
+- `src/components/layout/` — SectionHeader, Nav, Footer
+- `src/pages/` — routes (`/`, `/design-system`); `/design-system` is the living style guide, update it when adding a token or component
+- `src/common/constants.ts` — `SITE` (placeholders marked TODO(user))
+- Each component: its own folder with `Name.tsx`, `index.ts`, `Name.test.tsx`
+
+## Working rules
+
+- Implementation runs inline in one terminal session with Sonnet 5.5: no subagents.
+- Specs and plans live in `docs/superpowers/`.
 
 ## Environment & Node
 
