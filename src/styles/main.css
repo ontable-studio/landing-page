@@ -1,11 +1,152 @@
 /* ============================================================
    MAIN STYLESHEET — Tailwind CSS v4 (CSS-first config)
    Utilities are written inline in TSX. This file holds only the
-   theme tokens (@theme) and the base layer. The design system
-   tokens will be added here.
+   theme tokens (@theme), the base layer, @font-face and one
+   shape utility. No component classes.
    ============================================================ */
 
 @import "tailwindcss";
 
+/* Self-hosted, latin subset, swap. */
+@font-face {
+	font-family: "Instrument Sans";
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: swap;
+	src: url("@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2")
+		format("woff2-variations");
+}
+
+@font-face {
+	font-family: "IBM Plex Mono";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2")
+		format("woff2");
+}
+
+@font-face {
+	font-family: "IBM Plex Mono";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2")
+		format("woff2");
+}
+
 @theme {
+	/* ---- Orange scale (brand) ---- */
+	--color-orange-50: #fff3ec;
+	--color-orange-100: #ffe0cf;
+	--color-orange-200: #ffc2a1;
+	--color-orange-300: #ff9d68;
+	--color-orange-400: #fa7b3c;
+	--color-orange-500: #f5611f;
+	--color-orange-600: #dc4a0f;
+	--color-orange-700: #b53a0c;
+	--color-orange-800: #8f2f0e;
+	--color-orange-900: #6e260f;
+
+	/* ---- Ink scale (warm neutrals) ---- */
+	--color-ink-50: #f7f5f3;
+	--color-ink-100: #ebe7e3;
+	--color-ink-200: #d6d0c9;
+	--color-ink-300: #b3aba2;
+	--color-ink-400: #8c847b;
+	--color-ink-500: #6b645c;
+	--color-ink-600: #524c46;
+	--color-ink-700: #3b3733;
+	--color-ink-800: #272421;
+	--color-ink-900: #171513;
+
+	/* ---- Semantic aliases ---- */
+	--color-brand: var(--color-orange-500);
+	--color-brand-hover: var(--color-orange-600);
+	--color-canvas: #ffffff;
+	--color-surface: var(--color-ink-50);
+	--color-surface-border: var(--color-ink-100);
+	--color-text-primary: var(--color-ink-900);
+	--color-text-secondary: var(--color-ink-500);
+	/* Decorative only: too light for body copy. */
+	--color-text-tertiary: var(--color-ink-300);
+
+	/* ---- Font families ----
+	   --font-display is the only reference to the display face: swap
+	   the first family (and its @font-face) to change it everywhere. */
+	--font-display: "Blippo Black", "Chango", "Arial Black", sans-serif;
+	--font-sans: "Instrument Sans", sans-serif;
+	--font-mono: "IBM Plex Mono", monospace;
+
+	/* ---- Type scale ---- */
+	--text-display: 88px;
+	--text-display--line-height: 1;
+	--text-h1: 56px;
+	--text-h1--line-height: 1.05;
+	--text-h2: 44px;
+	--text-h2--line-height: 1.1;
+	--text-h3: 32px;
+	--text-h3--line-height: 1.15;
+	--text-h4: 24px;
+	--text-h4--line-height: 1.25;
+	--text-title: 20px;
+	--text-title--line-height: 1.3;
+	--text-body-lg: 20px;
+	--text-body-lg--line-height: 1.4;
+	--text-body: 16px;
+	--text-body--line-height: 1.5;
+	--text-body-sm: 14px;
+	--text-body-sm--line-height: 1.5;
+	--text-label: 12px;
+	--text-label--line-height: 1.3;
+	--text-caption: 12px;
+	--text-caption--line-height: 1.4;
+
+	/* ---- Section spacing (py-section lg:py-section-lg) ---- */
+	--spacing-section: 80px;
+	--spacing-section-lg: 120px;
+
+	/* ---- Entrances ---- */
+	--animate-rise: rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	--animate-fade-in: fade-in 450ms ease-out both;
+	@keyframes rise {
+		from {
+			opacity: 0;
+			translate: 0 20px;
+		}
+	}
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+}
+
+/* The cut top-right corner of a project card. */
+@utility cut-corner {
+	clip-path: polygon(
+		0 0,
+		calc(100% - 3.5rem) 0,
+		100% 3.5rem,
+		100% 100%,
+		0 100%
+	);
+}
+
+@layer base {
+	body {
+		background-color: var(--color-canvas);
+		color: var(--color-text-primary);
+		font-family: var(--font-sans);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
 }

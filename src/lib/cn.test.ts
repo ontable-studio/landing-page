@@ -27,3 +27,15 @@ describe("cn()", () => {
 		expect(cn()).toBe("");
 	});
 });
+
+describe("cn with the theme's custom text tokens", () => {
+	it("keeps a text colour next to a custom font-size token", () => {
+		expect(cn("text-text-primary", "text-h2")).toBe(
+			"text-text-primary text-h2"
+		);
+	});
+
+	it("lets a custom font-size token replace a default one", () => {
+		expect(cn("text-base", "text-body")).toBe("text-body");
+	});
+});
