@@ -25,7 +25,7 @@ References:
 | -------------- | ------------------------------------------------------------------- |
 | Theme          | Light, orange brand (no dark mode in this pass)                     |
 | Deliverable    | Tokens + primitives + a living style guide page at `/design-system` |
-| Display font   | Blippo Black behind one `--font-display` token (see Risks)          |
+| Display font   | Poppins Bold behind one `--font-display` token                      |
 | Body / UI font | Instrument Sans (variable), self-hosted via fontsource              |
 | Label font     | IBM Plex Mono, small uppercase labels                               |
 | Routing        | `react-router` with `/` (placeholder) and `/design-system`          |
@@ -90,12 +90,7 @@ Dark mode, the real Hero, Projects and project detail pages, project data, i18n,
 
 ## Risks
 
-- **Blippo Black licence:** the `.resources` readme says only that it came from
-  fontsgeek.com; no licence is stated and Blippo is originally a commercial typeface. It is
-  used only through `--font-display`, so a free lookalike (for example Chango or Titan One)
-  can replace it by changing that token and the font file. Confirm before launch.
-- The `.resources` folder is git-ignored, so the font file must be copied into
-  `public/fonts/` (or `src/assets/`) to ship; do this only once the licence is settled.
+- None open for fonts: the display face was changed from Poppins to Poppins (OFL, fontsource, bold 700) on 2026-10-13, so no licence question remains.
 
 ## Execution constraints (from the user)
 

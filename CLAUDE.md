@@ -21,7 +21,7 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 - Use inline Tailwind utilities in TSX, not custom CSS classes.
 - Write classes as-is; `npm run lint:fix` + `npm run format` (pre-commit) canonicalize and sort them.
 - Tokens: orange (brand) and ink (warm neutral) scales plus semantic aliases (`brand`, `surface`, `text-*`). No blue. Light theme only.
-- `font-display` (Blippo Black, via the one `--font-display` token) is for the hero and headings only; body is Instrument Sans, small labels IBM Plex Mono.
+- `font-display` (Poppins Bold, via the one `--font-display` token) is for the hero and headings only; body is Instrument Sans, small labels IBM Plex Mono.
 - Type uses the named scale (`text-display`, `text-h1`…`text-caption`). New text sizes must also be added to `TEXT_SIZE_TOKENS` in `src/lib/cn.ts`.
 - White on `orange-500` is about 3.3:1: keep labels on it semibold and 16px or larger.
 - Radius: `rounded-2xl`, `rounded-3xl`, `rounded-full`.

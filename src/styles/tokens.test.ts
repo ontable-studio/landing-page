@@ -23,6 +23,18 @@ describe("main.css tokens", () => {
 		expect(css).not.toContain("@layer components");
 	});
 
+	it("uses Poppins for display, with no leftover Blippo", () => {
+		expect(css).toMatch(/--font-display: "Poppins"/);
+		expect(css.toLowerCase()).not.toContain("blippo");
+		expect(css).toContain("poppins-latin-700-normal.woff2");
+	});
+
+	it("gives every heading step a bold weight", () => {
+		for (const step of ["display", "h1", "h2", "h3", "h4"]) {
+			expect(css).toMatch(new RegExp(`--text-${step}--font-weight: 7\\d\\d`));
+		}
+	});
+
 	it("has no blue", () => {
 		expect(css.toLowerCase()).not.toMatch(/blue/);
 	});

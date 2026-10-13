@@ -6,7 +6,7 @@ export function TypographySection(): React.JSX.Element {
 		<section id="typography" className="scroll-mt-36">
 			<SectionHeader
 				title="Typography"
-				description="Blippo Black for display and headings only; Instrument Sans for body and UI; IBM Plex Mono for small labels."
+				description="Poppins Bold for display and headings only; Instrument Sans for body and UI; IBM Plex Mono for small labels."
 			/>
 			<ul className="mt-8 divide-y divide-(--color-surface-border)">
 				{typeScale.map((step) => (
