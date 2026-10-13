@@ -4,3 +4,6 @@ import { afterEach } from "vitest";
 
 // Globals are off, so Testing Library cannot register its own cleanup.
 afterEach(() => cleanup());
+
+// jsdom does not implement scrolling; ScrollToTop calls it on every navigation.
+window.scrollTo = () => {};
