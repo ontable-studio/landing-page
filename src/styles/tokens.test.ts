@@ -14,6 +14,7 @@ describe("main.css tokens", () => {
 		"--spacing-section:",
 		"--spacing-section-lg:",
 		"--animate-rise:",
+		"--animate-rise-quick:",
 		"@utility cut-corner",
 	])("defines %s", (token) => {
 		expect(css.toLowerCase()).toContain(token.toLowerCase());
@@ -33,6 +34,12 @@ describe("main.css tokens", () => {
 		for (const step of ["display", "h1", "h2", "h3", "h4"]) {
 			expect(css).toMatch(new RegExp(`--text-${step}--font-weight: 7\\d\\d`));
 		}
+	});
+
+	it("cancels animation delays as well as durations under reduced motion", () => {
+		const block = css.slice(css.indexOf("prefers-reduced-motion"));
+		expect(block).toContain("animation-delay: 0s");
+		expect(block).toContain("animation-duration: 0.01ms");
 	});
 
 	it("has no blue", () => {

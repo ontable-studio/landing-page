@@ -122,6 +122,7 @@
 
 	/* ---- Entrances ---- */
 	--animate-rise: rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	--animate-rise-quick: rise 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	--animate-fade-in: fade-in 450ms ease-out both;
 	@keyframes rise {
 		from {
@@ -152,6 +153,7 @@
 		*,
 		*::before,
 		*::after {
+			animation-delay: 0s !important;
 			animation-duration: 0.01ms !important;
 			animation-iteration-count: 1 !important;
 			transition-duration: 0.01ms !important;

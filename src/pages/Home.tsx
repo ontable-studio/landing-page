@@ -22,13 +22,13 @@ export default function Home(): React.JSX.Element {
 				className="absolute -right-20 -bottom-20 size-112 opacity-90 max-[720px]:size-56"
 			/>
 			<Container className="py-section relative">
-				<h1 className="animate-rise font-display text-h1 lg:text-display max-[720px]:text-h2 max-w-3xl">
+				<h1 className="animate-rise-quick font-display text-h1 lg:text-display max-[720px]:text-h2 max-w-3xl">
 					{SITE.tagline}
 				</h1>
-				<p className="animate-rise text-body-lg text-text-secondary mt-6 max-w-xl [animation-delay:150ms]">
+				<p className="animate-rise-quick text-body-lg text-text-secondary mt-6 max-w-xl">
 					A small team building games, products and projects.
 				</p>
-				<div className="animate-rise mt-10 flex flex-wrap gap-3 [animation-delay:300ms]">
+				<div className="animate-rise-quick mt-10 flex flex-wrap gap-3">
 					<Link
 						to="/projects"
 						className={cn(buttonVariants({ variant: "primary", size: "lg" }))}

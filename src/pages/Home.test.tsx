@@ -48,6 +48,16 @@ describe("Home", () => {
 		expect(mark).toHaveAttribute("aria-hidden", "true");
 	});
 
+	it("shows the description and buttons together with the headline, quickly", () => {
+		const { container } = setup();
+		const entering = container.querySelectorAll("[class*=animate-rise]");
+		expect(entering.length).toBeGreaterThanOrEqual(3);
+		for (const el of entering) {
+			expect(el.className).toContain("animate-rise-quick");
+			expect(el.className).not.toContain("animation-delay");
+		}
+	});
+
 	it("is a single section", () => {
 		const { container } = setup();
 		expect(container.querySelectorAll("section")).toHaveLength(1);
