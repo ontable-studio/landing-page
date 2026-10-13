@@ -37,8 +37,9 @@ describe("main.css tokens", () => {
 		}
 	});
 
-	it("cancels animation delays as well as durations under reduced motion", () => {
-		const block = css.slice(css.indexOf("prefers-reduced-motion"));
+	it("only cuts motion for reduced-motion visitors when html opts in", () => {
+		const block = css.slice(css.indexOf("@media (prefers-reduced-motion"));
+		expect(block).toContain("html[data-respect-reduced-motion]");
 		expect(block).toContain("animation-delay: 0s");
 		expect(block).toContain("animation-duration: 0.01ms");
 	});

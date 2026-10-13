@@ -72,6 +72,18 @@ describe("App routes", () => {
 		expect(document.querySelectorAll("footer")).toHaveLength(1);
 	});
 
+	it("shows a pointer-lit dot grid on the home page", () => {
+		renderAt("/");
+		expect(document.querySelector("[data-dot-grid]")).toBeInTheDocument();
+		expect(document.querySelector("[data-glow]")).toBeInTheDocument();
+	});
+
+	it("shows a still dot grid, without the glow, behind the other pages", () => {
+		renderAt("/projects");
+		expect(document.querySelector("[data-dot-grid]")).toBeInTheDocument();
+		expect(document.querySelector("[data-glow]")).toBeNull();
+	});
+
 	it("keeps the nav and footer on every page", () => {
 		renderAt("/nope");
 		expect(screen.getByRole("navigation")).toBeInTheDocument();

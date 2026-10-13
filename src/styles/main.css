@@ -155,10 +155,11 @@
 		font-family: var(--font-sans);
 	}
 
+	/* Off unless <html data-respect-reduced-motion> opts in (see index.html). */
 	@media (prefers-reduced-motion: reduce) {
-		*,
-		*::before,
-		*::after {
+		html[data-respect-reduced-motion] *,
+		html[data-respect-reduced-motion] *::before,
+		html[data-respect-reduced-motion] *::after {
 			animation-delay: 0s !important;
 			animation-duration: 0.01ms !important;
 			animation-iteration-count: 1 !important;

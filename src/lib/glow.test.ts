@@ -12,7 +12,10 @@ function stubMedia(matches: Record<string, boolean>) {
 	);
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+	vi.unstubAllGlobals();
+	document.documentElement.removeAttribute("data-respect-reduced-motion");
+});
 
 describe("easeToward", () => {
 	it("moves a fraction of the way to the target", () => {
@@ -56,7 +59,16 @@ describe("canTrack", () => {
 		expect(canTrack()).toBe(false);
 	});
 
-	it("is false when the visitor prefers reduced motion", () => {
+	it("ignores a reduced-motion request by default", () => {
+		stubMedia({
+			"(hover: hover) and (pointer: fine)": true,
+			"(prefers-reduced-motion: reduce)": true,
+		});
+		expect(canTrack()).toBe(true);
+	});
+
+	it("honors a reduced-motion request once html opts in", () => {
+		document.documentElement.setAttribute("data-respect-reduced-motion", "");
 		stubMedia({
 			"(hover: hover) and (pointer: fine)": true,
 			"(prefers-reduced-motion: reduce)": true,

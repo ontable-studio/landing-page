@@ -44,7 +44,10 @@ beforeEach(() => {
 	});
 });
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+	vi.unstubAllGlobals();
+	document.documentElement.removeAttribute("data-respect-reduced-motion");
+});
 
 describe("usePointerGlow", () => {
 	it("eases the --gx and --gy variables to the pointer position", () => {
@@ -89,7 +92,20 @@ describe("usePointerGlow", () => {
 		expect(area.style.getPropertyValue("--glow-on")).toBe("");
 	});
 
-	it("does nothing when the visitor prefers reduced motion", () => {
+	it("still follows the pointer when reduced motion is requested but html has not opted in", () => {
+		stubMedia({
+			"(hover: hover) and (pointer: fine)": true,
+			"(prefers-reduced-motion: reduce)": true,
+		});
+		render(<Probe />);
+		const area = screen.getByTestId("area");
+		move(area, 300, 120);
+		flushFrames();
+		expect(area.style.getPropertyValue("--gx")).toBe("300px");
+	});
+
+	it("does nothing under reduced motion once html opts in", () => {
+		document.documentElement.setAttribute("data-respect-reduced-motion", "");
 		stubMedia({
 			"(hover: hover) and (pointer: fine)": true,
 			"(prefers-reduced-motion: reduce)": true,

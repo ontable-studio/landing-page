@@ -16,13 +16,20 @@ export function normalize(value: number, size: number): number {
 }
 
 /**
- * Whether pointer-following effects should run: a fine pointer that can hover,
- * and no request for reduced motion.
+ * Whether pointer-following effects should run: a fine pointer that can hover.
+ * A reduced-motion request is ignored unless `<html>` carries
+ * `data-respect-reduced-motion` (the one switch for the whole site, see index.html).
  */
 export function canTrack(): boolean {
 	if (typeof matchMedia !== "function") return false;
-	return (
-		matchMedia("(hover: hover) and (pointer: fine)").matches &&
-		!matchMedia("(prefers-reduced-motion: reduce)").matches
+	const respectsReducedMotion = document.documentElement.hasAttribute(
+		"data-respect-reduced-motion"
 	);
+	if (
+		respectsReducedMotion &&
+		matchMedia("(prefers-reduced-motion: reduce)").matches
+	) {
+		return false;
+	}
+	return matchMedia("(hover: hover) and (pointer: fine)").matches;
 }

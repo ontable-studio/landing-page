@@ -91,6 +91,21 @@ describe("Home", () => {
 		expect(container.innerHTML).not.toMatch(/bg-radial|bg-linear/);
 	});
 
+	it("lights the dots near the pointer behind the content", () => {
+		const { container } = setup();
+		const section = container.querySelector("section");
+		const grid = container.querySelector("[data-dot-grid]");
+		expect(section).toContainElement(grid as HTMLElement);
+		expect(container.querySelector("[data-glow]")).toBeInTheDocument();
+	});
+
+	it("lets the logo disc drift against the pointer", () => {
+		const { container } = setup();
+		const disc = container.querySelector('img[src="/images/ontable-logo.svg"]');
+		expect(disc?.getAttribute("style")).toMatch(/var\(--nx/);
+		expect(disc?.getAttribute("style")).toMatch(/var\(--ny/);
+	});
+
 	it("is a single section", () => {
 		const { container } = setup();
 		expect(container.querySelectorAll("section")).toHaveLength(1);

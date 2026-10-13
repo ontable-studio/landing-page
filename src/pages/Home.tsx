@@ -1,22 +1,34 @@
+import { useRef } from "react";
 import { Link } from "react-router";
 import { SITE } from "../common/constants";
 import { Footer } from "../components/layout/Footer";
 import { Nav } from "../components/layout/Nav";
 import { buttonVariants } from "../components/ui/Button";
+import { DotGrid } from "../components/ui/DotGrid";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { usePointerGlow } from "../lib/usePointerGlow";
 import { cn } from "../lib/cn";
 
 /** The home page: one full-screen section holding the nav, the hero and the footer. */
 export default function Home(): React.JSX.Element {
 	useDocumentTitle("OnTable");
+	const sectionRef = useRef<HTMLElement>(null);
+	usePointerGlow(sectionRef);
 
 	return (
 		<main>
-			<section className="relative flex min-h-svh flex-col overflow-x-clip">
+			<section
+				ref={sectionRef}
+				className="relative flex min-h-svh flex-col overflow-x-clip"
+			>
+				<DotGrid interactive />
 				<img
 					src="/images/ontable-logo.svg"
 					alt=""
 					aria-hidden="true"
+					style={{
+						translate: "calc(var(--nx, 0) * -20px) calc(var(--ny, 0) * -20px)",
+					}}
 					className="absolute top-[8%] -right-32 size-112 max-[720px]:top-20 max-[720px]:-right-24 max-[720px]:size-56"
 				/>
 				<Nav variant="overlay" />
