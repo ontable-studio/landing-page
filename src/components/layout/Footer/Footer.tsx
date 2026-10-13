@@ -1,5 +1,6 @@
 import { SITE } from "../../../common/constants";
 import { Container } from "../../ui/Container";
+import { underlineLink } from "../../ui/linkStyles";
 
 interface FooterProps {
 	/** `bar`: full footer with the tagline. `overlay`: slim row inside a full-screen section. */
@@ -13,7 +14,7 @@ function SocialLinks(): React.JSX.Element {
 				<li key={s.label}>
 					<a
 						href={s.href}
-						className="text-body-sm hover:text-brand font-medium"
+						className={`text-body-sm font-medium ${underlineLink}`}
 					>
 						{s.label}
 					</a>

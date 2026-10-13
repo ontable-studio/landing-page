@@ -21,6 +21,15 @@ describe("Footer", () => {
 		}
 	});
 
+	it("underlines the social links from the left on hover and focus", () => {
+		render(<Footer />);
+		for (const s of SITE.social) {
+			const cls = screen.getByRole("link", { name: s.label }).className;
+			expect(cls).toContain("hover:after:scale-x-100");
+			expect(cls).toContain("focus-visible:after:scale-x-100");
+		}
+	});
+
 	it("renders every social link", () => {
 		render(<Footer />);
 		for (const s of SITE.social) {

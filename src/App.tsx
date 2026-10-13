@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes } from "react-router";
+import { Outlet, Route, Routes, useLocation } from "react-router";
 import { Footer } from "./components/layout/Footer";
 import { Nav } from "./components/layout/Nav";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
@@ -11,12 +11,13 @@ import NotFound from "./pages/NotFound";
 
 /** Nav, page and footer around every page except Home, which holds its own inside one screen. */
 function SiteLayout(): React.JSX.Element {
+	const { pathname } = useLocation();
 	return (
 		<div className="relative">
 			<DotGrid className="opacity-40" />
 			<div className="relative">
 				<Nav />
-				<main>
+				<main key={pathname} className="animate-fade-in">
 					<Outlet />
 				</main>
 				<Footer />

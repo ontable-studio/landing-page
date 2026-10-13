@@ -28,7 +28,21 @@ export default function Projects(): React.JSX.Element {
 			: projects.filter((project) => slugOf(project.type) === active);
 
 	function choose(id: string) {
-		setParams(id === "all" ? {} : { type: id }, { replace: true });
+		const update = () =>
+			setParams(id === "all" ? {} : { type: id }, {
+				replace: true,
+				flushSync: true,
+			});
+		// Where the browser can, animate the cards to their new places. A hidden page
+		// cannot run a transition, so it just filters.
+		if ("startViewTransition" in document && !document.hidden) {
+			const transition = document.startViewTransition(update);
+			// An aborted transition rejects these promises; the filter has applied anyway.
+			transition.ready.catch(() => {});
+			transition.finished.catch(() => {});
+		} else {
+			update();
+		}
 	}
 
 	return (
@@ -51,15 +65,20 @@ export default function Projects(): React.JSX.Element {
 				{visible.length > 0 ? (
 					<div className="grid gap-6 md:grid-cols-2">
 						{visible.map((project) => (
-							<ProjectCard
+							<div
 								key={project.slug}
-								title={project.title}
-								category={project.category}
-								year={project.year}
-								image={project.image}
-								href={`/projects/${project.slug}`}
-								linkAs={RouterLink}
-							/>
+								data-card=""
+								style={{ viewTransitionName: project.slug }}
+							>
+								<ProjectCard
+									title={project.title}
+									category={project.category}
+									year={project.year}
+									image={project.image}
+									href={`/projects/${project.slug}`}
+									linkAs={RouterLink}
+								/>
+							</div>
 						))}
 					</div>
 				) : (

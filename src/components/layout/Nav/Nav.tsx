@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { SITE } from "../../../common/constants";
 import { Container } from "../../ui/Container";
+import { underlineLink } from "../../ui/linkStyles";
 
 const LINKS = [
 	{ label: "Projects", to: "/projects" },
@@ -15,7 +16,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 				key={link.label}
 				href={link.to}
 				onClick={onNavigate}
-				className="text-body hover:text-brand font-medium"
+				className={`text-body font-medium ${underlineLink}`}
 			>
 				{link.label}
 			</a>
@@ -24,7 +25,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 				key={link.label}
 				to={link.to}
 				onClick={onNavigate}
-				className="text-body hover:text-brand font-medium"
+				className={`text-body font-medium ${underlineLink}`}
 			>
 				{link.label}
 			</Link>

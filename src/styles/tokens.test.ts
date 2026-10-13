@@ -40,8 +40,14 @@ describe("main.css tokens", () => {
 	it("only cuts motion for reduced-motion visitors when html opts in", () => {
 		const block = css.slice(css.indexOf("@media (prefers-reduced-motion"));
 		expect(block).toContain("html[data-respect-reduced-motion]");
+		expect(block).toContain("::view-transition-group(*)");
 		expect(block).toContain("animation-delay: 0s");
 		expect(block).toContain("animation-duration: 0.01ms");
+	});
+
+	it("keeps the page itself still during a view transition, so only named cards animate", () => {
+		expect(css).toContain("::view-transition-old(root)");
+		expect(css).toContain("::view-transition-new(root)");
 	});
 
 	it("has no blue", () => {

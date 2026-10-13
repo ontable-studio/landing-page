@@ -37,6 +37,14 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 - `src/common/constants.ts` — `SITE` (placeholders marked TODO(user))
 - Each component: its own folder with `Name.tsx`, `index.ts`, `Name.test.tsx`
 
+## Motion and interaction
+
+- **Home background:** `DotGrid interactive` plus `usePointerGlow` (`src/lib`). The hook eases the pointer into CSS variables (`--gx`, `--gy`, `--nx`, `--ny`, `--glow-on`) on its element, so React never re-renders on a pointer move; children style themselves from the variables (the glow, the disc parallax, the card "View" chip). Other pages get a still, fainter `DotGrid`.
+- **Hover is always paired with focus:** every hover effect also has a `focus-visible:` twin (`underlineLink` in `ui/linkStyles.ts`, the Button fill, the ProjectCard lift). Tailwind's `hover:` only applies on devices that can hover.
+- **Projects filter:** runs inside `document.startViewTransition` when the browser has it and the page is visible (cards carry `view-transition-name` = slug); otherwise it just filters. The page root is kept still in CSS.
+- **Reduced motion is ignored on purpose** (product decision): effects always run. To honor the OS setting everywhere, add `data-respect-reduced-motion` to `<html>` in `index.html`; both the CSS and `canTrack()` read that one attribute.
+- No `backdrop-filter`, no filter blurs and no animated gradients: they were a suspect for load-time flashes.
+
 ## Working rules
 
 - Implementation runs inline in one terminal session with Sonnet 5.5: no subagents.

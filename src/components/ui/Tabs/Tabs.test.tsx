@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import { useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -96,13 +96,63 @@ describe("Tabs", () => {
 		expect(screen.getByRole("tab", { name: "All" })).toHaveFocus();
 	});
 
-	it("gives the active tab a solid style and the others an outline", () => {
+	it("gives the active tab white text and the others an outline", () => {
 		render(<Controlled initial="game" />);
 		expect(screen.getByRole("tab", { name: "Game" }).className).toMatch(
-			/bg-text-primary/
+			/text-white/
 		);
 		expect(screen.getByRole("tab", { name: "All" }).className).toMatch(
 			/border/
 		);
+	});
+});
+
+describe("Tabs sliding indicator", () => {
+	const offsets: Record<string, [number, number]> = {
+		All: [0, 50],
+		Game: [58, 70],
+		"UI Design": [136, 110],
+	};
+
+	beforeEach(() => {
+		Object.defineProperty(HTMLElement.prototype, "offsetLeft", {
+			configurable: true,
+			get() {
+				return offsets[(this as HTMLElement).textContent ?? ""]?.[0] ?? 0;
+			},
+		});
+		Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+			configurable: true,
+			get() {
+				return offsets[(this as HTMLElement).textContent ?? ""]?.[1] ?? 0;
+			},
+		});
+	});
+
+	afterEach(() => {
+		Reflect.deleteProperty(HTMLElement.prototype, "offsetLeft");
+		Reflect.deleteProperty(HTMLElement.prototype, "offsetWidth");
+	});
+
+	it("sits behind the selected tab as a solid pill", () => {
+		render(<Controlled initial="game" />);
+		const indicator = document.querySelector("[data-indicator]") as HTMLElement;
+		expect(indicator).toHaveAttribute("aria-hidden", "true");
+		expect(indicator.className).toMatch(/bg-text-primary/);
+		expect(indicator.getAttribute("style")).toMatch(/width:\s*70px/);
+		expect(indicator.getAttribute("style")).toMatch(
+			/transform:\s*translateX\(58px\)/
+		);
+	});
+
+	it("slides to the next tab when the selection changes", async () => {
+		render(<Controlled />);
+		await userEvent.click(screen.getByRole("tab", { name: "UI Design" }));
+		const indicator = document.querySelector("[data-indicator]") as HTMLElement;
+		expect(indicator.getAttribute("style")).toMatch(/width:\s*110px/);
+		expect(indicator.getAttribute("style")).toMatch(
+			/transform:\s*translateX\(136px\)/
+		);
+		expect(indicator.className).toMatch(/transition-/);
 	});
 });

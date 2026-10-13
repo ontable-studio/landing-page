@@ -85,6 +85,27 @@ describe("ProjectCard", () => {
 		expect(year).toHaveClass("right-5");
 	});
 
+	it("lifts and gains a shadow on hover and focus", () => {
+		render(<ProjectCard {...base} href="/x" />);
+		const cls = screen.getByRole("link").className;
+		expect(cls).toContain("hover:-translate-y-1");
+		expect(cls).toContain("focus-visible:-translate-y-1");
+		expect(cls).toMatch(/hover:shadow-/);
+	});
+
+	it("shows a View chip that follows the pointer, only on linked cards", () => {
+		const { container, rerender } = render(<ProjectCard {...base} href="/x" />);
+		const chip = container.querySelector("[data-chip]") as HTMLElement;
+		expect(chip).toHaveAttribute("aria-hidden", "true");
+		expect(chip).toHaveTextContent("View");
+		expect(chip.getAttribute("style")).toMatch(/var\(--gx/);
+		expect(chip.getAttribute("style")).toMatch(
+			/opacity:\s*var\(--glow-on,\s*0\)/
+		);
+		rerender(<ProjectCard {...base} />);
+		expect(container.querySelector("[data-chip]")).toBeNull();
+	});
+
 	it("clamps a very long title", () => {
 		const title = "A".repeat(120);
 		render(<ProjectCard {...base} title={title} />);

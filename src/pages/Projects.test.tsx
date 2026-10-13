@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
@@ -124,5 +124,93 @@ describe("Projects type tabs", () => {
 		const panel = screen.getByRole("tabpanel");
 		const tab = screen.getByRole("tab", { name: "All" });
 		expect(panel).toHaveAttribute("aria-labelledby", tab.id);
+	});
+});
+
+describe("Projects filter animation", () => {
+	afterEach(() => {
+		Reflect.deleteProperty(document, "startViewTransition");
+	});
+
+	it("runs the filter inside a view transition when the browser has one", async () => {
+		const start = vi.fn((update: () => void) => {
+			update();
+			return {
+				ready: Promise.resolve(),
+				finished: Promise.resolve(),
+				updateCallbackDone: Promise.resolve(),
+			};
+		});
+		Object.defineProperty(document, "startViewTransition", {
+			configurable: true,
+			value: start,
+		});
+		setup();
+		await userEvent.click(screen.getByRole("tab", { name: projectTypes[0] }));
+		expect(start).toHaveBeenCalledTimes(1);
+		expect(screen.getByRole("tab", { name: projectTypes[0] })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+	});
+
+	it("swallows an aborted view transition instead of leaving an unhandled rejection", async () => {
+		const aborted = () =>
+			Promise.reject(new DOMException("aborted", "InvalidStateError"));
+		const start = vi.fn((update: () => void) => {
+			update();
+			return {
+				ready: aborted(),
+				finished: aborted(),
+				updateCallbackDone: Promise.resolve(),
+			};
+		});
+		Object.defineProperty(document, "startViewTransition", {
+			configurable: true,
+			value: start,
+		});
+		setup();
+		await userEvent.click(screen.getByRole("tab", { name: projectTypes[0] }));
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(screen.getByRole("tab", { name: projectTypes[0] })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+	});
+
+	it("skips the view transition while the page is hidden", async () => {
+		const start = vi.fn();
+		Object.defineProperty(document, "startViewTransition", {
+			configurable: true,
+			value: start,
+		});
+		Object.defineProperty(document, "hidden", {
+			configurable: true,
+			get: () => true,
+		});
+		setup();
+		await userEvent.click(screen.getByRole("tab", { name: projectTypes[0] }));
+		Reflect.deleteProperty(document, "hidden");
+		expect(start).not.toHaveBeenCalled();
+		expect(screen.getByRole("tab", { name: projectTypes[0] })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+	});
+
+	it("still filters where view transitions do not exist", async () => {
+		setup();
+		await userEvent.click(screen.getByRole("tab", { name: projectTypes[0] }));
+		expect(screen.getByRole("tab", { name: projectTypes[0] })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+	});
+
+	it("wraps every card so it can be matched across a filter", () => {
+		const { container } = setup();
+		expect(container.querySelectorAll("[data-card]")).toHaveLength(
+			projects.length
+		);
 	});
 });

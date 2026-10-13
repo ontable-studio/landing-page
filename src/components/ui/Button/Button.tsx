@@ -1,14 +1,17 @@
 import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "../../../lib/cn";
 
+/** A fill that slides in from the left on hover and keyboard focus, behind the label. */
+const FILL =
+	"relative isolate overflow-hidden before:absolute before:inset-0 before:-z-10 before:-translate-x-full before:transition-transform before:duration-300 hover:before:translate-x-0 focus-visible:before:translate-x-0";
+
 export const buttonVariants = cva(
-	"group/button focus-visible:outline-brand inline-flex cursor-pointer items-center justify-center gap-2 rounded-full font-sans whitespace-nowrap transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2",
+	"group/button focus-visible:outline-brand inline-flex cursor-pointer items-center justify-center gap-2 rounded-full font-sans whitespace-nowrap transition-[color,scale] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.97]",
 	{
 		variants: {
 			variant: {
-				primary: "bg-brand hover:bg-brand-hover text-white",
-				outline:
-					"border-surface-border text-text-primary hover:bg-surface border bg-white",
+				primary: `bg-brand text-white ${FILL} before:bg-brand-hover`,
+				outline: `border-surface-border text-text-primary border bg-white ${FILL} before:bg-surface`,
 				ghost: "text-text-primary hover:bg-surface bg-transparent",
 				link: "text-brand hover:text-brand-hover h-auto bg-transparent p-0 hover:underline",
 			},

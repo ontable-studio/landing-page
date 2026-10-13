@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { SITE } from "./common/constants";
 import { projects } from "./data/projects";
@@ -82,6 +83,21 @@ describe("App routes", () => {
 		renderAt("/projects");
 		expect(document.querySelector("[data-dot-grid]")).toBeInTheDocument();
 		expect(document.querySelector("[data-glow]")).toBeNull();
+	});
+
+	it("fades the page content in on each navigation, leaving nav and footer alone", async () => {
+		renderAt("/projects");
+		const nav = document.querySelector("nav");
+		const mainBefore = document.querySelector("main");
+		expect(mainBefore?.className).toMatch(/animate-fade-in/);
+		await userEvent.click(
+			screen.getByRole("link", { name: new RegExp(projects[0].title) })
+		);
+		expect(document.querySelector("main")).not.toBe(mainBefore);
+		expect(document.querySelector("main")?.className).toMatch(
+			/animate-fade-in/
+		);
+		expect(document.querySelector("nav")).toBe(nav);
 	});
 
 	it("keeps the nav and footer on every page", () => {

@@ -148,6 +148,12 @@
 	clip-path: polygon(0 0, calc(100% - 7rem) 0, 100% 4rem, 100% 100%, 0 100%);
 }
 
+/* A view transition (the Projects filter) animates only the named cards, not the whole page. */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+}
+
 @layer base {
 	body {
 		background-color: var(--color-canvas);
@@ -159,7 +165,10 @@
 	@media (prefers-reduced-motion: reduce) {
 		html[data-respect-reduced-motion] *,
 		html[data-respect-reduced-motion] *::before,
-		html[data-respect-reduced-motion] *::after {
+		html[data-respect-reduced-motion] *::after,
+		html[data-respect-reduced-motion]::view-transition-group(*),
+		html[data-respect-reduced-motion]::view-transition-old(*),
+		html[data-respect-reduced-motion]::view-transition-new(*) {
 			animation-delay: 0s !important;
 			animation-duration: 0.01ms !important;
 			animation-iteration-count: 1 !important;

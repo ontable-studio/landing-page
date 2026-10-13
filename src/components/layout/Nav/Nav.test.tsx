@@ -52,6 +52,17 @@ describe("Nav", () => {
 		expect(menu?.className).not.toMatch(/border/);
 	});
 
+	it("underlines each nav link from the left on hover and focus", () => {
+		setup();
+		for (const link of screen.getAllByRole("link", {
+			name: /projects|contact/i,
+		})) {
+			expect(link.className).toContain("after:scale-x-0");
+			expect(link.className).toContain("hover:after:scale-x-100");
+			expect(link.className).toContain("focus-visible:after:scale-x-100");
+		}
+	});
+
 	it("toggles the menu and closes it on Escape, returning focus", async () => {
 		setup();
 		const toggle = screen.getByRole("button", { name: /menu/i });
