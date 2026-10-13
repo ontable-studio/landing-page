@@ -30,7 +30,9 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 
 - `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard), `cva` + `cn()`, router-free
 - `src/components/layout/` — SectionHeader, Nav, Footer
-- `src/pages/` — routes (`/`, `/design-system`); `/design-system` is the living style guide, update it when adding a token or component
+- `src/pages/` — routes: `/` (Hero), `/projects`, `/projects/:slug`, `/design-system` (living style guide: update it when adding a token or component)
+- `src/data/projects.ts` — the one place project content lives; current entries are placeholders to replace with real games
+- `RouterLink` (`layout/`) + `ProjectCard` `linkAs` give client-side card links while `ui/` stays router-free
 - `src/common/constants.ts` — `SITE` (placeholders marked TODO(user))
 - Each component: its own folder with `Name.tsx`, `index.ts`, `Name.test.tsx`
 

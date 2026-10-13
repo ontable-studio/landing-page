@@ -2,3 +2,4 @@ export { SectionHeader } from "./SectionHeader";
 export { Nav } from "./Nav";
 export { Footer } from "./Footer";
 export { RouterLink } from "./RouterLink";
+export { ScrollToTop } from "./ScrollToTop";

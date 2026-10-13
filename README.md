@@ -43,7 +43,8 @@ src/
 ├── components/
 │   ├── ui/       # Primitives (Button, Badge, Card, Container, ProjectCard)
 │   └── layout/   # SectionHeader, Nav, Footer
-├── pages/        # Routes: / and /design-system (living style guide)
+├── pages/        # Routes: /, /projects, /projects/:slug, /design-system
+├── data/         # Project content (projects.ts, placeholders for now)
 ├── common/       # Site constants
 ├── lib/          # Core utilities (cn)
 ├── styles/       # Theme tokens and base styles

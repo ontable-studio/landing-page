@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
 import { Footer } from "./components/layout/Footer";
 import { Nav } from "./components/layout/Nav";
+import { ScrollToTop } from "./components/layout/ScrollToTop";
 import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -10,6 +11,7 @@ import NotFound from "./pages/NotFound";
 export default function App(): React.JSX.Element {
 	return (
 		<>
+			<ScrollToTop />
 			<Nav />
 			<main>
 				<Routes>
