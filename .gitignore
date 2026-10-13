@@ -49,3 +49,4 @@ tmp-*
 
 # Raw brand source files (PSD/AI/fonts) — kept locally, not in the repo
 .resources/
+.superpowers/
