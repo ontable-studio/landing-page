@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { SITE } from "./common/constants";
+import { projects } from "./data/projects";
 import App from "./App";
 
 function renderAt(path: string) {
@@ -36,6 +37,27 @@ describe("App routes", () => {
 			"href",
 			"/"
 		);
+	});
+
+	it("renders the projects page at /projects", () => {
+		renderAt("/projects");
+		expect(
+			screen.getByRole("heading", { level: 1, name: "Projects" })
+		).toBeInTheDocument();
+	});
+
+	it("renders a project at /projects/<slug>", () => {
+		renderAt(`/projects/${projects[0].slug}`);
+		expect(
+			screen.getByRole("heading", { level: 1, name: projects[0].title })
+		).toBeInTheDocument();
+	});
+
+	it("renders not found at an unknown project", () => {
+		renderAt("/projects/nope");
+		expect(
+			screen.getByRole("heading", { name: /page not found/i })
+		).toBeInTheDocument();
 	});
 
 	it("keeps the nav and footer on every page", () => {

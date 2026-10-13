@@ -1,8 +1,11 @@
 import { Link } from "react-router";
 import { Container } from "../components/ui/Container";
 import { SectionHeader } from "../components/layout/SectionHeader";
+import { useDocumentTitle } from "../lib/useDocumentTitle";
 
 export default function NotFound(): React.JSX.Element {
+	useDocumentTitle("Page not found — OnTable");
+
 	return (
 		<Container className="py-section lg:py-section-lg">
 			<SectionHeader as="h1" title="Page not found" />
