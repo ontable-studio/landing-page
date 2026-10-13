@@ -33,7 +33,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 interface NavProps {
-	/** `bar`: sticky blurred bar. `overlay`: plain row that sits inside a full-screen section. */
+	/** `bar`: plain bar that scrolls away with the page. `overlay`: plain row that sits inside a full-screen section. */
 	variant?: "bar" | "overlay";
 }
 
@@ -50,7 +50,7 @@ function Wrapper({
 			{children}
 		</div>
 	) : (
-		<Container className="flex h-16 items-center justify-between">
+		<Container size="wide" className="flex h-16 items-center justify-between">
 			{children}
 		</Container>
 	);
@@ -77,9 +77,7 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 	return (
 		<nav
 			className={
-				overlay
-					? "relative z-20"
-					: "bg-canvas/90 border-surface-border sticky top-0 z-50 border-b backdrop-blur"
+				overlay ? "relative z-20" : "bg-canvas border-surface-border border-b"
 			}
 		>
 			<Wrapper overlay={overlay}>

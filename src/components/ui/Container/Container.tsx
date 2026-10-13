@@ -6,6 +6,7 @@ export const containerVariants = cva("mx-auto w-full px-6", {
 		size: {
 			default: "max-w-6xl",
 			narrow: "max-w-3xl",
+			wide: "max-w-7xl px-4 lg:px-8",
 		},
 	},
 	defaultVariants: { size: "default" },

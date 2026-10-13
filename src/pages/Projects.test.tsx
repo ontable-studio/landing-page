@@ -1,16 +1,22 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
-import { projects } from "../data/projects";
+import { projectTypes, projects } from "../data/projects";
 import Projects from "./Projects";
 
-function setup() {
+function setup(path = "/projects") {
 	return render(
-		<MemoryRouter>
+		<MemoryRouter initialEntries={[path]}>
 			<Projects />
 		</MemoryRouter>
 	);
 }
+
+const cards = () =>
+	screen
+		.getAllByRole("link")
+		.filter((a) => a.getAttribute("href")?.startsWith("/projects/"));
 
 describe("Projects", () => {
 	it("has a level-1 heading", () => {
@@ -30,16 +36,93 @@ describe("Projects", () => {
 		}
 	});
 
-	it("shows exactly one card per project", () => {
+	it("shows exactly one card per project by default", () => {
 		setup();
-		const links = screen
-			.getAllByRole("link")
-			.filter((a) => a.getAttribute("href")?.startsWith("/projects/"));
-		expect(links).toHaveLength(projects.length);
+		expect(cards()).toHaveLength(projects.length);
 	});
 
 	it("sets the tab title", () => {
 		setup();
 		expect(document.title).toBe("Projects — OnTable");
+	});
+
+	it("lays the cards out two per row from the md breakpoint", () => {
+		setup();
+		const grid = screen.getByRole("tabpanel").firstElementChild;
+		expect(grid?.className).toMatch(/md:grid-cols-2/);
+	});
+
+	it("uses the wide container with tight vertical padding", () => {
+		const { container } = setup();
+		const root = container.firstElementChild;
+		expect(root?.className).toMatch(/max-w-7xl/);
+		expect(root?.className).not.toMatch(/py-section/);
+	});
+});
+
+describe("Projects type tabs", () => {
+	it("offers All plus one tab per project type, with All selected", () => {
+		setup();
+		const tabs = within(
+			screen.getByRole("tablist", { name: "Project types" })
+		).getAllByRole("tab");
+		expect(tabs.map((t) => t.textContent)).toEqual(["All", ...projectTypes]);
+		expect(screen.getByRole("tab", { name: "All" })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+	});
+
+	it("filters the cards when a type is chosen", async () => {
+		setup();
+		const type = projectTypes[projectTypes.length - 1];
+		await userEvent.click(screen.getByRole("tab", { name: type }));
+		const expected = projects.filter((p) => p.type === type);
+		expect(cards()).toHaveLength(expected.length);
+		for (const p of expected) {
+			expect(
+				screen.getByRole("link", { name: new RegExp(p.title) })
+			).toBeInTheDocument();
+		}
+		expect(screen.getByRole("tab", { name: type })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+	});
+
+	it("goes back to every project on All", async () => {
+		setup();
+		await userEvent.click(screen.getByRole("tab", { name: projectTypes[0] }));
+		await userEvent.click(screen.getByRole("tab", { name: "All" }));
+		expect(cards()).toHaveLength(projects.length);
+	});
+
+	it("reads the type from the address, so a refresh keeps it", () => {
+		const type = projectTypes[projectTypes.length - 1];
+		const slug = type.toLowerCase().replace(/\s+/g, "-");
+		setup(`/projects?type=${slug}`);
+		expect(screen.getByRole("tab", { name: type })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+		expect(cards()).toHaveLength(
+			projects.filter((p) => p.type === type).length
+		);
+	});
+
+	it("falls back to All for an unknown type in the address", () => {
+		setup("/projects?type=nope");
+		expect(screen.getByRole("tab", { name: "All" })).toHaveAttribute(
+			"aria-selected",
+			"true"
+		);
+		expect(cards()).toHaveLength(projects.length);
+	});
+
+	it("labels the panel with the selected tab", () => {
+		setup();
+		const panel = screen.getByRole("tabpanel");
+		const tab = screen.getByRole("tab", { name: "All" });
+		expect(panel).toHaveAttribute("aria-labelledby", tab.id);
 	});
 });

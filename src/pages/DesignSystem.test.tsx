@@ -34,6 +34,13 @@ describe("DesignSystem page", () => {
 		]);
 	});
 
+	it("sticks its section nav to the top, now that the site nav scrolls away", () => {
+		render(<DesignSystem />);
+		const cls = screen.getByRole("navigation", { name: "Sections" }).className;
+		expect(cls).toMatch(/sticky top-0/);
+		expect(cls).not.toMatch(/top-16/);
+	});
+
 	it("shows every colour token", () => {
 		render(<DesignSystem />);
 		for (const group of colorGroups) {

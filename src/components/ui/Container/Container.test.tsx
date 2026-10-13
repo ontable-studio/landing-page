@@ -19,6 +19,11 @@ describe("Container", () => {
 		expect(screen.getByText("x")).toHaveClass("max-w-3xl");
 	});
 
+	it("widens with size=wide and keeps tighter gutters", () => {
+		render(<Container size="wide">x</Container>);
+		expect(screen.getByText("x")).toHaveClass("max-w-7xl", "px-4");
+	});
+
 	it("merges a className last", () => {
 		render(<Container className="py-4">x</Container>);
 		expect(screen.getByText("x")).toHaveClass("py-4");

@@ -11,7 +11,7 @@ function ProjectView({ project }: { project: Project }): React.JSX.Element {
 	useDocumentTitle(`${project.title} — OnTable`);
 
 	return (
-		<Container className="py-section lg:py-section-lg">
+		<Container size="wide" className="py-section lg:py-section-lg">
 			<Link
 				to="/projects"
 				className={cn(buttonVariants({ variant: "outline", size: "sm" }))}

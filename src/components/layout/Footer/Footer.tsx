@@ -36,7 +36,10 @@ export function Footer({ variant = "bar" }: FooterProps): React.JSX.Element {
 
 	return (
 		<footer className="border-surface-border border-t py-10">
-			<Container className="flex flex-wrap items-center justify-between gap-6">
+			<Container
+				size="wide"
+				className="flex flex-wrap items-center justify-between gap-6"
+			>
 				<div>
 					<p className="font-display text-title">{SITE.name}</p>
 					<p className="text-body-sm text-text-secondary mt-1">

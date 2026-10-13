@@ -17,7 +17,7 @@ const SECTIONS = [
 /** Living style guide: every token and component, rendered for real. */
 export default function DesignSystem(): React.JSX.Element {
 	return (
-		<Container className="py-section lg:py-section-lg">
+		<Container size="wide" className="py-section lg:py-section-lg">
 			<SectionHeader
 				as="h1"
 				eyebrow="OnTable Studio"
@@ -26,7 +26,7 @@ export default function DesignSystem(): React.JSX.Element {
 			/>
 			<nav
 				aria-label="Sections"
-				className="bg-canvas/90 border-surface-border sticky top-16 z-40 -mx-6 mt-8 flex gap-6 overflow-x-auto border-y px-6 py-3 backdrop-blur"
+				className="bg-canvas border-surface-border sticky top-0 z-40 -mx-4 mt-8 flex gap-6 overflow-x-auto border-y px-4 py-3 lg:-mx-8 lg:px-8"
 			>
 				{SECTIONS.map((section) => (
 					<a

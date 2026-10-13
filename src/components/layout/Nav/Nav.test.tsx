@@ -28,10 +28,11 @@ describe("Nav", () => {
 		).toHaveAttribute("href", "/projects");
 	});
 
-	it("bar variant is a sticky blurred bar", () => {
+	it("bar variant scrolls away with the page: not sticky, not blurred", () => {
 		setup();
-		expect(screen.getByRole("navigation").className).toMatch(/sticky/);
-		expect(screen.getByRole("navigation").className).toMatch(/backdrop-blur/);
+		const cls = screen.getByRole("navigation").className;
+		expect(cls).not.toMatch(/sticky|fixed|backdrop-blur/);
+		expect(cls).toMatch(/border-b/);
 	});
 
 	it("overlay variant is plain: no sticky, no blur, no border", () => {

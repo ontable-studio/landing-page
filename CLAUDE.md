@@ -28,10 +28,11 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 
 ## Structure
 
-- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard), `cva` + `cn()`, router-free
+- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard, Tabs), `cva` + `cn()`, router-free
 - `src/components/layout/` — SectionHeader, Nav, Footer (both have `variant="overlay"` for Home, where they sit inside the one full-screen section; every other route gets the bar versions from `SiteLayout` in `App.tsx`)
 - `src/pages/` — routes: `/` (one full-screen section: nav, hero and footer together), `/projects`, `/projects/:slug`, `/design-system` (living style guide: update it when adding a token or component)
-- `src/data/projects.ts` — the one place project content lives; current entries are placeholders to replace with real games
+- `src/data/projects.ts` — the one place project content lives; current entries are placeholders to replace with real games. Each project has a `type` (Game, Tool, UI Design) that becomes a tab on `/projects` (filter kept in `?type=`) and a `category` shown on its card. Add a new type to `PROJECT_TYPES`
+- `Container` sizes: `default` (6xl), `narrow`, `wide` (7xl, tighter gutters; used by the nav, footer and every page except Home). The nav bar is not sticky: it scrolls away with the page
 - `RouterLink` (`layout/`) + `ProjectCard` `linkAs` give client-side card links while `ui/` stays router-free
 - `src/common/constants.ts` — `SITE` (placeholders marked TODO(user))
 - Each component: its own folder with `Name.tsx`, `index.ts`, `Name.test.tsx`

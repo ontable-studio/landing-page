@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getProject, projects } from "./projects";
+import { PROJECT_TYPES, getProject, projectTypes, projects } from "./projects";
 
 describe("projects data", () => {
 	it("has at least three projects", () => {
@@ -25,6 +25,15 @@ describe("projects data", () => {
 		expect(
 			projects.some((p) => p.credits.length === 0 && p.gallery.length === 0)
 		).toBe(true);
+	});
+
+	it("gives every project a known type, with at least two types in use", () => {
+		for (const p of projects) expect(PROJECT_TYPES).toContain(p.type);
+		expect(new Set(projects.map((p) => p.type)).size).toBeGreaterThanOrEqual(2);
+	});
+
+	it("lists the types in use once each, in order of first appearance", () => {
+		expect(projectTypes).toEqual([...new Set(projects.map((p) => p.type))]);
 	});
 
 	it("finds a project by slug", () => {
