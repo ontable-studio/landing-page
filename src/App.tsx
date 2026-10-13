@@ -1,7 +1,22 @@
+import { Route, Routes } from "react-router";
+import { Footer } from "./components/layout/Footer";
+import { Nav } from "./components/layout/Nav";
+import DesignSystem from "./pages/DesignSystem";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+
 export default function App(): React.JSX.Element {
 	return (
-		<main className="grid min-h-screen place-items-center">
-			<h1 className="text-4xl font-bold">OnTable</h1>
-		</main>
+		<>
+			<Nav />
+			<main>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/design-system" element={<DesignSystem />} />
+					<Route path="*" element={<NotFound />} />
+				</Routes>
+			</main>
+			<Footer />
+		</>
 	);
 }
