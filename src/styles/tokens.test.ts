@@ -50,6 +50,11 @@ describe("main.css tokens", () => {
 		expect(css).toContain("::view-transition-new(root)");
 	});
 
+	it("starts the headline lines low enough to stay hidden behind the taller mask", () => {
+		const block = css.slice(css.indexOf("@keyframes line-rise"));
+		expect(block.slice(0, 120)).toContain("translate: 0 130%");
+	});
+
 	it("has no blue", () => {
 		expect(css.toLowerCase()).not.toMatch(/blue/);
 	});

@@ -133,7 +133,7 @@
 	}
 	@keyframes line-rise {
 		from {
-			translate: 0 105%;
+			translate: 0 130%;
 		}
 	}
 	@keyframes fade-in {

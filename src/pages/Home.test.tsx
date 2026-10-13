@@ -61,6 +61,16 @@ describe("Home", () => {
 		}
 	});
 
+	it("leaves room under every masked line for descenders like g and y", () => {
+		const { container } = setup();
+		const masks = [...container.querySelectorAll("h1 > span")];
+		expect(masks).toHaveLength(3);
+		for (const mask of masks) {
+			expect(mask.className).toContain("pb-[0.2em]");
+			expect(mask.className).toContain("mb-[-0.2em]");
+		}
+	});
+
 	it("shows the description and buttons at once, without an entrance", () => {
 		const { container } = setup();
 		const description = screen.getByText(/small team building games/i);

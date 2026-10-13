@@ -42,7 +42,7 @@ export default function Home(): React.JSX.Element {
 							{SITE.taglineLines.map((line, index) => (
 								<span
 									key={line}
-									className="mb-[-0.1em] block overflow-hidden pb-[0.1em]"
+									className="mb-[-0.2em] block overflow-hidden pb-[0.2em]"
 								>
 									<span
 										data-line=""
