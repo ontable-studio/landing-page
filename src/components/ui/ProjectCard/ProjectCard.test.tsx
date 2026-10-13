@@ -46,6 +46,14 @@ describe("ProjectCard", () => {
 		expect(container.querySelector(".cut-corner")).toBeInTheDocument();
 	});
 
+	it("draws the year in the cut corner, outside the clipped picture", () => {
+		const { container } = render(<ProjectCard {...base} />);
+		const clipped = container.querySelector(".cut-corner");
+		const year = screen.getByText("2026");
+		expect(clipped).not.toContainElement(year);
+		expect(year).toHaveClass("right-5");
+	});
+
 	it("clamps a very long title", () => {
 		const title = "A".repeat(120);
 		render(<ProjectCard {...base} title={title} />);
