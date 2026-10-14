@@ -124,11 +124,17 @@
 	--animate-rise: rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	--animate-rise-quick: rise 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	--animate-line-rise: line-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	--animate-settle: settle 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	--animate-fade-in: fade-in 450ms ease-out both;
 	@keyframes rise {
 		from {
 			opacity: 0;
 			translate: 0 20px;
+		}
+	}
+	@keyframes settle {
+		from {
+			scale: 1.2;
 		}
 	}
 	@keyframes line-rise {
@@ -155,6 +161,28 @@
 }
 
 @layer base {
+	/* Pictures, drawings, video and canvas: not draggable, not selectable (no highlight
+	   box when the text around them is selected), no save menu on a long press. */
+	img,
+	picture,
+	svg,
+	video,
+	canvas,
+	object,
+	embed {
+		-webkit-user-drag: none;
+		user-drag: none;
+		-webkit-user-select: none;
+		user-select: none;
+		-webkit-touch-callout: none;
+	}
+	img::selection,
+	svg::selection,
+	video::selection,
+	canvas::selection {
+		background: transparent;
+	}
+
 	body {
 		background-color: var(--color-canvas);
 		color: var(--color-text-primary);

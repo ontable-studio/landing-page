@@ -74,6 +74,7 @@ export default function Projects(): React.JSX.Element {
 									title={project.title}
 									category={project.category}
 									year={project.year}
+									status={project.status}
 									image={project.image}
 									href={`/projects/${project.slug}`}
 									linkAs={RouterLink}

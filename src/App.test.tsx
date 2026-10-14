@@ -100,6 +100,38 @@ describe("App routes", () => {
 		expect(document.querySelector("nav")).toBe(nav);
 	});
 
+	it("cannot drag a picture on any page, including the project cards", () => {
+		for (const path of ["/", "/projects", `/projects/${projects[0].slug}`]) {
+			const { unmount } = render(
+				<MemoryRouter initialEntries={[path]}>
+					<App />
+				</MemoryRouter>
+			);
+			const media = document.querySelectorAll("img");
+			expect(media.length, path).toBeGreaterThan(0);
+			for (const img of media) {
+				const event = new Event("dragstart", {
+					bubbles: true,
+					cancelable: true,
+				});
+				img.dispatchEvent(event);
+				expect(
+					event.defaultPrevented,
+					`${path} ${img.getAttribute("src")}`
+				).toBe(true);
+			}
+			for (const card of document.querySelectorAll("a:has(img)")) {
+				const event = new Event("dragstart", {
+					bubbles: true,
+					cancelable: true,
+				});
+				card.dispatchEvent(event);
+				expect(event.defaultPrevented, path).toBe(true);
+			}
+			unmount();
+		}
+	});
+
 	it("keeps the nav and footer on every page", () => {
 		renderAt("/nope");
 		expect(screen.getByRole("navigation")).toBeInTheDocument();

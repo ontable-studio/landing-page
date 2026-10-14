@@ -16,6 +16,7 @@ describe("main.css tokens", () => {
 		"--animate-rise:",
 		"--animate-rise-quick:",
 		"--animate-line-rise:",
+		"--animate-settle:",
 		"@utility cut-corner",
 	])("defines %s", (token) => {
 		expect(css.toLowerCase()).toContain(token.toLowerCase());
@@ -53,6 +54,17 @@ describe("main.css tokens", () => {
 	it("starts the headline lines low enough to stay hidden behind the taller mask", () => {
 		const block = css.slice(css.indexOf("@keyframes line-rise"));
 		expect(block.slice(0, 120)).toContain("translate: 0 130%");
+	});
+
+	it("stops pictures being dragged, selected or long-pressed in the base layer", () => {
+		const base = css.slice(css.indexOf("@layer base"));
+		expect(base).toMatch(
+			/img,[\s\S]*?picture,[\s\S]*?svg,[\s\S]*?video,[\s\S]*?canvas/
+		);
+		expect(base).toContain("-webkit-user-drag: none");
+		expect(base).toContain("user-select: none");
+		expect(base).toContain("-webkit-touch-callout: none");
+		expect(base).toMatch(/img::selection[\s\S]*?background: transparent/);
 	});
 
 	it("has no blue", () => {

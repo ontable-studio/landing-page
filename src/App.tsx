@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Outlet, Route, Routes, useLocation } from "react-router";
 import { Footer } from "./components/layout/Footer";
 import { Nav } from "./components/layout/Nav";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { DotGrid } from "./components/ui/DotGrid";
+import { preventMediaDrag } from "./lib/preventMediaDrag";
 import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -27,6 +29,9 @@ function SiteLayout(): React.JSX.Element {
 }
 
 export default function App(): React.JSX.Element {
+	// No picture on any page can be picked up and dragged away (the CSS covers most browsers, this covers Firefox).
+	useEffect(() => preventMediaDrag(), []);
+
 	return (
 		<>
 			<ScrollToTop />

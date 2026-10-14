@@ -28,10 +28,10 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 
 ## Structure
 
-- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard, Tabs), `cva` + `cn()`, router-free
+- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard, Tabs, Lightbox, DotGrid), `cva` + `cn()`, router-free
 - `src/components/layout/` — SectionHeader, Nav, Footer (both have `variant="overlay"` for Home, where they sit inside the one full-screen section; every other route gets the bar versions from `SiteLayout` in `App.tsx`)
 - `src/pages/` — routes: `/` (one full-screen section: nav, hero and footer together), `/projects`, `/projects/:slug`, `/design-system` (living style guide: update it when adding a token or component)
-- `src/data/projects.ts` — the one place project content lives; current entries are placeholders to replace with real games. Each project has a `type` (Game, Tool, UI Design) that becomes a tab on `/projects` (filter kept in `?type=`) and a `category` shown on its card. Add a new type to `PROJECT_TYPES`
+- `src/data/projects.ts` — the one place project content lives; the four showcase games (Craftboard Heroes, Ketik Mancing, Laundry Kita, OxShiftGen), with pictures in `public/images/projects/<slug>/NN-name.webp`. `year` is optional (a project in development shows a `status` pill instead); credits (Date, Role, Platform, Made for) are added only when confirmed by the team; `links` renders external buttons such as "Play on itch.io" on the detail page. Each project has a `type` (Game, Tool, UI Design) that becomes a tab on `/projects` (filter kept in `?type=`) and a `category` shown on its card. Add a new type to `PROJECT_TYPES`
 - `Container` sizes: `default` (6xl), `narrow`, `wide` (7xl, tighter gutters; used by the nav, footer and every page except Home). The nav bar is not sticky: it scrolls away with the page
 - `RouterLink` (`layout/`) + `ProjectCard` `linkAs` give client-side card links while `ui/` stays router-free
 - `src/common/constants.ts` — `SITE` (placeholders marked TODO(user))
@@ -43,6 +43,8 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 - **Hover is always paired with focus:** every hover effect also has a `focus-visible:` twin (`underlineLink` in `ui/linkStyles.ts`, the Button fill, the ProjectCard lift). Tailwind's `hover:` only applies on devices that can hover.
 - **Projects filter:** runs inside `document.startViewTransition` when the browser has it and the page is visible (cards carry `view-transition-name` = slug); otherwise it just filters. The page root is kept still in CSS.
 - **Reduced motion is ignored on purpose** (product decision): effects always run. To honor the OS setting everywhere, add `data-respect-reduced-motion` to `<html>` in `index.html`; both the CSS and `canTrack()` read that one attribute.
+- **Project detail:** gallery pictures are buttons that open `Lightbox` (portal, Esc/arrows/Tab trap, scroll lock, focus returns to the thumbnail). Open and close zoom through a view transition: the clicked thumbnail and the lightbox picture share the name `preview` (only one element may hold it at a time, see `named` in `ProjectDetail.tsx`). The hero title rises out of a mask, the cover settles in (`animate-settle`) and drifts with the pointer, and a "Next project" card (`nextProject()` in the data) loops through the list.
+- **Pictures can't be dragged, selected or long-pressed, anywhere:** the base layer in `main.css` sets `user-drag`/`user-select` to none for `img`, `svg`, `video`, `canvas` and friends, and `preventMediaDrag()` (installed once in `App`) cancels `dragstart` for media and for any link or button that wraps media (a project card), which also covers Firefox. Text links and selected text stay draggable. New pictures need nothing extra.
 - No `backdrop-filter`, no filter blurs and no animated gradients: they were a suspect for load-time flashes.
 
 ## Working rules

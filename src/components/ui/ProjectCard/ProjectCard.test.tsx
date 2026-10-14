@@ -106,6 +106,21 @@ describe("ProjectCard", () => {
 		expect(container.querySelector("[data-chip]")).toBeNull();
 	});
 
+	it("shows no year tab when the project has no year yet", () => {
+		const { container, rerender } = render(<ProjectCard {...base} />);
+		expect(container.querySelector("[data-year]")).toBeInTheDocument();
+		rerender(<ProjectCard title="Domo" category="Puzzle" />);
+		expect(container.querySelector("[data-year]")).toBeNull();
+		expect(screen.getByRole("heading", { name: "Domo" })).toBeInTheDocument();
+	});
+
+	it("shows a status pill when the project is still in development", () => {
+		const { rerender } = render(<ProjectCard {...base} />);
+		expect(screen.queryByText("In development")).not.toBeInTheDocument();
+		rerender(<ProjectCard {...base} status="In development" />);
+		expect(screen.getByText("In development")).toBeInTheDocument();
+	});
+
 	it("clamps a very long title", () => {
 		const title = "A".repeat(120);
 		render(<ProjectCard {...base} title={title} />);
