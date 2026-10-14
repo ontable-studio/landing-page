@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { describe, it, expect } from "vitest";
 import { PROJECT_TYPES, getProject, projectTypes, projects } from "./projects";
 
@@ -21,15 +22,56 @@ describe("projects data", () => {
 		}
 	});
 
-	it("includes a project with no credits and no gallery", () => {
-		expect(
-			projects.some((p) => p.credits.length === 0 && p.gallery.length === 0)
-		).toBe(true);
+	it("has no placeholder projects left", () => {
+		for (const p of projects) {
+			expect(`${p.title} ${p.summary}`).not.toMatch(/placeholder/i);
+		}
 	});
 
-	it("gives every project a known type, with at least two types in use", () => {
+	it("gives every project a cover, and every picture exists in public/", () => {
+		for (const p of projects) {
+			expect(p.image, p.slug).toBeTruthy();
+			const files = [p.image, ...p.gallery.map((g) => g.src)].filter(Boolean);
+			for (const file of files) {
+				expect(file).toMatch(/^\/images\/projects\/.+\.webp$/);
+				expect(existsSync(`public${file}`), file).toBe(true);
+			}
+		}
+	});
+
+	it("describes every gallery picture", () => {
+		for (const p of projects) {
+			for (const item of p.gallery) expect(item.alt.trim()).not.toBe("");
+		}
+	});
+
+	it("only fills in a year that is a four-digit year", () => {
+		for (const p of projects) {
+			if (p.year !== undefined) expect(p.year).toBeGreaterThan(1999);
+		}
+	});
+
+	it("lists WebGL (HTML) and Desktop for Craftboard Heroes only", () => {
+		const platformOf = (slug: string) =>
+			getProject(slug)?.credits.find((c) => c.label === "Platform")?.value ??
+			"";
+		expect(platformOf("craftboard-heroes")).toBe("WebGL (HTML), Desktop");
+		for (const p of projects.filter((p) => p.slug !== "craftboard-heroes")) {
+			expect(platformOf(p.slug)).not.toMatch(/webgl|desktop/i);
+		}
+	});
+
+	it("includes the four showcase games", () => {
+		expect(projects.map((p) => p.slug)).toEqual([
+			"craftboard-heroes",
+			"ketik-mancing",
+			"laundry-kita",
+			"oxshiftgen",
+		]);
+	});
+
+	it("gives every project a known type", () => {
 		for (const p of projects) expect(PROJECT_TYPES).toContain(p.type);
-		expect(new Set(projects.map((p) => p.type)).size).toBeGreaterThanOrEqual(2);
 	});
 
 	it("lists the types in use once each, in order of first appearance", () => {

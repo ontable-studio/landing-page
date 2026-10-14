@@ -106,6 +106,14 @@ describe("ProjectCard", () => {
 		expect(container.querySelector("[data-chip]")).toBeNull();
 	});
 
+	it("shows no year tab when the project has no year yet", () => {
+		const { container, rerender } = render(<ProjectCard {...base} />);
+		expect(container.querySelector("[data-year]")).toBeInTheDocument();
+		rerender(<ProjectCard title="Domo" category="Puzzle" />);
+		expect(container.querySelector("[data-year]")).toBeNull();
+		expect(screen.getByRole("heading", { name: "Domo" })).toBeInTheDocument();
+	});
+
 	it("clamps a very long title", () => {
 		const title = "A".repeat(120);
 		render(<ProjectCard {...base} title={title} />);

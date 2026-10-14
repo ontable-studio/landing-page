@@ -6,7 +6,8 @@ import { Badge } from "../Badge";
 interface ProjectCardProps {
 	title: string;
 	category: string;
-	year: number | string;
+	/** Shown in the cut corner; the tab is left out until the year is known. */
+	year?: number | string;
 	image?: string;
 	imageAlt?: string;
 	/** Makes the whole card a link. */
@@ -41,9 +42,14 @@ export function ProjectCard({
 	);
 	const content = (
 		<>
-			<span className="text-body-sm text-text-secondary absolute top-4 right-5 font-mono">
-				{year}
-			</span>
+			{year !== undefined && (
+				<span
+					data-year=""
+					className="text-body-sm text-text-secondary absolute top-4 right-5 font-mono"
+				>
+					{year}
+				</span>
+			)}
 			<div
 				ref={pictureRef}
 				className="cut-corner bg-ink-900 relative aspect-16/10 overflow-hidden rounded-2xl"

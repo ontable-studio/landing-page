@@ -7,7 +7,12 @@ import { cn } from "../lib/cn";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import NotFound from "./NotFound";
 
-function ProjectView({ project }: { project: Project }): React.JSX.Element {
+/** One project's page. Exported so sparse data can be rendered directly in tests. */
+export function ProjectView({
+	project,
+}: {
+	project: Project;
+}): React.JSX.Element {
 	useDocumentTitle(`${project.title} — OnTable`);
 	const hasCredits = project.credits.length > 0;
 
@@ -49,7 +54,11 @@ function ProjectView({ project }: { project: Project }): React.JSX.Element {
 					<div>
 						<div className="flex items-center gap-3">
 							<Badge variant="brand">{project.category}</Badge>
-							<span className="text-body-sm text-white/80">{project.year}</span>
+							{project.year !== undefined && (
+								<span data-year="" className="text-body-sm text-white/80">
+									{project.year}
+								</span>
+							)}
 						</div>
 						<h1 className="font-display mt-4 max-w-4xl text-[clamp(2rem,6vw,5rem)] leading-none font-bold wrap-break-word">
 							{project.title}
