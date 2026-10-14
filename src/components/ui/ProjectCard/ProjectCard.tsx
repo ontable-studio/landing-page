@@ -19,6 +19,8 @@ interface ProjectCardProps {
 	href?: string;
 	/** Component used for the link (default `a`), e.g. a router link. */
 	linkAs?: React.ElementType;
+	/** `eager` for cards in the first screen; the rest load as they near the viewport. */
+	loading?: "eager" | "lazy";
 	className?: string;
 }
 
@@ -36,6 +38,7 @@ export function ProjectCard({
 	headingLevel = 3,
 	href,
 	linkAs: LinkComponent = "a",
+	loading = "lazy",
 	className,
 }: ProjectCardProps): React.JSX.Element {
 	const { t } = useT();
@@ -67,6 +70,8 @@ export function ProjectCard({
 					<img
 						src={image}
 						alt={imageAlt ?? title}
+						loading={loading}
+						decoding="async"
 						className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
 					/>
 				) : (

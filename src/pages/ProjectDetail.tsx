@@ -99,6 +99,8 @@ export function ProjectView({
 					<img
 						src={project.image}
 						alt=""
+						fetchPriority="high"
+						decoding="async"
 						className="animate-settle absolute inset-0 size-full scale-[1.08] object-cover"
 						style={{
 							translate:
@@ -232,6 +234,8 @@ export function ProjectView({
 									<img
 										src={item.src}
 										alt=""
+										loading="lazy"
+										decoding="async"
 										className="aspect-16/10 w-full object-cover transition-transform duration-500 group-hover:scale-105 group-focus-visible:scale-105"
 										style={{
 											viewTransitionName:

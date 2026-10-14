@@ -70,7 +70,7 @@ export default function Projects(): React.JSX.Element {
 			>
 				{visible.length > 0 ? (
 					<div className="grid gap-6 md:grid-cols-2">
-						{visible.map((project) => (
+						{visible.map((project, index) => (
 							<div
 								key={project.slug}
 								data-card=""
@@ -82,6 +82,7 @@ export default function Projects(): React.JSX.Element {
 									year={project.year}
 									status={project.status}
 									headingLevel={2}
+									loading={index < 2 ? "eager" : "lazy"}
 									image={project.image}
 									href={to(`/projects/${project.slug}`)}
 									linkAs={RouterLink}
