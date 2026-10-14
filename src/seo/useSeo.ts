@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { LOCALES, OG_LOCALE, DEFAULT_LOCALE, useLocale } from "../i18n";
 import { serializeJsonLd, jsonLdFor } from "./jsonLd";
 import { pageMeta, type Route } from "./pages";
 import { DEFAULT_SITE_URL, absoluteUrl } from "./site";
@@ -33,14 +34,16 @@ function setMeta(attribute: "name" | "property", key: string, value: string) {
  * navigates inside the app (search engines that run JavaScript read them too).
  */
 export function useSeo(route: Route): void {
+	const locale = useLocale();
 	const key =
 		route.name === "project" ? `project:${route.project.slug}` : route.name;
 
 	useEffect(() => {
-		const meta = pageMeta(route);
+		const meta = pageMeta(route, locale);
 		const url = absoluteUrl(siteUrl, meta.path);
 		const image = absoluteUrl(siteUrl, meta.image);
 
+		document.documentElement.lang = locale;
 		document.title = meta.title;
 		setMeta("name", "description", meta.description);
 		setMeta("name", "robots", meta.robots);
@@ -50,7 +53,25 @@ export function useSeo(route: Route): void {
 			return link;
 		}).setAttribute("href", url);
 
+		document.head
+			.querySelectorAll('link[rel="alternate"][hreflang]')
+			.forEach((link) => link.remove());
+		const pages = meta.alternates;
+		if (pages) {
+			for (const [hreflang, path] of [
+				...LOCALES.map((l) => [l, pages[l]] as const),
+				["x-default", pages[DEFAULT_LOCALE]] as const,
+			]) {
+				const link = document.createElement("link");
+				link.rel = "alternate";
+				link.hreflang = hreflang;
+				link.href = absoluteUrl(siteUrl, path);
+				document.head.append(link);
+			}
+		}
+
 		setMeta("property", "og:type", "website");
+		setMeta("property", "og:locale", OG_LOCALE[locale]);
 		setMeta("property", "og:title", meta.title);
 		setMeta("property", "og:description", meta.description);
 		setMeta("property", "og:url", url);
@@ -64,12 +85,12 @@ export function useSeo(route: Route): void {
 		document.head
 			.querySelectorAll('script[type="application/ld+json"]')
 			.forEach((script) => script.remove());
-		for (const data of jsonLdFor(route, siteUrl)) {
+		for (const data of jsonLdFor(route, siteUrl, locale)) {
 			const script = document.createElement("script");
 			script.type = "application/ld+json";
 			script.textContent = serializeJsonLd(data);
 			document.head.append(script);
 		}
 		// `route` is rebuilt every render; `key` says when the page really changed.
-	}, [key]);
+	}, [key, locale]);
 }

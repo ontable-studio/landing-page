@@ -59,10 +59,13 @@ describe("buildSiteFiles", () => {
 	const file = (name: string) =>
 		files.find((f) => f.fileName === name)?.source ?? "";
 
-	it("writes a page for the projects, every project and the design system, plus robots and sitemap", () => {
+	it("writes a page for the projects and every project in each language, the Indonesian home, the design system, plus robots and sitemap", () => {
 		expect(files.map((f) => f.fileName)).toEqual([
 			"projects/index.html",
 			...projects.map((p) => `projects/${p.slug}/index.html`),
+			"id/index.html",
+			"id/projects/index.html",
+			...projects.map((p) => `id/projects/${p.slug}/index.html`),
 			"design-system/index.html",
 			"robots.txt",
 			"sitemap.xml",

@@ -1,4 +1,14 @@
+import { localizeProject } from "../data/localize";
 import { projects } from "../data/projects";
+import {
+	DEFAULT_LOCALE,
+	LOCALES,
+	OG_LOCALE,
+	alternates,
+	localizedPath,
+	translate,
+	type Locale,
+} from "../i18n";
 import { jsonLdFor, serializeJsonLd } from "./jsonLd";
 import { SITE_NAME, pageMeta, type PageMeta, type Route } from "./pages";
 import { absoluteUrl } from "./site";
@@ -9,6 +19,18 @@ const escape = (text: string) =>
 		.replace(/"/g, "&quot;")
 		.replace(/</g, "&lt;")
 		.replace(/>/g, "&gt;");
+
+/** `<link rel="alternate" hreflang>` for each language, plus `x-default` (English). */
+function hreflangLinks(meta: PageMeta, siteUrl: string): string[] {
+	const pages = meta.alternates;
+	if (!pages) return [];
+	const link = (hreflang: string, path: string) =>
+		`<link rel="alternate" hreflang="${hreflang}" href="${absoluteUrl(siteUrl, path)}" />`;
+	return [
+		...LOCALES.map((locale) => link(locale, pages[locale])),
+		link("x-default", pages[DEFAULT_LOCALE]),
+	];
+}
 
 /** The tags that go inside `<head>` for one page. */
 export function renderHead(
@@ -25,6 +47,7 @@ export function renderHead(
 		`<meta name="description" content="${description}" />`,
 		`<meta name="robots" content="${meta.robots}" />`,
 		`<link rel="canonical" href="${url}" />`,
+		...hreflangLinks(meta, siteUrl),
 		`<meta property="og:type" content="website" />`,
 		`<meta property="og:site_name" content="${SITE_NAME}" />`,
 		`<meta property="og:title" content="${title}" />`,
@@ -34,7 +57,10 @@ export function renderHead(
 		`<meta property="og:image:width" content="1200" />`,
 		`<meta property="og:image:height" content="630" />`,
 		`<meta property="og:image:alt" content="${escape(meta.imageAlt)}" />`,
-		`<meta property="og:locale" content="en_US" />`,
+		`<meta property="og:locale" content="${OG_LOCALE[meta.locale]}" />`,
+		...LOCALES.filter((l) => l !== meta.locale && meta.alternates).map(
+			(l) => `<meta property="og:locale:alternate" content="${OG_LOCALE[l]}" />`
+		),
 		`<meta name="twitter:card" content="summary_large_image" />`,
 		`<meta name="twitter:title" content="${title}" />`,
 		`<meta name="twitter:description" content="${description}" />`,
@@ -54,15 +80,24 @@ export function renderHead(
 
 /** What a visitor without JavaScript (or a crawler that does not run it) gets in the body. */
 export function renderNoscript(meta: PageMeta): string {
-	return `<noscript><main><h1>${escape(meta.heading)}</h1><p>${escape(meta.description)}</p><nav><a href="/">Home</a> <a href="/projects">Projects</a></nav></main></noscript>`;
+	const { locale } = meta;
+	const home = localizedPath(locale, "/");
+	const projectsPath = localizedPath(locale, "/projects");
+	return `<noscript><main><h1>${escape(meta.heading)}</h1><p>${escape(meta.description)}</p><nav><a href="${home}">${translate(locale, "seo.noscript.home")}</a> <a href="${projectsPath}">${translate(locale, "seo.noscript.projects")}</a></nav></main></noscript>`;
 }
 
-/** Fills the `seo:head` and `seo:noscript` markers of the page template, keeping the markers. */
+/**
+ * Fills the `seo:head` and `seo:noscript` markers of the page template, keeping the
+ * markers, and sets the page's language on `<html>`.
+ */
 export function fillTemplate(
 	html: string,
-	parts: { head: string; noscript: string }
+	parts: { head: string; noscript: string; locale?: Locale }
 ): string {
-	let out = html;
+	let out = html.replace(
+		/<html lang="[^"]*"/,
+		`<html lang="${parts.locale ?? DEFAULT_LOCALE}"`
+	);
 	for (const [name, content] of [
 		["head", parts.head],
 		["noscript", parts.noscript],
@@ -81,15 +116,48 @@ export function fillTemplate(
 	return out;
 }
 
-/** The pages the build writes besides the home page, with the route each one stands for. */
-export function emittedPages(): { fileName: string; route: Route }[] {
+/**
+ * The pages the build writes besides the English home page (the root `index.html`),
+ * with the route and language each one stands for. The design system is English only.
+ */
+export function emittedPages(): {
+	fileName: string;
+	route: Route;
+	locale: Locale;
+}[] {
+	const inLanguage = (locale: Locale) => {
+		const dir = locale === DEFAULT_LOCALE ? "" : `${locale}/`;
+		const pages: { fileName: string; route: Route; locale: Locale }[] = [
+			{
+				fileName: `${dir}projects/index.html`,
+				route: { name: "projects" },
+				locale,
+			},
+			...projects.map((project) => ({
+				fileName: `${dir}projects/${project.slug}/index.html`,
+				route: {
+					name: "project",
+					project: localizeProject(project, locale),
+				} as Route,
+				locale,
+			})),
+		];
+		if (locale !== DEFAULT_LOCALE) {
+			pages.unshift({
+				fileName: `${dir}index.html`,
+				route: { name: "home" },
+				locale,
+			});
+		}
+		return pages;
+	};
 	return [
-		{ fileName: "projects/index.html", route: { name: "projects" } },
-		...projects.map((project) => ({
-			fileName: `projects/${project.slug}/index.html`,
-			route: { name: "project", project } as Route,
-		})),
-		{ fileName: "design-system/index.html", route: { name: "design-system" } },
+		...LOCALES.flatMap(inLanguage),
+		{
+			fileName: "design-system/index.html",
+			route: { name: "design-system" },
+			locale: DEFAULT_LOCALE,
+		},
 	];
 }
 
@@ -97,7 +165,7 @@ export function robotsTxt(siteUrl: string): string {
 	return `User-agent: *\nAllow: /\nDisallow: /design-system\n\nSitemap: ${siteUrl}/sitemap.xml\n`;
 }
 
-/** The pages worth indexing: home, projects and every project. */
+/** The pages worth indexing, in every language, each listing its translations. */
 export function sitemapXml(siteUrl: string, lastmod: string): string {
 	const paths = [
 		"/",
@@ -105,19 +173,35 @@ export function sitemapXml(siteUrl: string, lastmod: string): string {
 		...projects.map((project) => `/projects/${project.slug}`),
 	];
 	const entries = paths
-		.map(
-			(path) =>
-				`\t<url>\n\t\t<loc>${absoluteUrl(siteUrl, path)}</loc>\n\t\t<lastmod>${lastmod}</lastmod>\n\t</url>`
-		)
+		.flatMap((path) => {
+			const versions = alternates(path);
+			const links = [
+				...LOCALES.map(
+					(locale) =>
+						`\t\t<xhtml:link rel="alternate" hreflang="${locale}" href="${absoluteUrl(siteUrl, versions[locale])}" />`
+				),
+				`\t\t<xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(siteUrl, versions[DEFAULT_LOCALE])}" />`,
+			].join("\n");
+			return LOCALES.map(
+				(locale) =>
+					`\t<url>\n\t\t<loc>${absoluteUrl(siteUrl, versions[locale])}</loc>\n\t\t<lastmod>${lastmod}</lastmod>\n${links}\n\t</url>`
+			);
+		})
 		.join("\n");
-	return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+	return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries}\n</urlset>\n`;
 }
 
-function pageHtml(template: string, route: Route, siteUrl: string): string {
-	const meta = pageMeta(route);
+function pageHtml(
+	template: string,
+	route: Route,
+	siteUrl: string,
+	locale: Locale = DEFAULT_LOCALE
+): string {
+	const meta = pageMeta(route, locale);
 	return fillTemplate(template, {
-		head: renderHead(meta, siteUrl, jsonLdFor(route, siteUrl)),
+		head: renderHead(meta, siteUrl, jsonLdFor(route, siteUrl, locale)),
 		noscript: renderNoscript(meta),
+		locale,
 	});
 }
 
@@ -127,8 +211,8 @@ export function homePage(template: string, siteUrl: string): string {
 }
 
 /**
- * Every file the build adds next to `index.html`: one page per route (the same
- * scripts and styles, its own head) plus `robots.txt` and `sitemap.xml`.
+ * Every file the build adds next to `index.html`: one page per route and language (the
+ * same scripts and styles, its own head) plus `robots.txt` and `sitemap.xml`.
  */
 export function buildSiteFiles(
 	template: string,
@@ -136,9 +220,9 @@ export function buildSiteFiles(
 	lastmod: string
 ): { fileName: string; source: string }[] {
 	return [
-		...emittedPages().map(({ fileName, route }) => ({
+		...emittedPages().map(({ fileName, route, locale }) => ({
 			fileName,
-			source: pageHtml(template, route, siteUrl),
+			source: pageHtml(template, route, siteUrl, locale),
 		})),
 		{ fileName: "robots.txt", source: robotsTxt(siteUrl) },
 		{ fileName: "sitemap.xml", source: sitemapXml(siteUrl, lastmod) },

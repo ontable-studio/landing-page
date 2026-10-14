@@ -36,6 +36,7 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 - `RouterLink` (`layout/`) + `ProjectCard` `linkAs` give client-side card links while `ui/` stays router-free
 - `src/common/constants.ts` — `SITE`: name, tagline, the studio email (`ontablestudio@gmail.com`) and the social links (Instagram, itch.io), which feed the footer chips, the contact dialog and the Organization JSON-LD
 - Each component: its own folder with `Name.tsx`, `index.ts`, `Name.test.tsx`
+- `src/i18n/` — English (default, no prefix) and Indonesian (`/id/...`). The language comes from the URL only: nothing stored, no redirect. `en.ts` is the source of every text key; `id.ts` is typed `Record<keyof typeof en, string>`, so a missing key fails type-check. Use `useT()` → `{ locale, t, to }` (`to("/projects")` keeps links in the language); `{name}` placeholders. The design system is English only. Project texts: English in `data/projects.ts`, Indonesian in `data/projects.id.ts`, merged by `localizeProject`. A new project needs an entry in both. The SEO build writes `id/...` pages, `hreflang` and a sitemap with alternates. A new route goes in `App.tsx` for both prefixes and in `emittedPages()`
 
 ## Contact
 

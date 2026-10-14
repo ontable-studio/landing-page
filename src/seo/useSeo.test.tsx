@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
 import { projects } from "../data/projects";
 import type { Route } from "./pages";
 import { useSeo } from "./useSeo";
@@ -111,5 +112,34 @@ describe("useSeo", () => {
 		const { rerender } = render(<Probe route={{ name: "home" }} />);
 		rerender(<Probe route={{ name: "design-system" }} />);
 		expect(jsonLd()).toEqual([]);
+	});
+});
+
+describe("useSeo in Indonesian", () => {
+	afterEach(() => {
+		document.head
+			.querySelectorAll("link[hreflang]")
+			.forEach((el) => el.remove());
+		document.documentElement.lang = "en";
+	});
+
+	it("writes the Indonesian head, the html lang and the hreflang links", () => {
+		render(
+			<MemoryRouter initialEntries={["/id/projects"]}>
+				<Probe route={{ name: "projects" }} />
+			</MemoryRouter>
+		);
+		expect(document.title).toBe("Proyek — OnTable Studio");
+		expect(document.documentElement.lang).toBe("id");
+		expect(href('link[rel="canonical"]')).toBe(
+			"https://landing-page-ontable.vercel.app/id/projects"
+		);
+		expect(content('meta[property="og:locale"]')).toBe("id_ID");
+		expect(href('link[hreflang="en"]')).toBe(
+			"https://landing-page-ontable.vercel.app/projects"
+		);
+		expect(href('link[hreflang="x-default"]')).toBe(
+			"https://landing-page-ontable.vercel.app/projects"
+		);
 	});
 });

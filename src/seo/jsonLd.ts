@@ -1,5 +1,6 @@
 import { SITE } from "../common/constants";
-import { projects } from "../data/projects";
+import { localizedProjects } from "../data/localize";
+import { DEFAULT_LOCALE, localizedPath, translate, type Locale } from "../i18n";
 import { SITE_NAME, pageMeta, type Route } from "./pages";
 import { absoluteUrl } from "./site";
 
@@ -17,8 +18,16 @@ const organization = (siteUrl: string): JsonLd => ({
 	sameAs: SITE.social.map((link) => link.href),
 });
 
-/** Structured data for a page, using only facts the project data holds. */
-export function jsonLdFor(route: Route, siteUrl: string): JsonLd[] {
+/** Structured data for a page in `locale`, using only facts the project data holds. */
+export function jsonLdFor(
+	route: Route,
+	siteUrl: string,
+	locale: Locale = DEFAULT_LOCALE
+): JsonLd[] {
+	const at = (path: string) =>
+		absoluteUrl(siteUrl, localizedPath(locale, path));
+	const projects = localizedProjects(locale);
+
 	switch (route.name) {
 		case "home":
 			return [
@@ -27,7 +36,8 @@ export function jsonLdFor(route: Route, siteUrl: string): JsonLd[] {
 					"@context": CONTEXT,
 					"@type": "WebSite",
 					name: SITE_NAME,
-					url: siteUrl,
+					url: locale === DEFAULT_LOCALE ? siteUrl : at("/"),
+					inLanguage: locale,
 				},
 			];
 		case "projects":
@@ -35,23 +45,26 @@ export function jsonLdFor(route: Route, siteUrl: string): JsonLd[] {
 				{
 					"@context": CONTEXT,
 					"@type": "CollectionPage",
-					name: pageMeta(route).title,
-					url: absoluteUrl(siteUrl, "/projects"),
+					name: pageMeta(route, locale).title,
+					url: at("/projects"),
+					inLanguage: locale,
 					mainEntity: {
 						"@type": "ItemList",
 						itemListElement: projects.map((project, index) => ({
 							"@type": "ListItem",
 							position: index + 1,
 							name: project.title,
-							url: absoluteUrl(siteUrl, `/projects/${project.slug}`),
+							url: at(`/projects/${project.slug}`),
 						})),
 					},
 				},
 			];
 		case "project": {
 			const { project } = route;
-			const url = absoluteUrl(siteUrl, `/projects/${project.slug}`);
-			const platform = project.credits.find((c) => c.label === "Platform");
+			const url = at(`/projects/${project.slug}`);
+			const platform = project.credits.find(
+				(c) => c.label === translate(locale, "credit.platform")
+			);
 			const links = (project.links ?? []).map((link) => link.href);
 			const game: JsonLd = {
 				"@context": CONTEXT,
@@ -59,6 +72,7 @@ export function jsonLdFor(route: Route, siteUrl: string): JsonLd[] {
 				name: project.title,
 				description: project.summary,
 				url,
+				inLanguage: locale,
 				genre: project.category,
 				applicationCategory: "Game",
 				author: organization(siteUrl),
@@ -75,8 +89,11 @@ export function jsonLdFor(route: Route, siteUrl: string): JsonLd[] {
 					"@context": CONTEXT,
 					"@type": "BreadcrumbList",
 					itemListElement: [
-						{ name: "Home", item: absoluteUrl(siteUrl, "/") },
-						{ name: "Projects", item: absoluteUrl(siteUrl, "/projects") },
+						{ name: translate(locale, "seo.noscript.home"), item: at("/") },
+						{
+							name: translate(locale, "seo.noscript.projects"),
+							item: at("/projects"),
+						},
 						{ name: project.title, item: url },
 					].map((crumb, index) => ({
 						"@type": "ListItem",
