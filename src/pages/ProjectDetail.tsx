@@ -93,7 +93,7 @@ export function ProjectView({
 			<section
 				ref={heroRef}
 				data-hero=""
-				className="bg-ink-900 relative h-[70svh] min-h-96 w-full overflow-hidden text-white"
+				className="bg-ink-900 relative h-[48svh] min-h-80 w-full overflow-hidden text-white lg:h-[56svh] lg:min-h-96"
 			>
 				{project.image ? (
 					<img

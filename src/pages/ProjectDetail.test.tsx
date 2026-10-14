@@ -206,7 +206,8 @@ describe("ProjectDetail layout", () => {
 		expect(hero).toBeInTheDocument();
 		expect(hero.closest(".max-w-7xl")).toBeNull();
 		expect(hero.className).toMatch(/\bw-full\b/);
-		expect(hero.className).toMatch(/h-\[70svh\]/);
+		expect(hero.className).toContain("h-[48svh]");
+		expect(hero.className).toContain("lg:h-[56svh]");
 		expect(hero.className).not.toMatch(/rounded/);
 	});
 
