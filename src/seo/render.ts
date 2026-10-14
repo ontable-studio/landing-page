@@ -1,6 +1,6 @@
 import { projects } from "../data/projects";
-import { serializeJsonLd } from "./jsonLd";
-import { SITE_NAME, type PageMeta, type Route } from "./pages";
+import { jsonLdFor, serializeJsonLd } from "./jsonLd";
+import { SITE_NAME, pageMeta, type PageMeta, type Route } from "./pages";
 import { absoluteUrl } from "./site";
 
 const escape = (text: string) =>
@@ -111,4 +111,36 @@ export function sitemapXml(siteUrl: string, lastmod: string): string {
 		)
 		.join("\n");
 	return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+}
+
+function pageHtml(template: string, route: Route, siteUrl: string): string {
+	const meta = pageMeta(route);
+	return fillTemplate(template, {
+		head: renderHead(meta, siteUrl, jsonLdFor(route, siteUrl)),
+		noscript: renderNoscript(meta),
+	});
+}
+
+/** The page template with the home page's head and fallback filled in. */
+export function homePage(template: string, siteUrl: string): string {
+	return pageHtml(template, { name: "home" }, siteUrl);
+}
+
+/**
+ * Every file the build adds next to `index.html`: one page per route (the same
+ * scripts and styles, its own head) plus `robots.txt` and `sitemap.xml`.
+ */
+export function buildSiteFiles(
+	template: string,
+	siteUrl: string,
+	lastmod: string
+): { fileName: string; source: string }[] {
+	return [
+		...emittedPages().map(({ fileName, route }) => ({
+			fileName,
+			source: pageHtml(template, route, siteUrl),
+		})),
+		{ fileName: "robots.txt", source: robotsTxt(siteUrl) },
+		{ fileName: "sitemap.xml", source: sitemapXml(siteUrl, lastmod) },
+	];
 }
