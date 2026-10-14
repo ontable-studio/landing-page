@@ -341,11 +341,14 @@ describe("fillTemplate", () => {
 });
 
 describe("emittedPages", () => {
-	it("lists a file for the projects page, every project and the design system", () => {
+	it("lists a file for the projects page and every project in each language, the Indonesian home and the design system", () => {
 		const files = emittedPages().map((p) => p.fileName);
 		expect(files).toEqual([
 			"projects/index.html",
 			...projects.map((p) => `projects/${p.slug}/index.html`),
+			"id/index.html",
+			"id/projects/index.html",
+			...projects.map((p) => `id/projects/${p.slug}/index.html`),
 			"design-system/index.html",
 		]);
 	});
@@ -372,7 +375,7 @@ describe("robotsTxt and sitemapXml", () => {
 		}
 		expect(xml).not.toContain("design-system");
 		expect(xml.match(/<lastmod>2026-10-14<\/lastmod>/g)).toHaveLength(
-			projects.length + 2
+			(projects.length + 2) * 2
 		);
 	});
 });

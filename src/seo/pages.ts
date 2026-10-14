@@ -1,5 +1,15 @@
-import { SITE } from "../common/constants";
-import { projects, type Project } from "../data/projects";
+import { localizedProjects } from "../data/localize";
+import { type Project } from "../data/projects";
+import {
+	DEFAULT_LOCALE,
+	alternates,
+	localizedPath,
+	tagline,
+	translate,
+	type Locale,
+	type TextKey,
+	type TextVars,
+} from "../i18n";
 
 export const SITE_NAME = "OnTable Studio";
 
@@ -11,6 +21,10 @@ export type Route =
 	| { name: "not-found" };
 
 export interface PageMeta {
+	/** The language the page is written in. */
+	locale: Locale;
+	/** The same page in each language, for `hreflang`; left out where the page is not indexed. */
+	alternates?: Record<Locale, string>;
 	title: string;
 	description: string;
 	/** What the page's `h1` says (used by the no-JavaScript fallback). */
@@ -25,10 +39,10 @@ export interface PageMeta {
 
 const DEFAULT_IMAGE = "/og/default.jpg";
 
-/** "A, B and C". */
-function list(names: string[]): string {
+/** "A, B and C" (or "A, B dan C"). */
+function list(names: string[], and: string): string {
 	if (names.length < 2) return names.join("");
-	return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+	return `${names.slice(0, -1).join(", ")} ${and} ${names[names.length - 1]}`;
 }
 
 /** Cuts `text` to at most `max` characters at a word boundary, with an ellipsis. */
@@ -43,56 +57,73 @@ export function truncate(text: string, max = 155): string {
 	return `${base}…`;
 }
 
-/** Title, description, robots and image for one page. The only place these are decided. */
-export function pageMeta(route: Route): PageMeta {
-	const names = projects.map((project) => project.title);
+/**
+ * Title, description, robots and image for one page, in `locale`. The only place these
+ * are decided. A project route carries the project already in that language.
+ */
+export function pageMeta(
+	route: Route,
+	locale: Locale = DEFAULT_LOCALE
+): PageMeta {
+	const t = (key: TextKey, vars?: TextVars) => translate(locale, key, vars);
+	const games = list(
+		localizedProjects(locale).map((project) => project.title),
+		t("seo.list.and")
+	);
+	const line = tagline(locale);
+	const page = (path: string, indexed = true) => ({
+		locale,
+		path: localizedPath(locale, path),
+		alternates: indexed ? alternates(path) : undefined,
+	});
+
 	switch (route.name) {
 		case "home":
 			return {
-				title: `${SITE_NAME}: a small game development team`,
-				description: `${SITE_NAME} is a small team making games, products and projects. See ${list(names)}.`,
-				heading: SITE.tagline,
-				path: "/",
+				title: t("seo.home.title"),
+				description: t("seo.home.description", { games }),
+				heading: line,
+				...page("/"),
 				robots: "index, follow",
 				image: DEFAULT_IMAGE,
-				imageAlt: `${SITE_NAME}: ${SITE.tagline}`,
+				imageAlt: t("seo.imageAlt.home", { tagline: line }),
 			};
 		case "projects":
 			return {
-				title: `Projects — ${SITE_NAME}`,
-				description: `Games and projects by ${SITE_NAME}: ${list(names)}.`,
-				heading: "Projects",
-				path: "/projects",
+				title: t("seo.projects.title"),
+				description: t("seo.projects.description", { games }),
+				heading: t("projects.title"),
+				...page("/projects"),
 				robots: "index, follow",
 				image: DEFAULT_IMAGE,
-				imageAlt: `${SITE_NAME} projects`,
+				imageAlt: t("seo.imageAlt.projects"),
 			};
 		case "project":
 			return {
-				title: `${route.project.title} — ${SITE_NAME}`,
+				title: t("seo.project.title", { title: route.project.title }),
 				description: truncate(route.project.summary, 155),
 				heading: route.project.title,
-				path: `/projects/${route.project.slug}`,
+				...page(`/projects/${route.project.slug}`),
 				robots: "index, follow",
 				image: `/og/${route.project.slug}.jpg`,
-				imageAlt: `${route.project.title} cover`,
+				imageAlt: t("seo.imageAlt.project", { title: route.project.title }),
 			};
 		case "design-system":
 			return {
-				title: `Design System — ${SITE_NAME}`,
-				description: `Colours, type, spacing and components used on the ${SITE_NAME} site.`,
+				title: t("seo.designSystem.title"),
+				description: t("seo.designSystem.description"),
 				heading: "Design System",
-				path: "/design-system",
+				...page("/design-system", false),
 				robots: "noindex, nofollow",
 				image: DEFAULT_IMAGE,
 				imageAlt: SITE_NAME,
 			};
 		case "not-found":
 			return {
-				title: `Page not found — ${SITE_NAME}`,
-				description: `This page does not exist. Go back to the ${SITE_NAME} home page or browse the projects.`,
-				heading: "Page not found",
-				path: "/",
+				title: t("seo.notFound.title"),
+				description: t("seo.notFound.description"),
+				heading: t("notFound.title"),
+				...page("/", false),
 				robots: "noindex, nofollow",
 				image: DEFAULT_IMAGE,
 				imageAlt: SITE_NAME,

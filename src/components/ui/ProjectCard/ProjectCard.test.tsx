@@ -139,4 +139,17 @@ describe("ProjectCard", () => {
 			"line-clamp-2"
 		);
 	});
+
+	it("loads its picture lazily and decodes it off the main thread, unless told eager", () => {
+		const { container, rerender } = render(
+			<ProjectCard title="A" category="Game" image="/a.webp" />
+		);
+		const img = () => container.querySelector("img")!;
+		expect(img()).toHaveAttribute("loading", "lazy");
+		expect(img()).toHaveAttribute("decoding", "async");
+		rerender(
+			<ProjectCard title="A" category="Game" image="/a.webp" loading="eager" />
+		);
+		expect(img()).toHaveAttribute("loading", "eager");
+	});
 });

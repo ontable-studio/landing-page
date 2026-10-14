@@ -7,7 +7,9 @@ import { buttonVariants } from "../components/ui/Button";
 import { Container } from "../components/ui/Container";
 import { Lightbox } from "../components/ui/Lightbox";
 import { ProjectCard } from "../components/ui/ProjectCard";
+import { localizeProject } from "../data/localize";
 import { getProject, nextProject, type Project } from "../data/projects";
+import { useT } from "../i18n";
 import { cn } from "../lib/cn";
 import { useSeo } from "../seo/useSeo";
 import { usePointerGlow } from "../lib/usePointerGlow";
@@ -46,11 +48,13 @@ export function ProjectView({
 }: {
 	project: Project;
 }): React.JSX.Element {
+	const { locale, t, to } = useT();
 	useSeo({ name: "project", project });
 	const heroRef = useRef<HTMLElement>(null);
 	usePointerGlow(heroRef);
 	const hasCredits = project.credits.length > 0;
-	const next = nextProject(project.slug);
+	const nextEnglish = nextProject(project.slug);
+	const next = nextEnglish && localizeProject(nextEnglish, locale);
 
 	// Only pictures with a file can be previewed.
 	const previewItems = project.gallery.flatMap((item) =>
@@ -89,12 +93,14 @@ export function ProjectView({
 			<section
 				ref={heroRef}
 				data-hero=""
-				className="bg-ink-900 relative h-[70svh] min-h-96 w-full overflow-hidden text-white"
+				className="bg-ink-900 relative h-[48svh] min-h-80 w-full overflow-hidden text-white lg:h-[56svh] lg:min-h-96"
 			>
 				{project.image ? (
 					<img
 						src={project.image}
 						alt=""
+						fetchPriority="high"
+						decoding="async"
 						className="animate-settle absolute inset-0 size-full scale-[1.08] object-cover"
 						style={{
 							translate:
@@ -116,13 +122,13 @@ export function ProjectView({
 					className="relative flex h-full flex-col justify-between py-6 lg:py-8"
 				>
 					<Link
-						to="/projects"
+						to={to("/projects")}
 						className={cn(
 							buttonVariants({ variant: "outline", size: "sm" }),
 							"self-start border-white/50 bg-white/10 text-white hover:bg-white/20"
 						)}
 					>
-						Back
+						{t("project.back")}
 					</Link>
 					<div>
 						<div className="flex items-center gap-3">
@@ -218,7 +224,7 @@ export function ProjectView({
 										thumbs.current[number] = node;
 									}}
 									type="button"
-									aria-label={`View larger: ${item.alt}`}
+									aria-label={t("project.viewLarger", { alt: item.alt })}
 									onClick={() => openPreview(number)}
 									className={cn(
 										"group focus-visible:outline-brand relative block cursor-zoom-in overflow-hidden rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2",
@@ -228,6 +234,8 @@ export function ProjectView({
 									<img
 										src={item.src}
 										alt=""
+										loading="lazy"
+										decoding="async"
 										className="aspect-16/10 w-full object-cover transition-transform duration-500 group-hover:scale-105 group-focus-visible:scale-105"
 										style={{
 											viewTransitionName:
@@ -254,7 +262,7 @@ export function ProjectView({
 						className="mt-16 max-w-2xl"
 					>
 						<h2 id="next-project" className="text-h3 font-display mb-6">
-							Next project
+							{t("project.next")}
 						</h2>
 						<ProjectCard
 							title={next.title}
@@ -262,7 +270,7 @@ export function ProjectView({
 							year={next.year}
 							status={next.status}
 							image={next.image}
-							href={`/projects/${next.slug}`}
+							href={to(`/projects/${next.slug}`)}
 							linkAs={RouterLink}
 						/>
 					</section>
@@ -283,5 +291,10 @@ export function ProjectView({
 export default function ProjectDetail(): React.JSX.Element {
 	const { slug = "" } = useParams();
 	const project = getProject(slug);
-	return project ? <ProjectView project={project} /> : <NotFound />;
+	const { locale } = useT();
+	return project ? (
+		<ProjectView project={localizeProject(project, locale)} />
+	) : (
+		<NotFound />
+	);
 }
