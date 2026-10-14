@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SITE as STUDIO } from "../common/constants";
 import { projects } from "../data/projects";
 import { serializeJsonLd, jsonLdFor } from "./jsonLd";
 import { pageMeta, truncate, SITE_NAME, type Route } from "./pages";
@@ -145,6 +146,8 @@ describe("jsonLdFor", () => {
 		expect(org.name).toBe("OnTable Studio");
 		expect(org.url).toBe(SITE);
 		expect(String(org.logo)).toMatch(/^https:\/\/example\.test\/.+\.png$/);
+		expect(org.email).toBe(STUDIO.email);
+		expect(org.sameAs).toEqual(STUDIO.social.map((s) => s.href));
 	});
 
 	it("lists every project in order on the projects page", () => {

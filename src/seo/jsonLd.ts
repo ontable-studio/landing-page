@@ -1,3 +1,4 @@
+import { SITE } from "../common/constants";
 import { projects } from "../data/projects";
 import { SITE_NAME, pageMeta, type Route } from "./pages";
 import { absoluteUrl } from "./site";
@@ -12,6 +13,8 @@ const organization = (siteUrl: string): JsonLd => ({
 	name: SITE_NAME,
 	url: siteUrl,
 	logo: absoluteUrl(siteUrl, LOGO),
+	email: SITE.email,
+	sameAs: SITE.social.map((link) => link.href),
 });
 
 /** Structured data for a page, using only facts the project data holds. */
