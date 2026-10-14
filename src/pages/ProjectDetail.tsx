@@ -9,7 +9,7 @@ import { Lightbox } from "../components/ui/Lightbox";
 import { ProjectCard } from "../components/ui/ProjectCard";
 import { getProject, nextProject, type Project } from "../data/projects";
 import { cn } from "../lib/cn";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { useSeo } from "../seo/useSeo";
 import { usePointerGlow } from "../lib/usePointerGlow";
 import NotFound from "./NotFound";
 
@@ -46,7 +46,7 @@ export function ProjectView({
 }: {
 	project: Project;
 }): React.JSX.Element {
-	useDocumentTitle(`${project.title} — OnTable`);
+	useSeo({ name: "project", project });
 	const heroRef = useRef<HTMLElement>(null);
 	usePointerGlow(heroRef);
 	const hasCredits = project.credits.length > 0;

@@ -12,6 +12,8 @@ interface ProjectCardProps {
 	imageAlt?: string;
 	/** A pill beside the category, for example "In development". */
 	status?: string;
+	/** Heading level of the title: 2 under a page `h1`, 3 under a section heading. */
+	headingLevel?: 2 | 3;
 	/** Makes the whole card a link. */
 	href?: string;
 	/** Component used for the link (default `a`), e.g. a router link. */
@@ -30,10 +32,12 @@ export function ProjectCard({
 	image,
 	imageAlt,
 	status,
+	headingLevel = 3,
 	href,
 	linkAs: LinkComponent = "a",
 	className,
 }: ProjectCardProps): React.JSX.Element {
+	const Heading = headingLevel === 2 ? "h2" : "h3";
 	const pictureRef = useRef<HTMLDivElement>(null);
 	usePointerGlow(pictureRef);
 
@@ -70,9 +74,9 @@ export function ProjectCard({
 					/>
 				)}
 				<div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-5 pt-16">
-					<h3 className="text-h4 font-display line-clamp-2 text-white">
+					<Heading className="text-h4 font-display line-clamp-2 text-white">
 						{title}
-					</h3>
+					</Heading>
 					<div className="mt-2 flex flex-wrap gap-2">
 						<Badge variant="outline" className="border-white/40 text-white">
 							{category}

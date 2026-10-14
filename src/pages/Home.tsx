@@ -5,13 +5,13 @@ import { Footer } from "../components/layout/Footer";
 import { Nav } from "../components/layout/Nav";
 import { buttonVariants } from "../components/ui/Button";
 import { DotGrid } from "../components/ui/DotGrid";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { useSeo } from "../seo/useSeo";
 import { usePointerGlow } from "../lib/usePointerGlow";
 import { cn } from "../lib/cn";
 
 /** The home page: one full-screen section holding the nav, the hero and the footer. */
 export default function Home(): React.JSX.Element {
-	useDocumentTitle("OnTable");
+	useSeo({ name: "home" });
 	const sectionRef = useRef<HTMLElement>(null);
 	usePointerGlow(sectionRef);
 

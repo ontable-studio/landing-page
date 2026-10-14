@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import { Container } from "../components/ui/Container";
 import { SectionHeader } from "../components/layout/SectionHeader";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { useSeo } from "../seo/useSeo";
 
 export default function NotFound(): React.JSX.Element {
-	useDocumentTitle("Page not found — OnTable");
+	useSeo({ name: "not-found" });
 
 	return (
 		<Container size="wide" className="py-section lg:py-section-lg">

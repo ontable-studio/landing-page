@@ -39,7 +39,9 @@ describe("Home", () => {
 
 	it("sets the tab title", () => {
 		setup();
-		expect(document.title).toBe("OnTable");
+		expect(document.title).toBe(
+			"OnTable Studio: a small game development team"
+		);
 	});
 
 	it("hides the decorative mark from assistive technology", () => {
@@ -114,6 +116,23 @@ describe("Home", () => {
 		const disc = container.querySelector('img[src="/images/ontable-logo.svg"]');
 		expect(disc?.getAttribute("style")).toMatch(/var\(--nx/);
 		expect(disc?.getAttribute("style")).toMatch(/var\(--ny/);
+	});
+
+	it("describes the page for search engines and social cards", () => {
+		setup();
+		expect(
+			document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")
+		).toBe("https://landing-page-ontable.vercel.app/");
+		expect(
+			document.head
+				.querySelector('meta[name="robots"]')
+				?.getAttribute("content")
+		).toBe("index, follow");
+		expect(
+			document.head
+				.querySelector('meta[property="og:image"]')
+				?.getAttribute("content")
+		).toBe("https://landing-page-ontable.vercel.app/og/default.jpg");
 	});
 
 	it("is a single section", () => {

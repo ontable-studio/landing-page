@@ -41,6 +41,16 @@ describe("DesignSystem page", () => {
 		expect(cls).not.toMatch(/top-16/);
 	});
 
+	it("keeps itself out of search results", () => {
+		render(<DesignSystem />);
+		expect(document.title).toBe("Design System — OnTable Studio");
+		expect(
+			document.head
+				.querySelector('meta[name="robots"]')
+				?.getAttribute("content")
+		).toBe("noindex, nofollow");
+	});
+
 	it("shows every colour token", () => {
 		render(<DesignSystem />);
 		for (const group of colorGroups) {
