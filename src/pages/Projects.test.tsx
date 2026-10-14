@@ -43,7 +43,14 @@ describe("Projects", () => {
 
 	it("sets the tab title", () => {
 		setup();
-		expect(document.title).toBe("Projects — OnTable");
+		expect(document.title).toBe("Projects — OnTable Studio");
+	});
+
+	it("puts the project cards at heading level 2, straight under the page's h1", () => {
+		const { container } = setup();
+		expect(container.querySelectorAll("h1")).toHaveLength(1);
+		expect(container.querySelectorAll("h2")).toHaveLength(projects.length);
+		expect(container.querySelectorAll("h3")).toHaveLength(0);
 	});
 
 	it("lays the cards out two per row from the md breakpoint", () => {

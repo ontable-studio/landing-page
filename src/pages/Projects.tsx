@@ -5,7 +5,7 @@ import { Container } from "../components/ui/Container";
 import { ProjectCard } from "../components/ui/ProjectCard";
 import { Tabs, tabId } from "../components/ui/Tabs";
 import { projectTypes, projects } from "../data/projects";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { useSeo } from "../seo/useSeo";
 
 const PANEL_ID = "projects-panel";
 
@@ -18,7 +18,7 @@ const tabs = [
 
 /** Every project, two per row, filtered by type with tabs. The type lives in `?type=`. */
 export default function Projects(): React.JSX.Element {
-	useDocumentTitle("Projects — OnTable");
+	useSeo({ name: "projects" });
 	const [params, setParams] = useSearchParams();
 
 	const active = tabs.find((tab) => tab.id === params.get("type"))?.id ?? "all";
@@ -75,6 +75,7 @@ export default function Projects(): React.JSX.Element {
 									category={project.category}
 									year={project.year}
 									status={project.status}
+									headingLevel={2}
 									image={project.image}
 									href={`/projects/${project.slug}`}
 									linkAs={RouterLink}

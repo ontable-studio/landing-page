@@ -1,4 +1,5 @@
 import { Container } from "../components/ui/Container";
+import { useSeo } from "../seo/useSeo";
 import { SectionHeader } from "../components/layout/SectionHeader";
 import { ColorSection } from "./design-system/ColorSection";
 import { ComponentsSection } from "./design-system/ComponentsSection";
@@ -16,6 +17,8 @@ const SECTIONS = [
 
 /** Living style guide: every token and component, rendered for real. */
 export default function DesignSystem(): React.JSX.Element {
+	useSeo({ name: "design-system" });
+
 	return (
 		<Container size="wide" className="py-section lg:py-section-lg">
 			<SectionHeader

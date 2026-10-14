@@ -121,6 +121,17 @@ describe("ProjectCard", () => {
 		expect(screen.getByText("In development")).toBeInTheDocument();
 	});
 
+	it("uses an h3 by default and the heading level it is given", () => {
+		const { rerender } = render(<ProjectCard {...base} />);
+		expect(
+			screen.getByRole("heading", { level: 3, name: "Domo" })
+		).toBeInTheDocument();
+		rerender(<ProjectCard {...base} headingLevel={2} />);
+		expect(
+			screen.getByRole("heading", { level: 2, name: "Domo" })
+		).toBeInTheDocument();
+	});
+
 	it("clamps a very long title", () => {
 		const title = "A".repeat(120);
 		render(<ProjectCard {...base} title={title} />);

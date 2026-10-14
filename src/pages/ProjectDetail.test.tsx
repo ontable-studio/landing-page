@@ -73,7 +73,28 @@ describe("ProjectDetail", () => {
 
 	it("sets the tab title from the project", () => {
 		at(full.slug);
-		expect(document.title).toBe(`${full.title} — OnTable`);
+		expect(document.title).toBe(`${full.title} — OnTable Studio`);
+	});
+
+	it("gives the project its own canonical address and preview image", () => {
+		at(full.slug);
+		expect(
+			document.head.querySelector('link[rel="canonical"]')?.getAttribute("href")
+		).toBe(`https://landing-page-ontable.vercel.app/projects/${full.slug}`);
+		expect(
+			document.head
+				.querySelector('meta[property="og:image"]')
+				?.getAttribute("content")
+		).toBe(`https://landing-page-ontable.vercel.app/og/${full.slug}.jpg`);
+	});
+
+	it("keeps a missing page out of search results", () => {
+		at("nope");
+		expect(
+			document.head
+				.querySelector('meta[name="robots"]')
+				?.getAttribute("content")
+		).toBe("noindex, nofollow");
 	});
 
 	it("renders every real project without crashing", () => {
@@ -91,7 +112,7 @@ describe("ProjectDetail", () => {
 		expect(
 			screen.getByRole("heading", { name: /page not found/i })
 		).toBeInTheDocument();
-		expect(document.title).toBe("Page not found — OnTable");
+		expect(document.title).toBe("Page not found — OnTable Studio");
 	});
 });
 
