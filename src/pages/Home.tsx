@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router";
 import { SITE } from "../common/constants";
 import { Footer } from "../components/layout/Footer";
+import { useContact } from "../components/layout/Contact";
 import { Nav } from "../components/layout/Nav";
 import { buttonVariants } from "../components/ui/Button";
 import { DotGrid } from "../components/ui/DotGrid";
@@ -12,6 +13,7 @@ import { cn } from "../lib/cn";
 /** The home page: one full-screen section holding the nav, the hero and the footer. */
 export default function Home(): React.JSX.Element {
 	useSeo({ name: "home" });
+	const { open: openContact } = useContact();
 	const sectionRef = useRef<HTMLElement>(null);
 	usePointerGlow(sectionRef);
 
@@ -68,14 +70,15 @@ export default function Home(): React.JSX.Element {
 								>
 									View projects
 								</Link>
-								<a
-									href={`mailto:${SITE.email}`}
+								<button
+									type="button"
+									onClick={openContact}
 									className={cn(
 										buttonVariants({ variant: "outline", size: "lg" })
 									)}
 								>
 									Contact
-								</a>
+								</button>
 							</div>
 						</div>
 					</div>

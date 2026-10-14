@@ -132,6 +132,23 @@ describe("App routes", () => {
 		}
 	});
 
+	it("opens the contact dialog from the nav on any page, and Escape closes it", async () => {
+		renderAt("/projects");
+		await userEvent.click(
+			screen.getAllByRole("button", { name: "Contact" })[0]
+		);
+		expect(screen.getByRole("dialog", { name: "Contact" })).toBeInTheDocument();
+		await userEvent.keyboard("{Escape}");
+		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+	});
+
+	it("opens the contact dialog from the home page's hero button", async () => {
+		renderAt("/");
+		const buttons = screen.getAllByRole("button", { name: "Contact" });
+		await userEvent.click(buttons[buttons.length - 1]);
+		expect(screen.getByRole("dialog", { name: "Contact" })).toBeInTheDocument();
+	});
+
 	it("keeps the nav and footer on every page", () => {
 		renderAt("/nope");
 		expect(screen.getByRole("navigation")).toBeInTheDocument();

@@ -1,13 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { SITE } from "../common/constants";
+import { ContactProvider } from "../components/layout/Contact";
 import Home from "./Home";
 
 function setup() {
 	return render(
 		<MemoryRouter>
-			<Home />
+			<ContactProvider>
+				<Home />
+			</ContactProvider>
 		</MemoryRouter>
 	);
 }
@@ -28,13 +32,15 @@ describe("Home", () => {
 		);
 	});
 
-	it("has contact links by email, in the nav and under the headline", () => {
+	it("has Contact buttons in the nav and under the headline that open the contact dialog", async () => {
 		setup();
-		const links = screen.getAllByRole("link", { name: "Contact" });
-		expect(links).toHaveLength(2);
-		for (const link of links) {
-			expect(link).toHaveAttribute("href", `mailto:${SITE.email}`);
-		}
+		const buttons = screen.getAllByRole("button", { name: "Contact" });
+		expect(buttons).toHaveLength(2);
+		expect(
+			screen.queryByRole("link", { name: "Contact" })
+		).not.toBeInTheDocument();
+		await userEvent.click(buttons[1]);
+		expect(screen.getByRole("dialog", { name: "Contact" })).toBeInTheDocument();
 	});
 
 	it("sets the tab title", () => {

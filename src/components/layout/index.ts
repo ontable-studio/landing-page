@@ -3,3 +3,4 @@ export { Nav } from "./Nav";
 export { Footer } from "./Footer";
 export { RouterLink } from "./RouterLink";
 export { ScrollToTop } from "./ScrollToTop";
+export { ContactProvider, useContact } from "./Contact";

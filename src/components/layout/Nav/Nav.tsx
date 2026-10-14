@@ -1,35 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { SITE } from "../../../common/constants";
 import { Container } from "../../ui/Container";
 import { underlineLink } from "../../ui/linkStyles";
+import { useContact } from "../Contact";
 
-const LINKS = [
-	{ label: "Projects", to: "/projects" },
-	{ label: "Contact", to: `mailto:${SITE.email}` },
-];
-
+/** Projects and Contact. Contact opens the contact dialog instead of leaving the page. */
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
-	return LINKS.map((link) =>
-		link.to.startsWith("mailto:") ? (
-			<a
-				key={link.label}
-				href={link.to}
-				onClick={onNavigate}
-				className={`text-body font-medium ${underlineLink}`}
-			>
-				{link.label}
-			</a>
-		) : (
-			<Link
-				key={link.label}
-				to={link.to}
-				onClick={onNavigate}
-				className={`text-body font-medium ${underlineLink}`}
-			>
-				{link.label}
+	const { open } = useContact();
+	const itemClass = `text-body font-medium ${underlineLink}`;
+	return (
+		<>
+			<Link to="/projects" onClick={onNavigate} className={itemClass}>
+				Projects
 			</Link>
-		)
+			<button
+				type="button"
+				onClick={() => {
+					onNavigate?.();
+					open();
+				}}
+				className={`${itemClass} cursor-pointer`}
+			>
+				Contact
+			</button>
+		</>
 	);
 }
 
@@ -116,7 +110,14 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 							: "flex flex-col gap-4 px-6 py-4 min-[721px]:hidden"
 					}
 				>
-					<NavLinks onNavigate={() => setOpen(false)} />
+					<NavLinks
+						onNavigate={() => {
+							// Hand focus to the toggle first: the menu is about to go away, and
+							// the contact dialog gives focus back to where it was opened from.
+							toggleRef.current?.focus();
+							setOpen(false);
+						}}
+					/>
 				</div>
 			)}
 		</nav>
