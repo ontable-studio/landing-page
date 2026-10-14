@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { projects, type Project } from "../data/projects";
 import ProjectDetail, { ProjectView } from "./ProjectDetail";
@@ -128,14 +129,20 @@ describe("ProjectView with sparse and rich data", () => {
 		expect(within(hero).getByText("2025")).toBeInTheDocument();
 	});
 
-	it("renders gallery pictures with their alt text and a hidden gradient for a missing source", () => {
+	it("renders gallery pictures as buttons and a hidden gradient for a missing source", () => {
 		const { container } = view(rich);
-		expect(screen.getByRole("img", { name: "Screenshot A" })).toHaveAttribute(
+		const button = screen.getByRole("button", {
+			name: "View larger: Screenshot A",
+		});
+		expect(button.querySelector("img")).toHaveAttribute(
 			"src",
 			"/images/projects/rich/a.webp"
 		);
 		expect(
-			container.querySelectorAll('[data-gallery] [aria-hidden="true"]')
+			container.querySelectorAll('[data-gallery] > [aria-hidden="true"]')
+		).toHaveLength(1);
+		expect(
+			screen.getAllByRole("button", { name: /view larger/i })
 		).toHaveLength(1);
 	});
 
@@ -213,5 +220,136 @@ describe("ProjectDetail layout", () => {
 		const { container } = at(full.slug);
 		const gallery = container.querySelector("[data-gallery]") as HTMLElement;
 		expect(gallery.firstElementChild?.className).toMatch(/sm:col-span-2/);
+	});
+});
+
+describe("ProjectView image preview", () => {
+	afterEach(() => {
+		Reflect.deleteProperty(document, "startViewTransition");
+	});
+
+	const twoPictures: Project = {
+		...rich,
+		gallery: [
+			{ src: "/images/projects/rich/a.webp", alt: "Screenshot A" },
+			{ src: "/images/projects/rich/b.webp", alt: "Screenshot B" },
+		],
+	};
+
+	it("opens a preview of the clicked picture and closes it with Escape, returning focus", async () => {
+		view(twoPictures);
+		const thumb = screen.getByRole("button", {
+			name: "View larger: Screenshot B",
+		});
+		await userEvent.click(thumb);
+		const dialog = screen.getByRole("dialog", { name: "Image preview" });
+		expect(
+			within(dialog).getByRole("img", { name: "Screenshot B" })
+		).toBeInTheDocument();
+		expect(within(dialog).getByText("2 / 2")).toBeInTheDocument();
+		await userEvent.keyboard("{Escape}");
+		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+		expect(thumb).toHaveFocus();
+	});
+
+	it("steps through the pictures in the preview", async () => {
+		view(twoPictures);
+		await userEvent.click(
+			screen.getByRole("button", { name: "View larger: Screenshot A" })
+		);
+		await userEvent.keyboard("{ArrowRight}");
+		expect(
+			within(screen.getByRole("dialog")).getByRole("img", {
+				name: "Screenshot B",
+			})
+		).toBeInTheDocument();
+	});
+
+	it("zooms from the thumbnail with a view transition where the browser has one", async () => {
+		const start = vi.fn((update: () => void) => {
+			update();
+			return {
+				ready: Promise.resolve(),
+				finished: Promise.resolve(),
+				updateCallbackDone: Promise.resolve(),
+			};
+		});
+		Object.defineProperty(document, "startViewTransition", {
+			configurable: true,
+			value: start,
+		});
+		view(twoPictures);
+		await userEvent.click(
+			screen.getByRole("button", { name: "View larger: Screenshot A" })
+		);
+		expect(start).toHaveBeenCalledTimes(1);
+		await userEvent.keyboard("{Escape}");
+		expect(start).toHaveBeenCalledTimes(2);
+		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+	});
+
+	it("zooms and shows an expand icon on hover and on keyboard focus", () => {
+		const { container } = view(twoPictures);
+		const button = screen.getByRole("button", {
+			name: "View larger: Screenshot A",
+		});
+		expect(button.className).toMatch(/cursor-zoom-in/);
+		expect(button.querySelector("img")?.className).toContain(
+			"group-hover:scale-105"
+		);
+		expect(button.querySelector("img")?.className).toContain(
+			"group-focus-visible:scale-105"
+		);
+		const chip = container.querySelector("[data-expand]") as HTMLElement;
+		expect(chip).toHaveAttribute("aria-hidden", "true");
+		expect(chip.className).toContain("group-hover:opacity-100");
+		expect(chip.className).toContain("group-focus-visible:opacity-100");
+	});
+});
+
+describe("ProjectView alive hero", () => {
+	it("raises the title out of a mask with room for descenders", () => {
+		const { container } = view(bare);
+		const mask = container.querySelector("h1 > span") as HTMLElement;
+		expect(mask.className).toContain("overflow-hidden");
+		expect(mask.className).toContain("pb-[0.2em]");
+		expect(mask.querySelector("[data-line]")?.className).toContain(
+			"animate-line-rise"
+		);
+	});
+
+	it("settles the cover image in and lets it drift against the pointer", () => {
+		const { container } = view(rich);
+		const img = container.querySelector("[data-hero] img") as HTMLImageElement;
+		expect(img.className).toContain("animate-settle");
+		expect(img.getAttribute("style")).toMatch(/var\(--nx/);
+		expect(img.getAttribute("style")).toMatch(/var\(--ny/);
+	});
+});
+
+describe("ProjectView next project", () => {
+	it("links to the next project, with its card", () => {
+		const { container } = at(projects[0].slug);
+		const next = container.querySelector("[data-next]") as HTMLElement;
+		expect(
+			within(next).getByRole("heading", { level: 2, name: "Next project" })
+		).toBeInTheDocument();
+		expect(within(next).getByRole("link")).toHaveAttribute(
+			"href",
+			`/projects/${projects[1].slug}`
+		);
+	});
+
+	it("loops from the last project back to the first", () => {
+		const { container } = at(projects[projects.length - 1].slug);
+		expect(container.querySelector("[data-next] a")).toHaveAttribute(
+			"href",
+			`/projects/${projects[0].slug}`
+		);
+	});
+
+	it("is left out for a project that is not in the list", () => {
+		const { container } = view(bare);
+		expect(container.querySelector("[data-next]")).toBeNull();
 	});
 });

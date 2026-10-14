@@ -16,6 +16,7 @@ describe("main.css tokens", () => {
 		"--animate-rise:",
 		"--animate-rise-quick:",
 		"--animate-line-rise:",
+		"--animate-settle:",
 		"@utility cut-corner",
 	])("defines %s", (token) => {
 		expect(css.toLowerCase()).toContain(token.toLowerCase());

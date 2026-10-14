@@ -191,6 +191,13 @@ export const projectTypes: ProjectType[] = [
 	...new Set(projects.map((project) => project.type)),
 ];
 
+/** The project after `slug` in the list, looping from the last back to the first. */
+export function nextProject(slug: string): Project | undefined {
+	const index = projects.findIndex((project) => project.slug === slug);
+	if (index === -1 || projects.length < 2) return undefined;
+	return projects[(index + 1) % projects.length];
+}
+
 export function getProject(slug: string): Project | undefined {
 	return projects.find((project) => project.slug === slug);
 }

@@ -1,6 +1,12 @@
 import { existsSync } from "node:fs";
 import { describe, it, expect } from "vitest";
-import { PROJECT_TYPES, getProject, projectTypes, projects } from "./projects";
+import {
+	PROJECT_TYPES,
+	getProject,
+	nextProject,
+	projectTypes,
+	projects,
+} from "./projects";
 
 describe("projects data", () => {
 	it("has at least three projects", () => {
@@ -136,6 +142,15 @@ describe("projects data", () => {
 
 	it("lists the types in use once each, in order of first appearance", () => {
 		expect(projectTypes).toEqual([...new Set(projects.map((p) => p.type))]);
+	});
+
+	it("picks the next project, looping from the last back to the first", () => {
+		expect(nextProject(projects[0].slug)).toBe(projects[1]);
+		expect(nextProject(projects[projects.length - 1].slug)).toBe(projects[0]);
+	});
+
+	it("has no next project for an unknown slug", () => {
+		expect(nextProject("nope")).toBeUndefined();
 	});
 
 	it("finds a project by slug", () => {

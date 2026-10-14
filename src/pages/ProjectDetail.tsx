@@ -1,11 +1,44 @@
+import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Link, useParams } from "react-router";
+import { RouterLink } from "../components/layout/RouterLink";
 import { Badge } from "../components/ui/Badge";
 import { buttonVariants } from "../components/ui/Button";
 import { Container } from "../components/ui/Container";
-import { getProject, type Project } from "../data/projects";
+import { Lightbox } from "../components/ui/Lightbox";
+import { ProjectCard } from "../components/ui/ProjectCard";
+import { getProject, nextProject, type Project } from "../data/projects";
 import { cn } from "../lib/cn";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { usePointerGlow } from "../lib/usePointerGlow";
 import NotFound from "./NotFound";
+
+/** Runs `update` inside a view transition where the browser can; otherwise just runs it. */
+function withTransition(update: () => void, done?: () => void) {
+	if ("startViewTransition" in document && !document.hidden) {
+		const transition = document.startViewTransition(() => flushSync(update));
+		// An aborted transition rejects these; the update has applied anyway.
+		transition.ready.catch(() => {});
+		void transition.finished.catch(() => {}).then(() => done?.());
+	} else {
+		update();
+		done?.();
+	}
+}
+
+function ExpandIcon(): React.JSX.Element {
+	return (
+		<svg
+			viewBox="0 0 16 16"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			className="size-4"
+		>
+			<path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" />
+		</svg>
+	);
+}
 
 /** One project's page. Exported so sparse data can be rendered directly in tests. */
 export function ProjectView({
@@ -14,11 +47,47 @@ export function ProjectView({
 	project: Project;
 }): React.JSX.Element {
 	useDocumentTitle(`${project.title} — OnTable`);
+	const heroRef = useRef<HTMLElement>(null);
+	usePointerGlow(heroRef);
 	const hasCredits = project.credits.length > 0;
+	const next = nextProject(project.slug);
+
+	// Only pictures with a file can be previewed.
+	const previewItems = project.gallery.flatMap((item) =>
+		item.src ? [{ src: item.src, alt: item.alt }] : []
+	);
+	const [openIndex, setOpenIndex] = useState<number | null>(null);
+	// The thumbnail that carries the view transition name while a zoom is running.
+	const [named, setNamed] = useState<number | null>(null);
+	const thumbs = useRef<(HTMLButtonElement | null)[]>([]);
+
+	function openPreview(index: number) {
+		flushSync(() => setNamed(index));
+		withTransition(() => {
+			setOpenIndex(index);
+			setNamed(null);
+		});
+	}
+
+	function closePreview() {
+		const index = openIndex;
+		if (index === null) return;
+		thumbs.current[index]?.scrollIntoView?.({ block: "center" });
+		withTransition(
+			() => {
+				setNamed(index);
+				setOpenIndex(null);
+			},
+			() => setNamed(null)
+		);
+	}
+
+	let previewNumber = -1;
 
 	return (
 		<>
 			<section
+				ref={heroRef}
 				data-hero=""
 				className="bg-ink-900 relative h-[70svh] min-h-96 w-full overflow-hidden text-white"
 			>
@@ -26,7 +95,11 @@ export function ProjectView({
 					<img
 						src={project.image}
 						alt=""
-						className="absolute inset-0 size-full object-cover"
+						className="animate-settle absolute inset-0 size-full scale-[1.08] object-cover"
+						style={{
+							translate:
+								"calc(var(--nx, 0) * -14px) calc(var(--ny, 0) * -14px)",
+						}}
 					/>
 				) : (
 					<div
@@ -66,7 +139,11 @@ export function ProjectView({
 							)}
 						</div>
 						<h1 className="font-display mt-4 max-w-4xl text-[clamp(2rem,6vw,5rem)] leading-none font-bold wrap-break-word">
-							{project.title}
+							<span className="mb-[-0.2em] block overflow-hidden pb-[0.2em]">
+								<span data-line="" className="animate-line-rise block">
+									{project.title}
+								</span>
+							</span>
 						</h1>
 					</div>
 				</Container>
@@ -120,30 +197,84 @@ export function ProjectView({
 					<div data-gallery="" className="mt-10 grid gap-6 sm:grid-cols-2">
 						{project.gallery.map((item, index) => {
 							const span = index === 0 ? "sm:col-span-2" : "";
-							return item.src ? (
-								<img
+							if (!item.src) {
+								return (
+									<div
+										key={index}
+										aria-hidden="true"
+										className={cn(
+											"from-ink-100 to-ink-200 aspect-16/10 rounded-2xl bg-linear-to-br",
+											span
+										)}
+									/>
+								);
+							}
+							previewNumber += 1;
+							const number = previewNumber;
+							return (
+								<button
 									key={index}
-									src={item.src}
-									alt={item.alt}
+									ref={(node) => {
+										thumbs.current[number] = node;
+									}}
+									type="button"
+									aria-label={`View larger: ${item.alt}`}
+									onClick={() => openPreview(number)}
 									className={cn(
-										"aspect-16/10 w-full rounded-2xl object-cover",
+										"group focus-visible:outline-brand relative block cursor-zoom-in overflow-hidden rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2",
 										span
 									)}
-								/>
-							) : (
-								<div
-									key={index}
-									aria-hidden="true"
-									className={cn(
-										"from-ink-100 to-ink-200 aspect-16/10 rounded-2xl bg-linear-to-br",
-										span
-									)}
-								/>
+								>
+									<img
+										src={item.src}
+										alt=""
+										className="aspect-16/10 w-full object-cover transition-transform duration-500 group-hover:scale-105 group-focus-visible:scale-105"
+										style={{
+											viewTransitionName:
+												named === number ? "preview" : undefined,
+										}}
+									/>
+									<span
+										data-expand=""
+										aria-hidden="true"
+										className="bg-canvas text-text-primary absolute top-3 right-3 grid size-9 place-items-center rounded-full opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+									>
+										<ExpandIcon />
+									</span>
+								</button>
 							);
 						})}
 					</div>
 				)}
+
+				{next && (
+					<section
+						data-next=""
+						aria-labelledby="next-project"
+						className="mt-16 max-w-2xl"
+					>
+						<h2 id="next-project" className="text-h3 font-display mb-6">
+							Next project
+						</h2>
+						<ProjectCard
+							title={next.title}
+							category={next.category}
+							year={next.year}
+							status={next.status}
+							image={next.image}
+							href={`/projects/${next.slug}`}
+							linkAs={RouterLink}
+						/>
+					</section>
+				)}
 			</Container>
+
+			<Lightbox
+				items={previewItems}
+				index={openIndex}
+				onIndexChange={setOpenIndex}
+				onClose={closePreview}
+			/>
 		</>
 	);
 }
