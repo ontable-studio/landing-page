@@ -39,7 +39,7 @@ export default function Home(): React.JSX.Element {
 				/>
 				<Nav variant="overlay" />
 
-				<div className="relative z-10 flex flex-1 items-end px-6 pb-10 lg:px-10 lg:pb-14">
+				<div className="relative z-10 flex flex-1 items-end px-4 pb-8 lg:px-10 lg:pb-14">
 					<div className="grid w-full items-end gap-10 lg:grid-cols-[1fr_22rem]">
 						<h1
 							aria-label={tagline(locale)}

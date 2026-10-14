@@ -7,10 +7,19 @@ import { underlineLink } from "../../ui/linkStyles";
 import { useContact } from "../Contact";
 
 /** Projects and Contact. Contact opens the contact dialog instead of leaving the page. */
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+function NavLinks({
+	onNavigate,
+	stacked = false,
+}: {
+	onNavigate?: () => void;
+	/** In the mobile menu: full-width rows with a comfortable tap size. */
+	stacked?: boolean;
+}) {
 	const { open } = useContact();
 	const { t, to } = useT();
-	const itemClass = `text-body font-medium ${underlineLink}`;
+	const itemClass = stacked
+		? "focus-visible:outline-brand hover:bg-ink-100 focus-visible:bg-ink-100 text-body flex h-12 w-full cursor-pointer items-center rounded-xl px-4 text-left font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2"
+		: `text-body font-medium ${underlineLink}`;
 	return (
 		<>
 			<Link to={to("/projects")} onClick={onNavigate} className={itemClass}>
@@ -26,7 +35,11 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 			>
 				{t("nav.contact")}
 			</button>
-			<LanguageSwitcher />
+			<LanguageSwitcher
+				className={
+					stacked ? "border-surface-border mt-1 border-t px-2 pt-3" : undefined
+				}
+			/>
 		</>
 	);
 }
@@ -45,7 +58,7 @@ function Wrapper({
 	children: React.ReactNode;
 }) {
 	return overlay ? (
-		<div className="flex h-20 w-full items-center justify-between px-6 lg:px-10">
+		<div className="flex h-16 w-full items-center justify-between px-4 lg:h-20 lg:px-10">
 			{children}
 		</div>
 	) : (
@@ -98,11 +111,21 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 					aria-expanded={open}
 					aria-controls="mobile-menu"
 					onClick={() => setOpen((value) => !value)}
-					className="hidden size-11 cursor-pointer items-center justify-center max-[720px]:flex"
+					className="focus-visible:outline-brand hover:bg-surface focus-visible:bg-surface -mr-2 hidden size-11 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2 max-[720px]:flex"
 				>
-					<span aria-hidden="true" className="text-2xl">
-						{open ? "×" : "≡"}
-					</span>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						aria-hidden="true"
+						className="size-6"
+					>
+						<path
+							d={open ? "M6 6l12 12M18 6L6 18" : "M4 7h16M4 12h16M4 17h16"}
+						/>
+					</svg>
 				</button>
 			</Wrapper>
 
@@ -111,11 +134,12 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 					id="mobile-menu"
 					className={
 						overlay
-							? "bg-canvas absolute inset-x-6 top-full z-30 flex flex-col gap-4 rounded-2xl p-5 min-[721px]:hidden"
-							: "flex flex-col gap-4 px-6 py-4 min-[721px]:hidden"
+							? "bg-canvas border-surface-border absolute inset-x-4 top-full z-30 flex flex-col gap-1 rounded-2xl border p-2 shadow-xl shadow-black/10 min-[721px]:hidden"
+							: "bg-surface mx-4 mb-4 flex flex-col gap-1 rounded-2xl p-2 min-[721px]:hidden"
 					}
 				>
 					<NavLinks
+						stacked
 						onNavigate={() => {
 							// Hand focus to the toggle first: the menu is about to go away, and
 							// the contact dialog gives focus back to where it was opened from.
