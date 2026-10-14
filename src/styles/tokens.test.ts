@@ -56,6 +56,17 @@ describe("main.css tokens", () => {
 		expect(block.slice(0, 120)).toContain("translate: 0 130%");
 	});
 
+	it("stops pictures being dragged, selected or long-pressed in the base layer", () => {
+		const base = css.slice(css.indexOf("@layer base"));
+		expect(base).toMatch(
+			/img,[\s\S]*?picture,[\s\S]*?svg,[\s\S]*?video,[\s\S]*?canvas/
+		);
+		expect(base).toContain("-webkit-user-drag: none");
+		expect(base).toContain("user-select: none");
+		expect(base).toContain("-webkit-touch-callout: none");
+		expect(base).toMatch(/img::selection[\s\S]*?background: transparent/);
+	});
+
 	it("has no blue", () => {
 		expect(css.toLowerCase()).not.toMatch(/blue/);
 	});

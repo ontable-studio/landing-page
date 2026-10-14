@@ -161,6 +161,28 @@
 }
 
 @layer base {
+	/* Pictures, drawings, video and canvas: not draggable, not selectable (no highlight
+	   box when the text around them is selected), no save menu on a long press. */
+	img,
+	picture,
+	svg,
+	video,
+	canvas,
+	object,
+	embed {
+		-webkit-user-drag: none;
+		user-drag: none;
+		-webkit-user-select: none;
+		user-select: none;
+		-webkit-touch-callout: none;
+	}
+	img::selection,
+	svg::selection,
+	video::selection,
+	canvas::selection {
+		background: transparent;
+	}
+
 	body {
 		background-color: var(--color-canvas);
 		color: var(--color-text-primary);
