@@ -7,3 +7,4 @@ export { Tabs, tabId } from "./Tabs";
 export { DotGrid } from "./DotGrid";
 export { Lightbox } from "./Lightbox";
 export { SocialChips } from "./SocialChips";
+export { Modal } from "./Modal";
