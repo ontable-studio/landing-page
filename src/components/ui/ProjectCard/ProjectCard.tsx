@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useT } from "../../../i18n";
 import { cn } from "../../../lib/cn";
 import { usePointerGlow } from "../../../lib/usePointerGlow";
 import { Badge } from "../Badge";
@@ -37,6 +38,7 @@ export function ProjectCard({
 	linkAs: LinkComponent = "a",
 	className,
 }: ProjectCardProps): React.JSX.Element {
+	const { t } = useT();
 	const Heading = headingLevel === 2 ? "h2" : "h3";
 	const pictureRef = useRef<HTMLDivElement>(null);
 	usePointerGlow(pictureRef);
@@ -95,7 +97,7 @@ export function ProjectCard({
 							opacity: "var(--glow-on, 0)",
 						}}
 					>
-						View
+						{t("card.view")}
 					</span>
 				)}
 			</div>

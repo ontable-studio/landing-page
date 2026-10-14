@@ -4,22 +4,28 @@ import { SectionHeader } from "../components/layout/SectionHeader";
 import { Container } from "../components/ui/Container";
 import { ProjectCard } from "../components/ui/ProjectCard";
 import { Tabs, tabId } from "../components/ui/Tabs";
-import { projectTypes, projects } from "../data/projects";
+import { localizedProjects, typeLabel } from "../data/localize";
+import { projectTypes } from "../data/projects";
+import { useT } from "../i18n";
 import { useSeo } from "../seo/useSeo";
 
 const PANEL_ID = "projects-panel";
 
 const slugOf = (label: string) => label.toLowerCase().replace(/\s+/g, "-");
 
-const tabs = [
-	{ id: "all", label: "All" },
-	...projectTypes.map((type) => ({ id: slugOf(type), label: type })),
-];
-
 /** Every project, two per row, filtered by type with tabs. The type lives in `?type=`. */
 export default function Projects(): React.JSX.Element {
 	useSeo({ name: "projects" });
 	const [params, setParams] = useSearchParams();
+	const { locale, t, to } = useT();
+	const projects = localizedProjects(locale);
+	const tabs = [
+		{ id: "all", label: t("projects.all") },
+		...projectTypes.map((type) => ({
+			id: slugOf(type),
+			label: typeLabel(locale, type),
+		})),
+	];
 
 	const active = tabs.find((tab) => tab.id === params.get("type"))?.id ?? "all";
 	const visible =
@@ -47,13 +53,13 @@ export default function Projects(): React.JSX.Element {
 
 	return (
 		<Container size="wide" className="py-8 lg:py-12">
-			<SectionHeader as="h1" title="Projects" />
+			<SectionHeader as="h1" title={t("projects.title")} />
 			<Tabs
 				className="mt-6"
 				items={tabs}
 				value={active}
 				onValueChange={choose}
-				ariaLabel="Project types"
+				ariaLabel={t("projects.tabs")}
 				panelId={PANEL_ID}
 			/>
 			<div
@@ -77,14 +83,16 @@ export default function Projects(): React.JSX.Element {
 									status={project.status}
 									headingLevel={2}
 									image={project.image}
-									href={`/projects/${project.slug}`}
+									href={to(`/projects/${project.slug}`)}
 									linkAs={RouterLink}
 								/>
 							</div>
 						))}
 					</div>
 				) : (
-					<p className="text-body-lg text-text-secondary">No projects yet.</p>
+					<p className="text-body-lg text-text-secondary">
+						{t("projects.empty")}
+					</p>
 				)}
 			</div>
 		</Container>

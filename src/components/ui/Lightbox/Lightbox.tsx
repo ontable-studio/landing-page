@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useT } from "../../../i18n";
 import { cn } from "../../../lib/cn";
 import { Modal } from "../Modal";
 
@@ -30,6 +31,7 @@ export function Lightbox({
 	onIndexChange,
 	onClose,
 }: LightboxProps): React.JSX.Element | null {
+	const { t } = useT();
 	const open = index !== null;
 	const current = index ?? 0;
 	const count = items.length;
@@ -64,13 +66,13 @@ export function Lightbox({
 
 	return (
 		<Modal
-			label="Image preview"
+			label={t("lightbox.label")}
 			onClose={onClose}
 			backdropName="preview-backdrop"
 		>
 			<button
 				type="button"
-				aria-label="Close preview"
+				aria-label={t("lightbox.close")}
 				onClick={onClose}
 				className={cn(controlClass, "absolute top-4 right-4")}
 			>
@@ -79,7 +81,7 @@ export function Lightbox({
 			{count > 1 && (
 				<button
 					type="button"
-					aria-label="Previous image"
+					aria-label={t("lightbox.previous")}
 					onClick={() => step(-1)}
 					className={cn(
 						controlClass,
@@ -112,7 +114,7 @@ export function Lightbox({
 			{count > 1 && (
 				<button
 					type="button"
-					aria-label="Next image"
+					aria-label={t("lightbox.next")}
 					onClick={() => step(1)}
 					className={cn(
 						controlClass,

@@ -1,4 +1,5 @@
 import { SITE } from "../../../common/constants";
+import { translate, type Locale } from "../../../i18n";
 
 export interface ContactValues {
 	name: string;
@@ -11,13 +12,19 @@ export type ContactErrors = Partial<Record<keyof ContactValues, string>>;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** What is wrong with the form, by field. Empty when it can be sent. */
-export function validateContact(values: ContactValues): ContactErrors {
+export function validateContact(
+	values: ContactValues,
+	locale: Locale = "en"
+): ContactErrors {
 	const errors: ContactErrors = {};
-	if (!values.name.trim()) errors.name = "Enter your name";
+	if (!values.name.trim())
+		errors.name = translate(locale, "contact.error.name");
 	const email = values.email.trim();
-	if (!email) errors.email = "Enter your email address";
-	else if (!EMAIL.test(email)) errors.email = "Enter a valid email address";
-	if (!values.message.trim()) errors.message = "Write a message";
+	if (!email) errors.email = translate(locale, "contact.error.emailMissing");
+	else if (!EMAIL.test(email))
+		errors.email = translate(locale, "contact.error.emailInvalid");
+	if (!values.message.trim())
+		errors.message = translate(locale, "contact.error.message");
 	return errors;
 }
 
@@ -26,10 +33,13 @@ export function validateContact(values: ContactValues): ContactErrors {
  * no server, so this is how the form sends: the visitor's email app opens with this.
  * Percent-encoded (not `+`) because mail clients read `+` literally.
  */
-export function contactMailto(values: ContactValues): string {
+export function contactMailto(
+	values: ContactValues,
+	locale: Locale = "en"
+): string {
 	const name = values.name.trim();
 	const email = values.email.trim();
-	const subject = `Message from ${name}`;
+	const subject = translate(locale, "contact.mailSubject", { name });
 	const body = `${values.message.trim()}\n\n${name} (${email})`;
 	return `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }

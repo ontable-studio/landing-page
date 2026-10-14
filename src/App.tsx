@@ -38,9 +38,12 @@ export default function App(): React.JSX.Element {
 			<ScrollToTop />
 			<Routes>
 				<Route path="/" element={<Home />} />
+				<Route path="/id" element={<Home />} />
 				<Route element={<SiteLayout />}>
 					<Route path="/projects" element={<Projects />} />
 					<Route path="/projects/:slug" element={<ProjectDetail />} />
+					<Route path="/id/projects" element={<Projects />} />
+					<Route path="/id/projects/:slug" element={<ProjectDetail />} />
 					<Route path="/design-system" element={<DesignSystem />} />
 					<Route path="*" element={<NotFound />} />
 				</Route>

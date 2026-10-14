@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { Link } from "react-router";
-import { SITE } from "../common/constants";
 import { Footer } from "../components/layout/Footer";
 import { useContact } from "../components/layout/Contact";
 import { Nav } from "../components/layout/Nav";
 import { buttonVariants } from "../components/ui/Button";
 import { DotGrid } from "../components/ui/DotGrid";
+import { headlineLines, tagline, useT } from "../i18n";
 import { useSeo } from "../seo/useSeo";
 import { usePointerGlow } from "../lib/usePointerGlow";
 import { cn } from "../lib/cn";
@@ -14,6 +14,10 @@ import { cn } from "../lib/cn";
 export default function Home(): React.JSX.Element {
 	useSeo({ name: "home" });
 	const { open: openContact } = useContact();
+	const { locale, t, to } = useT();
+	const lines = headlineLines(locale);
+	// Longer lines (Indonesian) are set smaller so no line has to wrap inside its mask.
+	const fit = Math.min(1, 15 / Math.max(...lines.map((line) => line.length)));
 	const sectionRef = useRef<HTMLElement>(null);
 	usePointerGlow(sectionRef);
 
@@ -38,10 +42,11 @@ export default function Home(): React.JSX.Element {
 				<div className="relative z-10 flex flex-1 items-end px-6 pb-10 lg:px-10 lg:pb-14">
 					<div className="grid w-full items-end gap-10 lg:grid-cols-[1fr_22rem]">
 						<h1
-							aria-label={SITE.tagline}
-							className="font-display text-[clamp(1.75rem,8.5vw,2.75rem)] leading-[0.95] font-bold tracking-tight lg:text-[clamp(3rem,7vw,6.5rem)]"
+							aria-label={tagline(locale)}
+							style={{ "--fit": fit } as React.CSSProperties}
+							className="font-display text-[calc(clamp(1.75rem,8.5vw,2.75rem)*var(--fit))] leading-[0.95] font-bold tracking-tight lg:text-[calc(clamp(3rem,7vw,6.5rem)*var(--fit))]"
 						>
-							{SITE.taglineLines.map((line, index) => (
+							{lines.map((line, index) => (
 								<span
 									key={line}
 									className="mb-[-0.2em] block overflow-hidden pb-[0.2em]"
@@ -59,16 +64,16 @@ export default function Home(): React.JSX.Element {
 
 						<div className="flex flex-col gap-6 lg:pb-3">
 							<p className="text-body-lg text-text-secondary max-w-sm">
-								A small team building games, products and projects.
+								{t("home.description")}
 							</p>
 							<div className="flex flex-wrap gap-3">
 								<Link
-									to="/projects"
+									to={to("/projects")}
 									className={cn(
 										buttonVariants({ variant: "primary", size: "lg" })
 									)}
 								>
-									View projects
+									{t("home.viewProjects")}
 								</Link>
 								<button
 									type="button"
@@ -77,7 +82,7 @@ export default function Home(): React.JSX.Element {
 										buttonVariants({ variant: "outline", size: "lg" })
 									)}
 								>
-									Contact
+									{t("home.contact")}
 								</button>
 							</div>
 						</div>

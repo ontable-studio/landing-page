@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import { useT } from "../../../i18n";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 import { Container } from "../../ui/Container";
 import { underlineLink } from "../../ui/linkStyles";
 import { useContact } from "../Contact";
@@ -7,11 +9,12 @@ import { useContact } from "../Contact";
 /** Projects and Contact. Contact opens the contact dialog instead of leaving the page. */
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 	const { open } = useContact();
+	const { t, to } = useT();
 	const itemClass = `text-body font-medium ${underlineLink}`;
 	return (
 		<>
-			<Link to="/projects" onClick={onNavigate} className={itemClass}>
-				Projects
+			<Link to={to("/projects")} onClick={onNavigate} className={itemClass}>
+				{t("nav.projects")}
 			</Link>
 			<button
 				type="button"
@@ -21,8 +24,9 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 				}}
 				className={`${itemClass} cursor-pointer`}
 			>
-				Contact
+				{t("nav.contact")}
 			</button>
+			<LanguageSwitcher />
 		</>
 	);
 }
@@ -53,6 +57,7 @@ function Wrapper({
 
 /** Top navigation: logo and links, collapsing to a menu on small screens. */
 export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
+	const { t, to } = useT();
 	const overlay = variant === "overlay";
 	const [open, setOpen] = useState(false);
 	const toggleRef = useRef<HTMLButtonElement>(null);
@@ -72,14 +77,14 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 	return (
 		<nav className={overlay ? "relative z-20" : "bg-canvas"}>
 			<Wrapper overlay={overlay}>
-				<Link to="/" className="flex items-center gap-3">
+				<Link to={to("/")} className="flex items-center gap-3">
 					<img
 						src="/images/ontable-logo.svg"
 						alt=""
 						className="size-9 rounded-xl"
 					/>
 					<span className="font-display text-title">OnTable</span>
-					<span className="sr-only">Studio, home</span>
+					<span className="sr-only">{t("nav.homeLabel")}</span>
 				</Link>
 
 				<div className="flex items-center gap-8 max-[720px]:hidden">
@@ -89,7 +94,7 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 				<button
 					ref={toggleRef}
 					type="button"
-					aria-label="Menu"
+					aria-label={t("nav.menu")}
 					aria-expanded={open}
 					aria-controls="mobile-menu"
 					onClick={() => setOpen((value) => !value)}

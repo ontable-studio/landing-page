@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { SITE } from "../../../common/constants";
+import { useT } from "../../../i18n";
 import { cn } from "../../../lib/cn";
 import { Button } from "../../ui/Button";
 import { Modal } from "../../ui/Modal";
@@ -36,6 +37,7 @@ export function ContactDialog({
 	onClose,
 	onSend = openMailApp,
 }: ContactDialogProps): React.JSX.Element {
+	const { locale, t } = useT();
 	const [values, setValues] = useState<ContactValues>({
 		name: "",
 		email: "",
@@ -55,21 +57,21 @@ export function ContactDialog({
 		setValues(next);
 		setSent(false);
 		if (errors[field]) {
-			const fixed = validateContact(next)[field];
+			const fixed = validateContact(next, locale)[field];
 			setErrors((current) => ({ ...current, [field]: fixed }));
 		}
 	}
 
 	function submit(event: React.FormEvent) {
 		event.preventDefault();
-		const found = validateContact(values);
+		const found = validateContact(values, locale);
 		setErrors(found);
 		const firstInvalid = FIELDS.find((field) => found[field]);
 		if (firstInvalid) {
 			refs[firstInvalid].current?.focus();
 			return;
 		}
-		onSend(contactMailto(values));
+		onSend(contactMailto(values, locale));
 		setSent(true);
 	}
 
@@ -117,15 +119,15 @@ export function ContactDialog({
 	});
 
 	return (
-		<Modal label="Contact" onClose={onClose}>
+		<Modal label={t("contact.dialogLabel")} onClose={onClose}>
 			<div className="bg-canvas text-text-primary relative max-h-full w-full max-w-2xl overflow-y-auto rounded-3xl p-6 sm:p-8">
 				<div className="flex items-start justify-between gap-4">
 					<h2 className="font-display text-h3 max-[720px]:text-h4">
-						Tell us about your project
+						{t("contact.title")}
 					</h2>
 					<button
 						type="button"
-						aria-label="Close contact"
+						aria-label={t("contact.close")}
 						onClick={onClose}
 						className="focus-visible:outline-brand hover:bg-surface focus-visible:bg-surface grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-2xl transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
 					>
@@ -134,7 +136,7 @@ export function ContactDialog({
 				</div>
 
 				<p className="text-body text-text-secondary mt-2 flex flex-wrap items-center gap-x-2">
-					<span>Or write to</span>
+					<span>{t("contact.writeTo")}</span>
 					<a
 						href={`mailto:${SITE.email}`}
 						className="text-text-primary font-medium underline"
@@ -146,7 +148,7 @@ export function ContactDialog({
 						onClick={copyEmail}
 						className="focus-visible:outline-brand text-body-sm border-surface-border hover:bg-surface focus-visible:bg-surface cursor-pointer rounded-full border px-3 py-1 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
 					>
-						{copied ? "Copied" : "Copy email"}
+						{copied ? t("contact.copied") : t("contact.copy")}
 					</button>
 				</p>
 
@@ -157,7 +159,7 @@ export function ContactDialog({
 				>
 					{field(
 						"name",
-						"Name",
+						t("contact.name"),
 						<input
 							{...shared("name")}
 							ref={refs.name}
@@ -168,7 +170,7 @@ export function ContactDialog({
 					)}
 					{field(
 						"email",
-						"Email",
+						t("contact.email"),
 						<input
 							{...shared("email")}
 							ref={refs.email}
@@ -178,7 +180,7 @@ export function ContactDialog({
 					)}
 					{field(
 						"message",
-						"Message",
+						t("contact.message"),
 						<textarea
 							{...shared("message")}
 							ref={refs.message}
@@ -190,7 +192,7 @@ export function ContactDialog({
 					<div className="flex flex-wrap items-center justify-between gap-4 sm:col-span-2">
 						<SocialChips links={SITE.social} />
 						<Button type="submit" size="lg">
-							Send
+							{t("contact.send")}
 						</Button>
 					</div>
 
@@ -198,9 +200,7 @@ export function ContactDialog({
 						role="status"
 						className="text-body-sm text-text-secondary sm:col-span-2"
 					>
-						{sent
-							? `Your email app should open with the message ready to send. If nothing happens, write to ${SITE.email}.`
-							: ""}
+						{sent ? t("contact.sent", { email: SITE.email }) : ""}
 					</p>
 				</form>
 			</div>
