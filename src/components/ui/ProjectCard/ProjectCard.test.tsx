@@ -114,6 +114,13 @@ describe("ProjectCard", () => {
 		expect(screen.getByRole("heading", { name: "Domo" })).toBeInTheDocument();
 	});
 
+	it("shows a status pill when the project is still in development", () => {
+		const { rerender } = render(<ProjectCard {...base} />);
+		expect(screen.queryByText("In development")).not.toBeInTheDocument();
+		rerender(<ProjectCard {...base} status="In development" />);
+		expect(screen.getByText("In development")).toBeInTheDocument();
+	});
+
 	it("clamps a very long title", () => {
 		const title = "A".repeat(120);
 		render(<ProjectCard {...base} title={title} />);

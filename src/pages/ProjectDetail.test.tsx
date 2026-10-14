@@ -139,6 +139,30 @@ describe("ProjectView with sparse and rich data", () => {
 		).toHaveLength(1);
 	});
 
+	it("shows a status pill over the hero when the project is in development", () => {
+		const { container } = view({ ...bare, status: "In development" });
+		const hero = container.querySelector("[data-hero]") as HTMLElement;
+		expect(within(hero).getByText("In development")).toBeInTheDocument();
+	});
+
+	it("renders each link as an external button, and none when there are no links", () => {
+		const { unmount } = view({
+			...bare,
+			links: [
+				{ label: "Play on itch.io", href: "https://example.itch.io/game" },
+			],
+		});
+		const link = screen.getByRole("link", { name: "Play on itch.io" });
+		expect(link).toHaveAttribute("href", "https://example.itch.io/game");
+		expect(link).toHaveAttribute("target", "_blank");
+		expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+		unmount();
+		view(bare);
+		expect(
+			screen.queryByRole("link", { name: /itch/i })
+		).not.toBeInTheDocument();
+	});
+
 	it("gives the summary the full width when there are no credits", () => {
 		const { container } = view(bare);
 		const body = container.querySelector("[data-body]") as HTMLElement;

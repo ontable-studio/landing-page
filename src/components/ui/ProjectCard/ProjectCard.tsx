@@ -10,6 +10,8 @@ interface ProjectCardProps {
 	year?: number | string;
 	image?: string;
 	imageAlt?: string;
+	/** A pill beside the category, for example "In development". */
+	status?: string;
 	/** Makes the whole card a link. */
 	href?: string;
 	/** Component used for the link (default `a`), e.g. a router link. */
@@ -27,6 +29,7 @@ export function ProjectCard({
 	year,
 	image,
 	imageAlt,
+	status,
 	href,
 	linkAs: LinkComponent = "a",
 	className,
@@ -70,9 +73,12 @@ export function ProjectCard({
 					<h3 className="text-h4 font-display line-clamp-2 text-white">
 						{title}
 					</h3>
-					<Badge variant="outline" className="mt-2 border-white/40 text-white">
-						{category}
-					</Badge>
+					<div className="mt-2 flex flex-wrap gap-2">
+						<Badge variant="outline" className="border-white/40 text-white">
+							{category}
+						</Badge>
+						{status && <Badge variant="brand">{status}</Badge>}
+					</div>
 				</div>
 				{href && (
 					<span

@@ -1,8 +1,8 @@
 /**
  * Project content for the Projects and detail pages: the one place to edit it.
  *
- * Still to fill in (ask the team, do not guess): `year`, a "Date"/"Role" credit,
- * and the "Platform" credit for every project except Craftboard Heroes.
+ * Still to add: `links` (the "Play on itch.io" button) for Craftboard Heroes and
+ * OxShiftGen, once their itch.io URLs are known.
  */
 export const PROJECT_TYPES = ["Game", "Tool", "UI Design"] as const;
 export type ProjectType = (typeof PROJECT_TYPES)[number];
@@ -16,12 +16,18 @@ export interface Project {
 	category: string;
 	/** Shown in the corner of the card and over the detail hero; hidden until known. */
 	year?: number;
+	/** Shown as a pill on the card and the hero, for example "In development". */
+	status?: string;
 	summary: string;
 	/** Cover picture, used on the card and as the detail hero. */
 	image?: string;
 	credits: { label: string; value: string }[];
+	/** External buttons on the detail page, such as "Play on itch.io". */
+	links?: { label: string; href: string }[];
 	gallery: { src?: string; alt: string }[];
 }
+
+const ROLE = "Game Design, Programming, Art (2D/3D)";
 
 const img = (slug: string, file: string) =>
 	`/images/projects/${slug}/${file}.webp`;
@@ -32,10 +38,16 @@ export const projects: Project[] = [
 		title: "Craftboard Heroes",
 		type: "Game",
 		category: "Action",
+		year: 2026,
 		summary:
 			"An action game about turning a child's imagination into real power. Fight waves of playground monsters in a world made of cardboard, then trigger Quick Draw: time slows while you trace a blueprint, and the weapon you drew materializes.",
 		image: img("craftboard-heroes", "01-title"),
-		credits: [{ label: "Platform", value: "WebGL (HTML), Desktop" }],
+		credits: [
+			{ label: "Date", value: "2026" },
+			{ label: "Role", value: ROLE },
+			{ label: "Platform", value: "WebGL (HTML), Desktop" },
+			{ label: "Made for", value: "Game jam" },
+		],
 		gallery: [
 			{
 				src: img("craftboard-heroes", "02-main-menu"),
@@ -64,10 +76,15 @@ export const projects: Project[] = [
 		title: "Ketik Mancing",
 		type: "Game",
 		category: "Typing",
+		status: "In development",
 		summary:
 			"A casual fishing game you play with the keyboard, in Indonesian. Type the words that appear to hook fish, collect bait by typing the words on worms before time runs out, and fill a fish journal with each catch's habitat, length, rarity and weight across several fishing spots.",
 		image: img("ketik-mancing", "01-title"),
-		credits: [],
+		credits: [
+			{ label: "Role", value: ROLE },
+			{ label: "Platform", value: "Desktop" },
+			{ label: "Status", value: "In development" },
+		],
 		gallery: [
 			{
 				src: img("ketik-mancing", "02-main-menu"),
@@ -104,10 +121,15 @@ export const projects: Project[] = [
 		title: "Laundry Kita",
 		type: "Game",
 		category: "Simulation",
+		year: 2025,
 		summary:
 			"A management simulation about running a laundry shop in a small isometric city. Keep an eye on your money, the days and the hours, shop for supplies, and arrange the machines and furniture inside the shop.",
 		image: img("laundry-kita", "01-title"),
-		credits: [],
+		credits: [
+			{ label: "Date", value: "2025" },
+			{ label: "Role", value: ROLE },
+			{ label: "Platform", value: "Desktop" },
+		],
 		gallery: [
 			{
 				src: img("laundry-kita", "02-shop-interior"),
@@ -128,10 +150,16 @@ export const projects: Project[] = [
 		title: "OxShiftGen",
 		type: "Game",
 		category: "Co-op",
+		year: 2026,
 		summary:
 			"A two-player game set in an industrial facility. Each player wears a gas mask with its own oxygen meter, and together you carry oxygen canisters, work the switches and cross the platforms.",
 		image: img("oxshiftgen", "01-title"),
-		credits: [],
+		credits: [
+			{ label: "Date", value: "2026" },
+			{ label: "Role", value: ROLE },
+			{ label: "Platform", value: "Desktop" },
+			{ label: "Made for", value: "Game jam" },
+		],
 		gallery: [
 			{
 				src: img("oxshiftgen", "02-carrying-canister"),

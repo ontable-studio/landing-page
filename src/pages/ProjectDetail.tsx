@@ -53,7 +53,12 @@ export function ProjectView({
 					</Link>
 					<div>
 						<div className="flex items-center gap-3">
-							<Badge variant="brand">{project.category}</Badge>
+							<Badge variant="outline" className="border-white/50 text-white">
+								{project.category}
+							</Badge>
+							{project.status && (
+								<Badge variant="brand">{project.status}</Badge>
+							)}
 							{project.year !== undefined && (
 								<span data-year="" className="text-body-sm text-white/80">
 									{project.year}
@@ -75,9 +80,28 @@ export function ProjectView({
 						hasCredits && "lg:grid-cols-[1fr_20rem] lg:gap-16"
 					)}
 				>
-					<p className="text-body-lg text-text-secondary max-w-prose">
-						{project.summary}
-					</p>
+					<div>
+						<p className="text-body-lg text-text-secondary max-w-prose">
+							{project.summary}
+						</p>
+						{project.links && project.links.length > 0 && (
+							<div className="mt-6 flex flex-wrap gap-3">
+								{project.links.map((link) => (
+									<a
+										key={link.href}
+										href={link.href}
+										target="_blank"
+										rel="noopener noreferrer"
+										className={cn(
+											buttonVariants({ variant: "primary", size: "lg" })
+										)}
+									>
+										{link.label}
+									</a>
+								))}
+							</div>
+						)}
+					</div>
 					{hasCredits && (
 						<dl className="grid gap-5 self-start">
 							{project.credits.map((credit) => (

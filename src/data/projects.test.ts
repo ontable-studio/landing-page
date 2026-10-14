@@ -51,13 +51,56 @@ describe("projects data", () => {
 		}
 	});
 
-	it("lists WebGL (HTML) and Desktop for Craftboard Heroes only", () => {
-		const platformOf = (slug: string) =>
-			getProject(slug)?.credits.find((c) => c.label === "Platform")?.value ??
-			"";
-		expect(platformOf("craftboard-heroes")).toBe("WebGL (HTML), Desktop");
-		for (const p of projects.filter((p) => p.slug !== "craftboard-heroes")) {
-			expect(platformOf(p.slug)).not.toMatch(/webgl|desktop/i);
+	const credit = (slug: string, label: string) =>
+		getProject(slug)?.credits.find((c) => c.label === label)?.value;
+
+	it("lists WebGL (HTML) and Desktop for Craftboard Heroes, and Desktop only for the rest", () => {
+		expect(credit("craftboard-heroes", "Platform")).toBe(
+			"WebGL (HTML), Desktop"
+		);
+		for (const slug of ["ketik-mancing", "laundry-kita", "oxshiftgen"]) {
+			expect(credit(slug, "Platform"), slug).toBe("Desktop");
+		}
+	});
+
+	it("shows the same role on every project", () => {
+		for (const p of projects) {
+			expect(credit(p.slug, "Role"), p.slug).toBe(
+				"Game Design, Programming, Art (2D/3D)"
+			);
+		}
+	});
+
+	it("has the confirmed years, and marks Ketik Mancing as in development", () => {
+		expect(getProject("craftboard-heroes")?.year).toBe(2026);
+		expect(getProject("laundry-kita")?.year).toBe(2025);
+		expect(getProject("oxshiftgen")?.year).toBe(2026);
+		expect(getProject("ketik-mancing")?.year).toBeUndefined();
+		expect(getProject("ketik-mancing")?.status).toBe("In development");
+		expect(credit("ketik-mancing", "Status")).toBe("In development");
+	});
+
+	it("lists the year as the Date credit where there is one", () => {
+		for (const p of projects.filter((p) => p.year !== undefined)) {
+			expect(credit(p.slug, "Date"), p.slug).toBe(String(p.year));
+		}
+	});
+
+	it("marks only Craftboard Heroes and OxShiftGen as game jam entries", () => {
+		for (const p of projects) {
+			const jam = ["craftboard-heroes", "oxshiftgen"].includes(p.slug);
+			expect(credit(p.slug, "Made for"), p.slug).toBe(
+				jam ? "Game jam" : undefined
+			);
+		}
+	});
+
+	it("only links to https pages, each with a label", () => {
+		for (const p of projects) {
+			for (const link of p.links ?? []) {
+				expect(link.label.trim()).not.toBe("");
+				expect(link.href).toMatch(/^https:\/\//);
+			}
 		}
 	});
 
