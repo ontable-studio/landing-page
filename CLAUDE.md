@@ -47,6 +47,16 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 - **Pictures can't be dragged, selected or long-pressed, anywhere:** the base layer in `main.css` sets `user-drag`/`user-select` to none for `img`, `svg`, `video`, `canvas` and friends, and `preventMediaDrag()` (installed once in `App`) cancels `dragstart` for media and for any link or button that wraps media (a project card), which also covers Firefox. Text links and selected text stay draggable. New pictures need nothing extra.
 - No `backdrop-filter`, no filter blurs and no animated gradients: they were a suspect for load-time flashes.
 
+## SEO
+
+- **One place decides a page's meta:** `src/seo/pages.ts` (`pageMeta(route)`: title, description, robots, preview image). Add a page there first; the build and the client both read it. Titles end in "— OnTable Studio"; descriptions stay between 50 and 160 characters.
+- **The build writes each page's head into its own HTML** (Vite plugin `seo` in `vite.config.ts`, helpers in `src/seo/render.ts`): `index.html` for Home and `projects/index.html`, `projects/<slug>/index.html`, `design-system/index.html`, plus `robots.txt` and `sitemap.xml`. The root `index.html` carries the `seo:head` and `seo:noscript` markers the plugin fills; keep them, and keep any title, description or icon inside them.
+- **`useSeo(route)`** (every page calls it) keeps the head right on client-side navigation. A project page passes the project object.
+- **Adding a project** needs: its entry in `src/data/projects.ts` and `public/og/<slug>.jpg` (run `python -I scripts/make-og-images.py .`, needs Pillow). Tests fail without the image. The sitemap, the page file and the structured data follow from the data.
+- **Site address:** `VITE_SITE_URL`, else Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, else `https://landing-page-ontable.vercel.app`. Canonicals, Open Graph URLs and the sitemap use it.
+- **Unknown paths are a real 404** (`public/404.html`, `noindex`); `vercel.json` has no rewrite on purpose. `/design-system` is `noindex` and not in the sitemap.
+- **Indexing needs Vercel Deployment Protection off** for the production domain (Settings → Deployment Protection); while it is on, crawlers are redirected to a login.
+
 ## Working rules
 
 - Implementation runs inline in one terminal session with Sonnet 5.5: no subagents.
