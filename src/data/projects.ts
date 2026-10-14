@@ -1,8 +1,5 @@
 /**
  * Project content for the Projects and detail pages: the one place to edit it.
- *
- * Still to add: `links` (the "Play on itch.io" button) for Craftboard Heroes and
- * OxShiftGen, once their itch.io URLs are known.
  */
 export const PROJECT_TYPES = ["Game", "Tool", "UI Design"] as const;
 export type ProjectType = (typeof PROJECT_TYPES)[number];
@@ -47,6 +44,12 @@ export const projects: Project[] = [
 			{ label: "Role", value: ROLE },
 			{ label: "Platform", value: "WebGL (HTML), Desktop" },
 			{ label: "Made for", value: "Game jam" },
+		],
+		links: [
+			{
+				label: "Play on itch.io",
+				href: "https://ontable-studio.itch.io/craftboard-heroes",
+			},
 		],
 		gallery: [
 			{
@@ -159,6 +162,12 @@ export const projects: Project[] = [
 			{ label: "Role", value: ROLE },
 			{ label: "Platform", value: "Desktop" },
 			{ label: "Made for", value: "Game jam" },
+		],
+		links: [
+			{
+				label: "Play on itch.io",
+				href: "https://ontable-studio.itch.io/oxshiftgen",
+			},
 		],
 		gallery: [
 			{

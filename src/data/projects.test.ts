@@ -95,6 +95,23 @@ describe("projects data", () => {
 		}
 	});
 
+	it("links the two game jam entries to their itch.io pages, and nothing else", () => {
+		expect(getProject("craftboard-heroes")?.links).toEqual([
+			{
+				label: "Play on itch.io",
+				href: "https://ontable-studio.itch.io/craftboard-heroes",
+			},
+		]);
+		expect(getProject("oxshiftgen")?.links).toEqual([
+			{
+				label: "Play on itch.io",
+				href: "https://ontable-studio.itch.io/oxshiftgen",
+			},
+		]);
+		expect(getProject("ketik-mancing")?.links ?? []).toEqual([]);
+		expect(getProject("laundry-kita")?.links ?? []).toEqual([]);
+	});
+
 	it("only links to https pages, each with a label", () => {
 		for (const p of projects) {
 			for (const link of p.links ?? []) {
