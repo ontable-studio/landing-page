@@ -28,14 +28,21 @@ Husky pre-commit: lint-staged (eslint + prettier auto-fix) → type-check → te
 
 ## Structure
 
-- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard, Tabs, Lightbox, DotGrid), `cva` + `cn()`, router-free
+- `src/components/ui/` — primitives (Button, Badge, Card, Container, ProjectCard, Tabs, Modal, Lightbox, SocialChips, DotGrid), `cva` + `cn()`, router-free
 - `src/components/layout/` — SectionHeader, Nav, Footer (both have `variant="overlay"` for Home, where they sit inside the one full-screen section; every other route gets the bar versions from `SiteLayout` in `App.tsx`)
 - `src/pages/` — routes: `/` (one full-screen section: nav, hero and footer together), `/projects`, `/projects/:slug`, `/design-system` (living style guide: update it when adding a token or component)
 - `src/data/projects.ts` — the one place project content lives; the four showcase games (Craftboard Heroes, Ketik Mancing, Laundry Kita, OxShiftGen), with pictures in `public/images/projects/<slug>/NN-name.webp`. `year` is optional (a project in development shows a `status` pill instead); credits (Date, Role, Platform, Made for) are added only when confirmed by the team; `links` renders external buttons such as "Play on itch.io" on the detail page. Each project has a `type` (Game, Tool, UI Design) that becomes a tab on `/projects` (filter kept in `?type=`) and a `category` shown on its card. Add a new type to `PROJECT_TYPES`
 - `Container` sizes: `default` (6xl), `narrow`, `wide` (7xl, tighter gutters; used by the nav, footer and every page except Home). The nav bar is not sticky: it scrolls away with the page
 - `RouterLink` (`layout/`) + `ProjectCard` `linkAs` give client-side card links while `ui/` stays router-free
-- `src/common/constants.ts` — `SITE` (placeholders marked TODO(user))
+- `src/common/constants.ts` — `SITE`: name, tagline, the studio email (`ontablestudio@gmail.com`) and the social links (Instagram, itch.io), which feed the footer chips, the contact dialog and the Organization JSON-LD
 - Each component: its own folder with `Name.tsx`, `index.ts`, `Name.test.tsx`
+
+## Contact
+
+- "Contact" in the nav (desktop and mobile menu) and the Home hero is a button, not a link: it opens the one `ContactDialog` held by `ContactProvider` (wrapped around the routes in `App`; `useContact().open()`). Outside a provider `open` does nothing, so components still render alone in tests.
+- The dialog is a `Modal` (the same one `Lightbox` uses): name, email and message, the studio email with a copy button, the social chips bottom-left and Send bottom-right. Validation and the `mailto:` text live in `layout/Contact/mailto.ts`.
+- **Send opens the visitor's email app** with the message ready (`mailto:`), because the site has no server. To send from the site instead, pass a different `onSend` (a form service or a Vercel function); the rest of the dialog stays as is.
+- The footer (both variants) ends with the same `SocialChips`, which open in a new tab.
 
 ## Motion and interaction
 

@@ -5,7 +5,9 @@ export const SITE = {
 	/** The tagline split into the lines the home headline sets on separate rows. */
 	taglineLines: TAGLINE_LINES,
 	tagline: TAGLINE_LINES.join(" "),
-	// TODO(user): fill in the real contact email and social links.
-	email: "hello@example.com",
-	social: [{ label: "itch.io", href: "https://itch.io" }],
+	email: "ontablestudio@gmail.com",
+	social: [
+		{ label: "Instagram", href: "https://www.instagram.com/ontable.games/" },
+		{ label: "itch.io", href: "https://ontable-studio.itch.io/" },
+	],
 };

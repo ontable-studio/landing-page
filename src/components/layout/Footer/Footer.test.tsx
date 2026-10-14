@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { SITE } from "../../../common/constants";
 import { Footer } from "./Footer";
 
@@ -9,7 +9,7 @@ describe("Footer", () => {
 		expect(screen.getByText(SITE.tagline)).toBeInTheDocument();
 	});
 
-	it("overlay variant keeps the name and links but drops the tagline", () => {
+	it("overlay variant keeps the name and the social chips but drops the tagline", () => {
 		render(<Footer variant="overlay" />);
 		expect(screen.getByText(SITE.name)).toBeInTheDocument();
 		expect(screen.queryByText(SITE.tagline)).not.toBeInTheDocument();
@@ -21,21 +21,32 @@ describe("Footer", () => {
 		}
 	});
 
-	it("underlines the social links from the left on hover and focus", () => {
+	it("shows Instagram and itch.io as chips, not as plain text links", () => {
 		render(<Footer />);
-		for (const s of SITE.social) {
-			const cls = screen.getByRole("link", { name: s.label }).className;
-			expect(cls).toContain("hover:after:scale-x-100");
-			expect(cls).toContain("focus-visible:after:scale-x-100");
+		for (const name of ["Instagram", "itch.io"]) {
+			const chip = screen.getByRole("link", { name });
+			expect(chip.className).toContain("rounded-full");
+			expect(chip.className).toContain("border");
+			expect(chip.querySelector('svg[aria-hidden="true"]')).toBeInTheDocument();
 		}
 	});
 
-	it("renders every social link", () => {
+	it("puts the chips at the right of both footers", () => {
+		for (const variant of ["bar", "overlay"] as const) {
+			const { container, unmount } = render(<Footer variant={variant} />);
+			const footer = container.querySelector("footer") as HTMLElement;
+			const list = within(footer).getByRole("list");
+			expect(list.parentElement?.lastElementChild).toBe(list);
+			unmount();
+		}
+	});
+
+	it("opens the chips in a new tab", () => {
 		render(<Footer />);
 		for (const s of SITE.social) {
 			expect(screen.getByRole("link", { name: s.label })).toHaveAttribute(
-				"href",
-				s.href
+				"target",
+				"_blank"
 			);
 		}
 	});

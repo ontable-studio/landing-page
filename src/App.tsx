@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, Route, Routes, useLocation } from "react-router";
+import { ContactProvider } from "./components/layout/Contact";
 import { Footer } from "./components/layout/Footer";
 import { Nav } from "./components/layout/Nav";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
@@ -33,7 +34,7 @@ export default function App(): React.JSX.Element {
 	useEffect(() => preventMediaDrag(), []);
 
 	return (
-		<>
+		<ContactProvider>
 			<ScrollToTop />
 			<Routes>
 				<Route path="/" element={<Home />} />
@@ -44,6 +45,6 @@ export default function App(): React.JSX.Element {
 					<Route path="*" element={<NotFound />} />
 				</Route>
 			</Routes>
-		</>
+		</ContactProvider>
 	);
 }
