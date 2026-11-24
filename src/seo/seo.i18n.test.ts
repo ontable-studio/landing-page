@@ -24,9 +24,7 @@ describe("pageMeta in Indonesian", () => {
 		expect(meta.description).toContain(" dan ");
 		expect(meta.path).toBe("/id");
 		expect(meta.locale).toBe("id");
-		expect(meta.heading).toBe(
-			"Kami membuat game dari meja kami, untuk meja Anda."
-		);
+		expect(meta.heading).toBe("Dari meja kami, untuk meja Anda.");
 	});
 
 	it("localizes the projects page and a project page", () => {

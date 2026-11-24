@@ -59,11 +59,11 @@ describe("Projects", () => {
 		expect(grid?.className).toMatch(/md:grid-cols-2/);
 	});
 
-	it("uses the wide container with tight vertical padding", () => {
+	it("uses the wide architectural container with tight vertical padding", () => {
 		const { container } = setup();
-		const root = container.firstElementChild;
-		expect(root?.className).toMatch(/max-w-7xl/);
-		expect(root?.className).not.toMatch(/py-section/);
+		const inner = container.querySelector(".max-w-7xl");
+		expect(inner).toBeInTheDocument();
+		expect(inner?.className).not.toMatch(/py-section/);
 	});
 });
 

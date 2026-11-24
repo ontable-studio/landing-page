@@ -1,5 +1,10 @@
 /** The English texts: the source every other language is checked against. */
 export const en = {
+	"a11y.skipToContent": "Skip to main content",
+	"crt.toggle": "Toggle retro CRT filter",
+	"crt.on": "CRT: ON",
+	"crt.off": "CRT: OFF",
+
 	"nav.homeLabel": "Studio, home",
 	"nav.projects": "Projects",
 	"nav.contact": "Contact",
@@ -8,14 +13,66 @@ export const en = {
 	"nav.languageEnglish": "English",
 	"nav.languageIndonesian": "Bahasa Indonesia",
 
-	"home.line1": "We make games",
-	"home.line2": "from our table.",
-	"home.line3": "To your table.",
+	"home.eyebrow": "OnTable Studio · Indie Games",
+	"home.mastheadRight": "05 titles · Indonesia",
+	"home.line1": "From our table",
+	"home.line2": "to yours.",
 	"home.description": "A small team building games, products and projects.",
 	"home.viewProjects": "View projects",
 	"home.contact": "Contact",
+	"home.deckLabel": "On the table",
+	"home.deckOpen": "Explore project",
+	"home.deckPrev": "Previous featured project",
+	"home.deckNext": "Next featured project",
+	"home.selectedEyebrow": "01 / Selected works",
+	"home.selectedTitle": "What’s on the table.",
+	"home.selectedAll": "All projects",
+	"home.craftEyebrow": "02 / Studio craft",
+	"home.craftTitle": "Small team, hands-on from sketch to build.",
+	"home.craftDisciplines": "Studio craft disciplines",
+	"home.craftSeeGame": "See in {title}",
+	"home.craft1Title": "Game Design",
+	"home.craft1Desc":
+		"Tactile core loops, readable rules, and mechanics built to feel responsive on the first try.",
+	"home.craft2Title": "Gameplay & Systems",
+	"home.craft2Desc":
+		"Responsive controls, co-op coordination, and lightweight builds for desktop and WebGL.",
+	"home.craft3Title": "2D & 3D Art",
+	"home.craft3Desc":
+		"Handmade cardboard arenas, cozy fishing docks, isometric streets, and bold visual silhouettes.",
+	"home.craft4Title": "Game Jams & Prototypes",
+	"home.craft4Desc":
+		"Fast, focused experiments shipped into playable builds—many starting on a single weekend.",
+	"home.faqEyebrow": "03 / Common questions",
+	"home.faqTitle": "Good to know before we play.",
+	"home.faqDescription":
+		"Quick answers about our games, playable builds, and how our small team works.",
+	"home.faqAsk": "Ask us directly",
+	"home.faq1Q": "Where can I play OnTable Studio’s games?",
+	"home.faq1A":
+		"Playable releases like Craftboard Heroes and OxShiftGen are published on our itch.io page, with WebGL browser builds and desktop downloads available directly from each project page.",
+	"home.faq2Q": "What platforms and formats do you build for?",
+	"home.faq2A":
+		"We focus on Desktop and WebGL (HTML5) builds so players can jump in quickly without heavy setups. Every project lists its supported platforms inside its spec sheet.",
+	"home.faq3Q": "What is the current status of Ketik Mancing?",
+	"home.faq3A":
+		"Ketik Mancing is currently in active development for Desktop. You can preview the latest gameplay screenshots, typing mechanics, and fish journal on its project page.",
+	"home.faq4Q": "Are you open to collaborations or project inquiries?",
+	"home.faq4A":
+		"Yes—whether it is a game collaboration, playtest feedback, or an interactive product idea, use the Contact button or write directly to ontablestudio@gmail.com.",
+	"home.faq5Q": "How do most of your games get started?",
+	"home.faq5A":
+		"Many begin as focused game jam experiments built over a single weekend—testing one tactile mechanic first, then polishing the strongest prototypes into full playable experiences.",
+	"home.ctaEyebrow": "04 / Collaborate",
+	"home.ctaTitle": "Have a game, prototype, or project in mind?",
+	"home.ctaDescription":
+		"Drop us a note about what you’re building. We read every message directly.",
 
+	"projects.eyebrow": "Archive",
 	"projects.title": "Projects",
+	"projects.description":
+		"Playable games, jam builds, and works in progress crafted by our team.",
+	"projects.count": "{count} titles",
 	"projects.tabs": "Project types",
 	"projects.all": "All",
 	"projects.empty": "No projects yet.",
@@ -23,8 +80,14 @@ export const en = {
 	"type.tool": "Tool",
 	"type.ui-design": "UI Design",
 	"card.view": "View",
+	"card.inProgressShort": "WIP",
 
 	"project.back": "Back",
+	"project.specs": "Project details",
+	"project.specHeader": "SPEC SHEET // DATA",
+	"project.galleryTitle": "Gallery",
+	"project.frames": "{count} frames",
+	"project.nextEyebrow": "Up next",
 	"project.next": "Next project",
 	"project.viewLarger": "View larger: {alt}",
 	"credit.date": "Date",
@@ -38,6 +101,9 @@ export const en = {
 	"lightbox.close": "Close preview",
 	"lightbox.previous": "Previous image",
 	"lightbox.next": "Next image",
+	"lightbox.goTo": "Go to image {current} of {total}",
+	"lightbox.pagination": "Image pagination",
+	"lightbox.hint": "Use ← / → or Esc",
 
 	"contact.dialogLabel": "Contact",
 	"contact.title": "Tell us about your project",
@@ -45,9 +111,18 @@ export const en = {
 	"contact.copy": "Copy email",
 	"contact.copied": "Copied",
 	"contact.close": "Close contact",
+	"contact.topic": "Topic (optional)",
+	"contact.topicCollab": "Collaboration",
+	"contact.topicFeedback": "Game feedback",
+	"contact.topicPress": "Press & media",
+	"contact.topicGeneral": "General",
 	"contact.name": "Name",
+	"contact.namePlaceholder": "Your name",
 	"contact.email": "Email",
+	"contact.emailPlaceholder": "you@example.com",
 	"contact.message": "Message",
+	"contact.messagePlaceholder": "Tell us about your game, idea, or project...",
+	"contact.charCount": "{count} / {max}",
 	"contact.send": "Send",
 	"contact.sent":
 		"Your email app should open with the message ready to send. If nothing happens, write to {email}.",
@@ -58,7 +133,10 @@ export const en = {
 	"contact.mailSubject": "Message from {name}",
 
 	"notFound.title": "Page not found",
+	"notFound.description":
+		"The page you’re looking for may have moved or never existed.",
 	"notFound.back": "Back to home",
+	"notFound.browseProjects": "Browse projects",
 
 	"seo.list.and": "and",
 	"seo.home.title": "OnTable Studio: a small game development team",

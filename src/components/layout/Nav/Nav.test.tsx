@@ -31,28 +31,31 @@ describe("Nav", () => {
 		).toHaveAttribute("href", "/projects");
 	});
 
-	it("bar variant scrolls away with the page: not sticky, not blurred, no border", () => {
+	it("renders a fixed navbar with warm parchment fill and no backdrop blur", () => {
 		setup();
 		const cls = screen.getByRole("navigation").className;
-		expect(cls).not.toMatch(/sticky|fixed|backdrop-blur|border/);
+		expect(cls).toMatch(/\bfixed\b/);
+		expect(cls).toMatch(/bg-parchment/);
+		expect(cls).toMatch(/border-b/);
+		expect(cls).not.toMatch(/backdrop-blur/);
 	});
 
-	it("overlay variant is plain: no sticky, no blur, no border", () => {
+	it("overlay variant also uses the fixed filled bar with no blur", () => {
 		setup("overlay");
 		const cls = screen.getByRole("navigation").className;
-		expect(cls).not.toMatch(/sticky|backdrop-blur|border/);
+		expect(cls).toMatch(/\bfixed\b/);
+		expect(cls).not.toMatch(/backdrop-blur/);
 		expect(screen.getByRole("link", { name: /ontable/i })).toHaveAttribute(
 			"href",
 			"/"
 		);
 	});
 
-	it("opens the bar's mobile menu without a border", async () => {
+	it("opens the mobile menu cleanly when toggled", async () => {
 		setup();
 		await userEvent.click(screen.getByRole("button", { name: /menu/i }));
 		const menu = document.getElementById("mobile-menu");
 		expect(menu).toBeInTheDocument();
-		expect(menu?.className).not.toMatch(/border/);
 	});
 
 	it("underlines the Projects link and the Contact button from the left on hover and focus", () => {

@@ -73,15 +73,15 @@ describe("App routes", () => {
 		expect(document.querySelectorAll("footer")).toHaveLength(1);
 	});
 
-	it("shows a pointer-lit dot grid on the home page", () => {
+	it("uses a clean broadsheet hero without a dot-grid glow on the home page", () => {
 		renderAt("/");
-		expect(document.querySelector("[data-dot-grid]")).toBeInTheDocument();
-		expect(document.querySelector("[data-glow]")).toBeInTheDocument();
+		expect(document.querySelector("[data-hero-home]")).toBeInTheDocument();
+		expect(document.querySelector("[data-glow]")).toBeNull();
 	});
 
-	it("shows a still dot grid, without the glow, behind the other pages", () => {
+	it("uses clean solid warm surfaces without a dot-grid floor on inner pages", () => {
 		renderAt("/projects");
-		expect(document.querySelector("[data-dot-grid]")).toBeInTheDocument();
+		expect(document.querySelector("[data-dot-grid]")).toBeNull();
 		expect(document.querySelector("[data-glow]")).toBeNull();
 	});
 

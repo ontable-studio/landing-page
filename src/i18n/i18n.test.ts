@@ -106,13 +106,9 @@ describe("translate", () => {
 	});
 
 	it("builds the tagline and its headline lines from the dictionary", () => {
-		expect(headlineLines("en")).toEqual([
-			"We make games",
-			"from our table.",
-			"To your table.",
-		]);
-		expect(tagline("en")).toBe("We make games from our table. To your table.");
-		expect(headlineLines("id")).toHaveLength(3);
+		expect(headlineLines("en")).toEqual(["From our table", "to yours."]);
+		expect(tagline("en")).toBe("From our table to yours.");
+		expect(headlineLines("id")).toHaveLength(2);
 		expect(tagline("id")).toBe(headlineLines("id").join(" "));
 	});
 });

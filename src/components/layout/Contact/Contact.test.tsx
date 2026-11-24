@@ -147,6 +147,26 @@ describe("ContactDialog", () => {
 		expect(onClose).toHaveBeenCalledTimes(2);
 	});
 
+	it("lets visitors tag a topic chip that prefixes the mailto subject", async () => {
+		const { onSend } = setup();
+		const collab = screen.getByRole("button", { name: "Collaboration" });
+		await userEvent.click(collab);
+		expect(collab).toHaveAttribute("aria-pressed", "true");
+		await fill("Alex Rivera", "alex@example.test", "Let us make a game");
+		await userEvent.click(screen.getByRole("button", { name: "Send" }));
+		const url = onSend.mock.calls[0][0] as string;
+		expect(decodeURIComponent(url)).toContain(
+			"subject=[Collaboration] Message from Alex Rivera"
+		);
+	});
+
+	it("updates the message character counter live", async () => {
+		setup();
+		expect(screen.getByText("0 / 1500")).toBeInTheDocument();
+		await userEvent.type(screen.getByLabelText("Message"), "Hello");
+		expect(screen.getByText("5 / 1500")).toBeInTheDocument();
+	});
+
 	it("puts the chips on the left and Send on the right of the bottom row", () => {
 		setup();
 		const send = screen.getByRole("button", { name: "Send" });

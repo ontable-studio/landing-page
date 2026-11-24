@@ -26,10 +26,10 @@ describe("main.css tokens", () => {
 		expect(css).not.toContain("@layer components");
 	});
 
-	it("uses Poppins for display, with no leftover Blippo", () => {
-		expect(css).toMatch(/--font-display: "Poppins"/);
+	it("uses Bricolage Grotesque for display, with no leftover Blippo", () => {
+		expect(css).toMatch(/--font-display: "Bricolage Grotesque"/);
 		expect(css.toLowerCase()).not.toContain("blippo");
-		expect(css).toContain("poppins-latin-700-normal.woff2");
+		expect(css).toContain("bricolage-grotesque-latin-wght-normal.woff2");
 	});
 
 	it("gives every heading step a bold weight", () => {

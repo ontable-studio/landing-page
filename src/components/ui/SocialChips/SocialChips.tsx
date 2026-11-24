@@ -63,7 +63,7 @@ export function SocialChips({
 						href={link.href}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="focus-visible:outline-brand border-surface-border text-text-primary hover:bg-surface focus-visible:bg-surface text-body-sm inline-flex h-9 items-center gap-2 rounded-full border px-4 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2"
+						className="focus-visible:outline-brand border-ink-200 bg-canvas text-text-primary hover:border-ink-400 hover:bg-surface focus-visible:border-ink-400 focus-visible:bg-surface text-body-sm inline-flex h-9 items-center gap-2 rounded-full border px-4 font-medium transition-[background-color,border-color,scale] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.98]"
 					>
 						{icon(link.label)}
 						{link.label}

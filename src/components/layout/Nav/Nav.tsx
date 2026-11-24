@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { useT } from "../../../i18n";
+import { cn } from "../../../lib/cn";
 import { LanguageSwitcher } from "../LanguageSwitcher";
-import { Container } from "../../ui/Container";
 import { underlineLink } from "../../ui/linkStyles";
 import { useContact } from "../Contact";
 
@@ -17,12 +17,22 @@ function NavLinks({
 }) {
 	const { open } = useContact();
 	const { t, to } = useT();
+	const { pathname } = useLocation();
+	const projectsPath = to("/projects");
+	const onProjects =
+		pathname === projectsPath || pathname.startsWith(`${projectsPath}/`);
+
 	const itemClass = stacked
-		? "focus-visible:outline-brand hover:bg-ink-100 focus-visible:bg-ink-100 text-body flex h-12 w-full cursor-pointer items-center rounded-xl px-4 text-left font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2"
+		? "focus-visible:outline-brand hover:bg-sandstone/70 focus-visible:bg-sandstone/70 text-body flex h-12 w-full cursor-pointer items-center rounded-xl px-4 text-left font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2"
 		: `text-body font-medium ${underlineLink}`;
 	return (
 		<>
-			<Link to={to("/projects")} onClick={onNavigate} className={itemClass}>
+			<Link
+				to={projectsPath}
+				onClick={onNavigate}
+				aria-current={onProjects ? "page" : undefined}
+				className={cn(itemClass, onProjects && "text-brand-ink")}
+			>
 				{t("nav.projects")}
 			</Link>
 			<button
@@ -35,43 +45,19 @@ function NavLinks({
 			>
 				{t("nav.contact")}
 			</button>
-			<LanguageSwitcher
-				className={
-					stacked ? "border-surface-border mt-1 border-t px-2 pt-3" : undefined
-				}
-			/>
+			<LanguageSwitcher className={stacked ? "mt-2 self-start" : undefined} />
 		</>
 	);
 }
 
 interface NavProps {
-	/** `bar`: plain bar that scrolls away with the page. `overlay`: plain row that sits inside a full-screen section. */
+	/** Kept for API compatibility; both variants render the fixed parchment navigation rail. */
 	variant?: "bar" | "overlay";
 }
 
-/** Centred container for the bar, full-bleed padded row for the overlay. */
-function Wrapper({
-	overlay,
-	children,
-}: {
-	overlay: boolean;
-	children: React.ReactNode;
-}) {
-	return overlay ? (
-		<div className="flex h-16 w-full items-center justify-between px-4 lg:h-20 lg:px-10">
-			{children}
-		</div>
-	) : (
-		<Container size="wide" className="flex h-16 items-center justify-between">
-			{children}
-		</Container>
-	);
-}
-
-/** Top navigation: logo and links, collapsing to a menu on small screens. */
+/** Fixed top navigation bar matching Footer's warm parchment surface & continuous page rails. */
 export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 	const { t, to } = useT();
-	const overlay = variant === "overlay";
 	const [open, setOpen] = useState(false);
 	const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -88,19 +74,27 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 	}, [open]);
 
 	return (
-		<nav className={overlay ? "relative z-20" : "bg-canvas"}>
-			<Wrapper overlay={overlay}>
-				<Link to={to("/")} className="flex items-center gap-3">
+		<nav
+			data-variant={variant}
+			className="bg-parchment hatch-gutter border-ink-900/15 fixed inset-x-0 top-0 z-50 border-b shadow-[0_2px_12px_-6px_rgba(23,21,19,0.16)]"
+		>
+			<div className="bg-parchment border-ink-900/15 mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 min-[1320px]:border-x sm:px-6 lg:h-18 lg:px-8">
+				<Link
+					to={to("/")}
+					className="focus-visible:outline-brand group flex items-center gap-3 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4"
+				>
 					<img
 						src="/images/ontable-logo.svg"
 						alt=""
-						className="size-9 rounded-xl"
+						className="size-9 rounded-xl transition-transform duration-300 ease-out group-hover:scale-105 group-hover:-rotate-6"
 					/>
-					<span className="font-display text-title">OnTable</span>
+					<span className="font-display text-title font-bold tracking-tight">
+						OnTable
+					</span>
 					<span className="sr-only">{t("nav.homeLabel")}</span>
 				</Link>
 
-				<div className="flex items-center gap-8 max-[720px]:hidden">
+				<div className="flex items-center gap-7 max-[720px]:hidden">
 					<NavLinks />
 				</div>
 
@@ -111,7 +105,7 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 					aria-expanded={open}
 					aria-controls="mobile-menu"
 					onClick={() => setOpen((value) => !value)}
-					className="focus-visible:outline-brand hover:bg-surface focus-visible:bg-surface -mr-2 hidden size-11 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2 max-[720px]:flex"
+					className="focus-visible:outline-brand hover:bg-sandstone/70 focus-visible:bg-sandstone/70 -mr-2 hidden size-11 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2 max-[720px]:flex"
 				>
 					<svg
 						viewBox="0 0 24 24"
@@ -127,22 +121,16 @@ export function Nav({ variant = "bar" }: NavProps): React.JSX.Element {
 						/>
 					</svg>
 				</button>
-			</Wrapper>
+			</div>
 
 			{open && (
 				<div
 					id="mobile-menu"
-					className={
-						overlay
-							? "bg-canvas border-surface-border absolute inset-x-4 top-full z-30 flex flex-col gap-1 rounded-2xl border p-2 shadow-xl shadow-black/10 min-[721px]:hidden"
-							: "bg-surface mx-4 mb-4 flex flex-col gap-1 rounded-2xl p-2 min-[721px]:hidden"
-					}
+					className="bg-parchment border-ink-900/15 absolute inset-x-4 top-full z-50 mt-2 flex flex-col gap-1 rounded-2xl border p-3 shadow-xl shadow-black/15 min-[721px]:hidden"
 				>
 					<NavLinks
 						stacked
 						onNavigate={() => {
-							// Hand focus to the toggle first: the menu is about to go away, and
-							// the contact dialog gives focus back to where it was opened from.
 							toggleRef.current?.focus();
 							setOpen(false);
 						}}
