@@ -50,14 +50,28 @@ describe("Lightbox", () => {
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});
 
-	it("moves with the arrow keys, wrapping at the ends", async () => {
+	it("moves with Arrow, Home and End keys, wrapping on arrows", async () => {
 		const first = setup(0);
 		await userEvent.keyboard("{ArrowLeft}");
+		expect(first.onIndexChange).toHaveBeenLastCalledWith(2);
+		await userEvent.keyboard("{End}");
 		expect(first.onIndexChange).toHaveBeenLastCalledWith(2);
 		first.unmount();
 		const last = setup(2);
 		await userEvent.keyboard("{ArrowRight}");
 		expect(last.onIndexChange).toHaveBeenLastCalledWith(0);
+		await userEvent.keyboard("{Home}");
+		expect(last.onIndexChange).toHaveBeenLastCalledWith(0);
+	});
+
+	it("renders clickable bottom pagination dots that jump to any image", async () => {
+		const { onIndexChange } = setup(1);
+		const dot3 = screen.getByRole("button", { name: "Go to image 3 of 3" });
+		expect(
+			screen.getByRole("button", { name: "Go to image 2 of 3" })
+		).toHaveAttribute("aria-current", "true");
+		await userEvent.click(dot3);
+		expect(onIndexChange).toHaveBeenLastCalledWith(2);
 	});
 
 	it("has Previous and Next buttons that move one picture", async () => {
@@ -125,12 +139,12 @@ describe("Lightbox", () => {
 	it("keeps Tab inside the dialog", async () => {
 		setup(1);
 		const close = screen.getByRole("button", { name: "Close preview" });
-		const next = screen.getByRole("button", { name: "Next image" });
-		next.focus();
+		const lastDot = screen.getByRole("button", { name: "Go to image 3 of 3" });
+		lastDot.focus();
 		await userEvent.tab();
 		expect(close).toHaveFocus();
 		await userEvent.tab({ shift: true });
-		expect(next).toHaveFocus();
+		expect(lastDot).toHaveFocus();
 	});
 
 	it("stops the page behind from scrolling while open, and restores it after", () => {

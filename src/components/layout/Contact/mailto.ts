@@ -5,6 +5,7 @@ export interface ContactValues {
 	name: string;
 	email: string;
 	message: string;
+	topic?: string;
 }
 
 export type ContactErrors = Partial<Record<keyof ContactValues, string>>;
@@ -39,7 +40,9 @@ export function contactMailto(
 ): string {
 	const name = values.name.trim();
 	const email = values.email.trim();
-	const subject = translate(locale, "contact.mailSubject", { name });
+	const baseSubject = translate(locale, "contact.mailSubject", { name });
+	const topic = values.topic?.trim();
+	const subject = topic ? `[${topic}] ${baseSubject}` : baseSubject;
 	const body = `${values.message.trim()}\n\n${name} (${email})`;
 	return `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }

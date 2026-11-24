@@ -8,3 +8,7 @@ export { DotGrid } from "./DotGrid";
 export { Lightbox } from "./Lightbox";
 export { SocialChips } from "./SocialChips";
 export { Modal } from "./Modal";
+export { Accordion, type AccordionItem } from "./Accordion";
+export { Reveal } from "./Reveal";
+export { Marquee, type MarqueeEntry } from "./Marquee";
+export { CrtScreen, type GlitchLevel } from "./CrtScreen";

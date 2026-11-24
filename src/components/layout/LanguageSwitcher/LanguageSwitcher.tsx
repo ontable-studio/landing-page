@@ -28,7 +28,10 @@ export function LanguageSwitcher({
 		<div
 			role="group"
 			aria-label={t("nav.language")}
-			className={cn("flex items-center gap-1", className)}
+			className={cn(
+				"border-ink-200 bg-canvas inline-flex items-center gap-0.5 rounded-full border p-1",
+				className
+			)}
 		>
 			{LOCALES.map((target) => {
 				const current = target === locale;
@@ -41,8 +44,10 @@ export function LanguageSwitcher({
 						aria-label={t(NAMES[target])}
 						aria-current={current ? "true" : undefined}
 						className={cn(
-							"focus-visible:outline-brand hover:bg-surface focus-visible:bg-surface text-body-sm inline-flex h-9 items-center rounded-full px-3 font-mono font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2",
-							current ? "bg-surface text-text-primary" : "text-text-secondary"
+							"focus-visible:outline-brand text-caption inline-flex h-7 items-center rounded-full px-3 font-mono font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2",
+							current
+								? "bg-ink-900 text-white"
+								: "text-text-secondary hover:bg-surface focus-visible:bg-surface hover:text-text-primary"
 						)}
 					>
 						{LOCALE_LABEL[target]}

@@ -184,6 +184,36 @@ export const projects: Project[] = [
 			},
 		],
 	},
+	{
+		slug: "colgate-vitamin-c",
+		title: "Colgate Vitamin C",
+		type: "Game",
+		category: "Arcade",
+		year: 2026,
+		summary:
+			"A portrait touchscreen booth game built for Colgate Optic White Vitamin C — 95% Vitamin C Blast. Tap floating Vitamin C molecules for 30 seconds to fill the toothbrush meter to 95%, running offline-first on a 43-inch vertical TV.",
+		image: img("colgate-vitamin-c", "01-title"),
+		credits: [
+			{ label: "Date", value: "2026" },
+			{ label: "Role", value: ROLE },
+			{ label: "Platform", value: "Web (PWA), Portrait TV Booth" },
+			{ label: "Made for", value: "Colgate" },
+		],
+		gallery: [
+			{
+				src: img("colgate-vitamin-c", "02-booth-screens"),
+				alt: "Three portrait booth TV screens: the attract screen, live gameplay, and the 95% victory screen",
+			},
+			{
+				src: img("colgate-vitamin-c", "03-gameplay-flow"),
+				alt: "How to Play scoring guide (+3, +2, +1 molecules) beside live 30-second gameplay with the toothbrush meter",
+			},
+			{
+				src: img("colgate-vitamin-c", "04-results"),
+				alt: "The 95% victory screen and time-up result screen with Home and Play Again controls",
+			},
+		],
+	},
 ];
 
 /** The project types in use, once each, in order of first appearance. */

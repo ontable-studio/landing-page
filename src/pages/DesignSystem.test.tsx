@@ -34,11 +34,10 @@ describe("DesignSystem page", () => {
 		]);
 	});
 
-	it("sticks its section nav to the top, now that the site nav scrolls away", () => {
+	it("sticks its section nav directly beneath the fixed site navbar", () => {
 		render(<DesignSystem />);
 		const cls = screen.getByRole("navigation", { name: "Sections" }).className;
-		expect(cls).toMatch(/sticky top-0/);
-		expect(cls).not.toMatch(/top-16/);
+		expect(cls).toMatch(/sticky top-16/);
 	});
 
 	it("keeps itself out of search results", () => {

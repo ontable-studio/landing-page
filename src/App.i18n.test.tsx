@@ -17,19 +17,17 @@ describe("App in Indonesian", () => {
 		at("/id");
 		expect(
 			screen.getByRole("heading", { level: 1 }).getAttribute("aria-label")
-		).toBe("Kami membuat game dari meja kami, untuk meja Anda.");
-		expect(screen.getByRole("link", { name: "Lihat proyek" })).toHaveAttribute(
-			"href",
-			"/id/projects"
-		);
+		).toBe("Dari meja kami, untuk meja Anda.");
+		expect(
+			screen.getAllByRole("link", { name: "Lihat proyek" })[0]
+		).toHaveAttribute("href", "/id/projects");
 	});
 
 	it("keeps / in English", () => {
 		at("/");
-		expect(screen.getByRole("link", { name: "View projects" })).toHaveAttribute(
-			"href",
-			"/projects"
-		);
+		expect(
+			screen.getAllByRole("link", { name: "View projects" })[0]
+		).toHaveAttribute("href", "/projects");
 	});
 
 	it("shows the projects page in Indonesian, with links that stay in Indonesian", () => {

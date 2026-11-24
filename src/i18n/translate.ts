@@ -18,13 +18,9 @@ export function translate(
 	);
 }
 
-/** The three lines the home headline sets on separate rows. */
+/** The two lines the home headline sets on separate rows. */
 export function headlineLines(locale: Locale): string[] {
-	return [
-		translate(locale, "home.line1"),
-		translate(locale, "home.line2"),
-		translate(locale, "home.line3"),
-	];
+	return [translate(locale, "home.line1"), translate(locale, "home.line2")];
 }
 
 /** The headline as one sentence. */

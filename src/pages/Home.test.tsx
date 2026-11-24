@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { SITE } from "../common/constants";
 import { ContactProvider } from "../components/layout/Contact";
+import { projects } from "../data/projects";
 import Home from "./Home";
 
 function setup() {
@@ -24,18 +25,24 @@ describe("Home", () => {
 		).toBeInTheDocument();
 	});
 
-	it("links to the projects", () => {
+	it("provides a skip-to-main-content link targeting #main-content", () => {
 		setup();
-		expect(screen.getByRole("link", { name: "View projects" })).toHaveAttribute(
-			"href",
-			"/projects"
-		);
+		const skip = screen.getByRole("link", { name: "Skip to main content" });
+		expect(skip).toHaveAttribute("href", "#main-content");
+		expect(document.getElementById("main-content")).toBeInTheDocument();
 	});
 
-	it("has Contact buttons in the nav and under the headline that open the contact dialog", async () => {
+	it("links to the projects", () => {
+		setup();
+		expect(
+			screen.getAllByRole("link", { name: "View projects" })[0]
+		).toHaveAttribute("href", "/projects");
+	});
+
+	it("has Contact buttons that open the contact dialog instead of linking away", async () => {
 		setup();
 		const buttons = screen.getAllByRole("button", { name: "Contact" });
-		expect(buttons).toHaveLength(2);
+		expect(buttons.length).toBeGreaterThanOrEqual(2);
 		expect(
 			screen.queryByRole("link", { name: "Contact" })
 		).not.toBeInTheDocument();
@@ -50,17 +57,10 @@ describe("Home", () => {
 		);
 	});
 
-	it("hides the decorative mark from assistive technology", () => {
-		const { container } = setup();
-		const mark = container.querySelector('img[src="/images/ontable-logo.svg"]');
-		expect(mark).toHaveAttribute("alt", "");
-		expect(mark).toHaveAttribute("aria-hidden", "true");
-	});
-
-	it("raises the headline in three masked lines that join into the tagline", () => {
+	it("raises the headline in two masked lines that join into the tagline", () => {
 		const { container } = setup();
 		const lines = [...container.querySelectorAll("h1 [data-line]")];
-		expect(lines).toHaveLength(3);
+		expect(lines).toHaveLength(2);
 		expect(lines.map((l) => l.textContent?.trim()).join(" ")).toBe(
 			SITE.tagline
 		);
@@ -72,56 +72,97 @@ describe("Home", () => {
 	it("leaves room under every masked line for descenders like g and y", () => {
 		const { container } = setup();
 		const masks = [...container.querySelectorAll("h1 > span")];
-		expect(masks).toHaveLength(3);
+		expect(masks).toHaveLength(2);
 		for (const mask of masks) {
 			expect(mask.className).toContain("pb-[0.2em]");
 			expect(mask.className).toContain("mb-[-0.2em]");
 		}
 	});
 
-	it("shows the description and buttons at once, without an entrance", () => {
+	it("uses a clean broadsheet hero with no dot-grid spotlight or mouse-drift", () => {
 		const { container } = setup();
-		const description = screen.getByText(/small team building games/i);
-		const buttons = screen.getByRole("link", { name: "View projects" });
-		expect(description.className).not.toMatch(/animate-/);
-		expect(buttons.parentElement?.className).not.toMatch(/animate-/);
-		expect(container.querySelectorAll("[class*=animate-rise]")).toHaveLength(0);
+		const hero = container.querySelector("[data-hero-home]") as HTMLElement;
+		expect(hero).toBeInTheDocument();
+		expect(hero.querySelector("[data-dot-grid]")).toBeNull();
+		expect(hero.querySelector("[data-glow]")).toBeNull();
+		const deck = container.querySelector("[data-tabletop-deck]") as HTMLElement;
+		expect(deck.getAttribute("style")).toBeNull();
 	});
 
-	it("holds the nav and the footer inside the one full-screen section", () => {
-		const { container } = setup();
-		const section = container.querySelector("section");
-		expect(container.querySelectorAll("nav")).toHaveLength(1);
-		expect(container.querySelectorAll("footer")).toHaveLength(1);
-		expect(section).toContainElement(container.querySelector("nav"));
-		expect(section).toContainElement(container.querySelector("footer"));
-		expect(section?.className).toContain("min-h-svh");
-	});
-
-	it("uses a plain nav, with no sticky bar or blur", () => {
+	it("has exactly one fixed parchment nav and one site footer", () => {
 		const { container } = setup();
 		const nav = container.querySelector("nav");
-		expect(nav?.className).not.toMatch(/sticky|backdrop-blur|border-b/);
+		expect(container.querySelectorAll("nav")).toHaveLength(1);
+		expect(container.querySelectorAll("footer")).toHaveLength(1);
+		expect(nav?.className).toMatch(/\bfixed\b/);
+		expect(nav?.className).toMatch(/bg-parchment/);
+		expect(nav?.className).not.toMatch(/backdrop-blur/);
 	});
 
-	it("draws a flat orange disc with no gradient wash", () => {
+	it("shuffles the top card to the back of the physical 4-card hero stack", async () => {
 		const { container } = setup();
-		expect(container.innerHTML).not.toMatch(/bg-radial|bg-linear/);
+		const deck = container.querySelector("[data-tabletop-deck]") as HTMLElement;
+		expect(
+			within(deck).getByRole("heading", { name: projects[0].title })
+		).toBeInTheDocument();
+		expect(deck.querySelectorAll("[data-stack-card]")).toHaveLength(
+			projects.length
+		);
+
+		const nextBtn = within(deck).getByRole("button", {
+			name: "Next featured project",
+		});
+		await userEvent.click(nextBtn);
+		expect(
+			await within(deck).findByRole("heading", { name: projects[1].title })
+		).toBeInTheDocument();
+
+		const cards = [...deck.querySelectorAll("[data-stack-card]")];
+		// Previous top card (index 0) moved to the back slot (length - 1).
+		expect(cards[0]).toHaveAttribute("data-slot", String(projects.length - 1));
+		expect(cards[1]).toHaveAttribute("data-slot", "0");
 	});
 
-	it("lights the dots near the pointer behind the content", () => {
+	it("renders the kinetic studio marquee ribbon", () => {
 		const { container } = setup();
-		const section = container.querySelector("section");
-		const grid = container.querySelector("[data-dot-grid]");
-		expect(section).toContainElement(grid as HTMLElement);
-		expect(container.querySelector("[data-glow]")).toBeInTheDocument();
+		expect(container.querySelector("[data-marquee]")).toBeInTheDocument();
 	});
 
-	it("lets the logo disc drift against the pointer", () => {
+	it("switches screenshots in the dark interactive studio craft showcase", async () => {
 		const { container } = setup();
-		const disc = container.querySelector('img[src="/images/ontable-logo.svg"]');
-		expect(disc?.getAttribute("style")).toMatch(/var\(--nx/);
-		expect(disc?.getAttribute("style")).toMatch(/var\(--ny/);
+		const craft = container.querySelector(
+			"[data-craft-showcase]"
+		) as HTMLElement;
+		expect(craft).toBeInTheDocument();
+		const systemsBtn = within(craft).getByRole("button", {
+			name: /gameplay & systems/i,
+		});
+		await userEvent.click(systemsBtn);
+		expect(systemsBtn).toHaveAttribute("aria-pressed", "true");
+		expect(
+			within(craft).getByRole("link", { name: /see in oxshiftgen/i })
+		).toHaveAttribute("href", "/projects/oxshiftgen");
+	});
+
+	it("renders the FAQ accordion and toggles answers", async () => {
+		const { container } = setup();
+		const faq = container.querySelector("[data-faq]") as HTMLElement;
+		const secondQ = within(faq).getByRole("button", {
+			name: /what platforms and formats/i,
+		});
+		expect(secondQ).toHaveAttribute("aria-expanded", "false");
+		await userEvent.click(secondQ);
+		expect(secondQ).toHaveAttribute("aria-expanded", "true");
+	});
+
+	it("showcases all studio projects across the page", () => {
+		setup();
+		for (const project of projects) {
+			const links = screen
+				.getAllByRole("link")
+				.filter((a) => a.getAttribute("href") === `/projects/${project.slug}`);
+			expect(links.length).toBeGreaterThanOrEqual(1);
+		}
 	});
 
 	it("describes the page for search engines and social cards", () => {
@@ -139,10 +180,5 @@ describe("Home", () => {
 				.querySelector('meta[property="og:image"]')
 				?.getAttribute("content")
 		).toBe("https://landing-page-ontable.vercel.app/og/default.jpg");
-	});
-
-	it("is a single section", () => {
-		const { container } = setup();
-		expect(container.querySelectorAll("section")).toHaveLength(1);
 	});
 });

@@ -1,6 +1,6 @@
 /** Font files the first screen needs: the display face and the body face. */
 export const FONT_TARGETS = [
-	"poppins-latin-700-normal",
+	"bricolage-grotesque-latin-wght-normal",
 	"instrument-sans-latin-wght-normal",
 ];
 

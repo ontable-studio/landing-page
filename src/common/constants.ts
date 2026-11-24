@@ -1,4 +1,4 @@
-const TAGLINE_LINES = ["We make games", "from our table.", "To your table."];
+const TAGLINE_LINES = ["From our table", "to yours."];
 
 export const SITE = {
 	name: "OnTable Studio",

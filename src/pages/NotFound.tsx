@@ -1,6 +1,8 @@
 import { Link } from "react-router";
 import { useT } from "../i18n";
-import { Container } from "../components/ui/Container";
+import { cn } from "../lib/cn";
+import { buttonVariants } from "../components/ui/Button";
+import { SectionFrame } from "../components/layout/SectionFrame";
 import { SectionHeader } from "../components/layout/SectionHeader";
 import { useSeo } from "../seo/useSeo";
 
@@ -9,14 +11,30 @@ export default function NotFound(): React.JSX.Element {
 	const { t, to } = useT();
 
 	return (
-		<Container size="wide" className="py-section lg:py-section-lg">
-			<SectionHeader as="h1" title={t("notFound.title")} />
-			<Link
-				to={to("/")}
-				className="text-brand mt-6 inline-block font-medium underline"
-			>
-				{t("notFound.back")}
-			</Link>
-		</Container>
+		<SectionFrame
+			surfaceClass="bg-cream"
+			innerClassName="py-section lg:py-section-lg px-4 sm:px-6 lg:px-8"
+		>
+			<SectionHeader
+				as="h1"
+				eyebrow="404"
+				title={t("notFound.title")}
+				description={t("notFound.description")}
+			/>
+			<div className="mt-8 flex flex-wrap gap-3">
+				<Link
+					to={to("/")}
+					className={cn(buttonVariants({ variant: "primary", size: "md" }))}
+				>
+					{t("notFound.back")}
+				</Link>
+				<Link
+					to={to("/projects")}
+					className={cn(buttonVariants({ variant: "outline", size: "md" }))}
+				>
+					{t("notFound.browseProjects")}
+				</Link>
+			</div>
+		</SectionFrame>
 	);
 }

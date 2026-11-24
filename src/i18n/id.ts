@@ -2,6 +2,11 @@ import type { en } from "./en";
 
 /** The Indonesian texts. Every key of `en` must be here, or type-check fails. */
 export const id: Record<keyof typeof en, string> = {
+	"a11y.skipToContent": "Langsung ke konten utama",
+	"crt.toggle": "Aktifkan atau matikan filter TV CRT retro",
+	"crt.on": "CRT: ON",
+	"crt.off": "CRT: OFF",
+
 	"nav.homeLabel": "Studio, beranda",
 	"nav.projects": "Proyek",
 	"nav.contact": "Kontak",
@@ -10,14 +15,66 @@ export const id: Record<keyof typeof en, string> = {
 	"nav.languageEnglish": "English",
 	"nav.languageIndonesian": "Bahasa Indonesia",
 
-	"home.line1": "Kami membuat game",
-	"home.line2": "dari meja kami,",
-	"home.line3": "untuk meja Anda.",
+	"home.eyebrow": "OnTable Studio · Game Indie",
+	"home.mastheadRight": "05 karya · Indonesia",
+	"home.line1": "Dari meja kami,",
+	"home.line2": "untuk meja Anda.",
 	"home.description": "Tim kecil yang membuat game, produk, dan proyek.",
 	"home.viewProjects": "Lihat proyek",
 	"home.contact": "Kontak",
+	"home.deckLabel": "Di atas meja",
+	"home.deckOpen": "Lihat detail",
+	"home.deckPrev": "Proyek unggulan sebelumnya",
+	"home.deckNext": "Proyek unggulan berikutnya",
+	"home.selectedEyebrow": "01 / Karya pilihan",
+	"home.selectedTitle": "Yang sedang di atas meja.",
+	"home.selectedAll": "Semua proyek",
+	"home.craftEyebrow": "02 / Cara kami berkarya",
+	"home.craftTitle": "Tim kecil, terlibat langsung dari sketsa hingga rilis.",
+	"home.craftDisciplines": "Disiplin karya studio",
+	"home.craftSeeGame": "Lihat di {title}",
+	"home.craft1Title": "Desain Game",
+	"home.craft1Desc":
+		"Alur inti yang taktil, aturan yang jelas, dan mekanik yang langsung terasa enak sejak percobaan pertama.",
+	"home.craft2Title": "Gameplay & Sistem",
+	"home.craft2Desc":
+		"Kontrol responsif, interaksi co-op, dan build ringan untuk desktop maupun WebGL.",
+	"home.craft3Title": "Seni 2D & 3D",
+	"home.craft3Desc":
+		"Arena kardus buatan tangan, dermaga memancing yang hangat, kota isometrik, dan siluet visual yang tegas.",
+	"home.craft4Title": "Game Jam & Prototipe",
+	"home.craft4Desc":
+		"Eksperimen cepat dan terfokus yang langsung menjadi build siap main—banyak berawal dari satu akhir pekan.",
+	"home.faqEyebrow": "03 / Pertanyaan umum",
+	"home.faqTitle": "Hal yang sering ditanyakan.",
+	"home.faqDescription":
+		"Jawaban singkat seputar game kami, build yang tersedia, dan cara kerja tim kecil kami.",
+	"home.faqAsk": "Tanya langsung",
+	"home.faq1Q": "Di mana saya bisa memainkan game OnTable Studio?",
+	"home.faq1A":
+		"Rilisan siap main seperti Craftboard Heroes dan OxShiftGen tersedia di halaman itch.io kami, lengkap dengan build browser WebGL dan unduhan Desktop langsung dari tiap halaman proyek.",
+	"home.faq2Q": "Platform apa saja yang menjadi fokus kalian?",
+	"home.faq2A":
+		"Kami fokus pada Desktop dan WebGL (HTML5) agar pemain bisa langsung mencoba tanpa instalasi rumit. Setiap halaman proyek mencantumkan daftar platform pada lembar spesifikasinya.",
+	"home.faq3Q": "Bagaimana status pengembangan Ketik Mancing saat ini?",
+	"home.faq3A":
+		"Ketik Mancing sedang aktif dikembangkan untuk Desktop. Anda bisa melihat tangkapan layar gameplay terbaru, mekanik mengetik, dan jurnal ikan di halaman proyeknya.",
+	"home.faq4Q": "Apakah tim terbuka untuk kolaborasi atau proyek baru?",
+	"home.faq4A":
+		"Ya—baik untuk kolaborasi game, masukan playtest, maupun ide produk interaktif, gunakan tombol Kontak atau kirim email langsung ke ontablestudio@gmail.com.",
+	"home.faq5Q": "Bagaimana biasanya proyek-proyek kalian dimulai?",
+	"home.faq5A":
+		"Sebagian besar berawal dari eksperimen game jam dalam satu akhir pekan—menguji satu mekanik taktil terlebih dahulu, lalu memoles prototipe terkuat menjadi pengalaman penuh.",
+	"home.ctaEyebrow": "04 / Kolaborasi",
+	"home.ctaTitle": "Punya ide game, prototipe, atau proyek?",
+	"home.ctaDescription":
+		"Kirim pesan singkat tentang apa yang sedang Anda bangun. Kami membaca setiap pesan secara langsung.",
 
+	"projects.eyebrow": "Arsip",
 	"projects.title": "Proyek",
+	"projects.description":
+		"Game siap main, karya game jam, dan proyek yang sedang dikembangkan oleh tim kami.",
+	"projects.count": "{count} karya",
 	"projects.tabs": "Jenis proyek",
 	"projects.all": "Semua",
 	"projects.empty": "Belum ada proyek.",
@@ -25,8 +82,14 @@ export const id: Record<keyof typeof en, string> = {
 	"type.tool": "Alat",
 	"type.ui-design": "Desain UI",
 	"card.view": "Lihat",
+	"card.inProgressShort": "WIP",
 
 	"project.back": "Kembali",
+	"project.specs": "Detail proyek",
+	"project.specHeader": "SPESIFIKASI // DATA",
+	"project.galleryTitle": "Galeri",
+	"project.frames": "{count} gambar",
+	"project.nextEyebrow": "Selanjutnya",
 	"project.next": "Proyek berikutnya",
 	"project.viewLarger": "Perbesar: {alt}",
 	"credit.date": "Tanggal",
@@ -40,6 +103,9 @@ export const id: Record<keyof typeof en, string> = {
 	"lightbox.close": "Tutup pratinjau",
 	"lightbox.previous": "Gambar sebelumnya",
 	"lightbox.next": "Gambar berikutnya",
+	"lightbox.goTo": "Ke gambar {current} dari {total}",
+	"lightbox.pagination": "Navigasi gambar",
+	"lightbox.hint": "Gunakan ← / → atau Esc",
 
 	"contact.dialogLabel": "Kontak",
 	"contact.title": "Ceritakan proyek Anda",
@@ -47,9 +113,19 @@ export const id: Record<keyof typeof en, string> = {
 	"contact.copy": "Salin email",
 	"contact.copied": "Tersalin",
 	"contact.close": "Tutup kontak",
+	"contact.topic": "Topik (opsional)",
+	"contact.topicCollab": "Kolaborasi",
+	"contact.topicFeedback": "Masukan game",
+	"contact.topicPress": "Pers & media",
+	"contact.topicGeneral": "Umum",
 	"contact.name": "Nama",
+	"contact.namePlaceholder": "Nama Anda",
 	"contact.email": "Email",
+	"contact.emailPlaceholder": "nama@contoh.com",
 	"contact.message": "Pesan",
+	"contact.messagePlaceholder":
+		"Ceritakan tentang game, ide, atau proyek Anda...",
+	"contact.charCount": "{count} / {max}",
 	"contact.send": "Kirim",
 	"contact.sent":
 		"Aplikasi email Anda akan terbuka dengan pesan siap kirim. Jika tidak terjadi apa-apa, tulis ke {email}.",
@@ -60,7 +136,10 @@ export const id: Record<keyof typeof en, string> = {
 	"contact.mailSubject": "Pesan dari {name}",
 
 	"notFound.title": "Halaman tidak ditemukan",
+	"notFound.description":
+		"Halaman yang Anda cari mungkin telah dipindahkan atau tidak pernah ada.",
 	"notFound.back": "Kembali ke beranda",
+	"notFound.browseProjects": "Lihat proyek",
 
 	"seo.list.and": "dan",
 	"seo.home.title": "OnTable Studio: tim kecil pengembang game",

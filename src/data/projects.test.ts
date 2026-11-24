@@ -60,9 +60,12 @@ describe("projects data", () => {
 	const credit = (slug: string, label: string) =>
 		getProject(slug)?.credits.find((c) => c.label === label)?.value;
 
-	it("lists WebGL (HTML) and Desktop for Craftboard Heroes, and Desktop only for the rest", () => {
+	it("lists accurate platforms for every showcase project", () => {
 		expect(credit("craftboard-heroes", "Platform")).toBe(
 			"WebGL (HTML), Desktop"
+		);
+		expect(credit("colgate-vitamin-c", "Platform")).toBe(
+			"Web (PWA), Portrait TV Booth"
 		);
 		for (const slug of ["ketik-mancing", "laundry-kita", "oxshiftgen"]) {
 			expect(credit(slug, "Platform"), slug).toBe("Desktop");
@@ -81,6 +84,7 @@ describe("projects data", () => {
 		expect(getProject("craftboard-heroes")?.year).toBe(2026);
 		expect(getProject("laundry-kita")?.year).toBe(2025);
 		expect(getProject("oxshiftgen")?.year).toBe(2026);
+		expect(getProject("colgate-vitamin-c")?.year).toBe(2026);
 		expect(getProject("ketik-mancing")?.year).toBeUndefined();
 		expect(getProject("ketik-mancing")?.status).toBe("In development");
 		expect(credit("ketik-mancing", "Status")).toBe("In development");
@@ -92,13 +96,12 @@ describe("projects data", () => {
 		}
 	});
 
-	it("marks only Craftboard Heroes and OxShiftGen as game jam entries", () => {
-		for (const p of projects) {
-			const jam = ["craftboard-heroes", "oxshiftgen"].includes(p.slug);
-			expect(credit(p.slug, "Made for"), p.slug).toBe(
-				jam ? "Game jam" : undefined
-			);
-		}
+	it("marks Made for accurately across jam and client projects", () => {
+		expect(credit("craftboard-heroes", "Made for")).toBe("Game jam");
+		expect(credit("oxshiftgen", "Made for")).toBe("Game jam");
+		expect(credit("colgate-vitamin-c", "Made for")).toBe("Colgate");
+		expect(credit("ketik-mancing", "Made for")).toBeUndefined();
+		expect(credit("laundry-kita", "Made for")).toBeUndefined();
 	});
 
 	it("links the two game jam entries to their itch.io pages, and nothing else", () => {
@@ -116,6 +119,7 @@ describe("projects data", () => {
 		]);
 		expect(getProject("ketik-mancing")?.links ?? []).toEqual([]);
 		expect(getProject("laundry-kita")?.links ?? []).toEqual([]);
+		expect(getProject("colgate-vitamin-c")?.links ?? []).toEqual([]);
 	});
 
 	it("only links to https pages, each with a label", () => {
@@ -127,12 +131,13 @@ describe("projects data", () => {
 		}
 	});
 
-	it("includes the four showcase games", () => {
+	it("includes the five showcase games", () => {
 		expect(projects.map((p) => p.slug)).toEqual([
 			"craftboard-heroes",
 			"ketik-mancing",
 			"laundry-kita",
 			"oxshiftgen",
+			"colgate-vitamin-c",
 		]);
 	});
 

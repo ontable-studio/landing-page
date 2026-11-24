@@ -10,15 +10,15 @@ export const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				primary: `bg-brand text-white ${FILL} before:bg-brand-hover`,
-				outline: `border-surface-border text-text-primary border bg-white ${FILL} before:bg-surface`,
+				primary: `bg-brand text-white shadow-[0_3px_0_0_rgba(23,21,19,0.2)] hover:shadow-[0_4px_0_0_rgba(23,21,19,0.26)] active:translate-y-[2px] active:shadow-none ${FILL} before:bg-brand-hover`,
+				outline: `border-ink-200 text-text-primary hover:border-ink-400 border bg-white shadow-[0_2px_0_0_rgba(23,21,19,0.08)] active:translate-y-px active:shadow-none ${FILL} before:bg-surface`,
 				ghost: "text-text-primary hover:bg-surface bg-transparent",
-				link: "text-brand hover:text-brand-hover h-auto bg-transparent p-0 hover:underline",
+				link: "text-brand-ink h-auto bg-transparent p-0 hover:text-orange-700 hover:underline",
 			},
 			size: {
 				sm: "h-9 px-4 text-sm font-medium",
 				md: "h-11 px-6 text-base font-semibold",
-				lg: "h-14 px-8 text-base font-semibold",
+				lg: "h-13 px-7 text-base font-semibold",
 			},
 		},
 		defaultVariants: { variant: "primary", size: "md" },

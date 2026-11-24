@@ -58,4 +58,14 @@ export const projectTextsId: Record<string, ProjectText> = {
 			"Seorang pemain menyusuri tepian",
 		],
 	},
+	"colgate-vitamin-c": {
+		summary:
+			"Game layar sentuh potret untuk booth Colgate Optic White Vitamin C — 95% Vitamin C Blast. Ketuk molekul Vitamin C yang melayang selama 30 detik untuk mengisi meteran sikat gigi hingga 95%, berjalan offline-first di TV vertikal 43 inci.",
+		category: "Arkade",
+		galleryAlts: [
+			"Tiga layar TV booth potret: layar awal, gameplay langsung, dan layar kemenangan 95%",
+			"Panduan skor Cara Bermain (molekul +3, +2, +1) berdampingan dengan gameplay 30 detik dan meteran sikat gigi",
+			"Layar kemenangan 95% dan layar waktu habis lengkap dengan tombol Home dan Play Again",
+		],
+	},
 };

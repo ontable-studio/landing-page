@@ -1,4 +1,4 @@
-import { Container } from "../components/ui/Container";
+import { SectionFrame } from "../components/layout/SectionFrame";
 import { useSeo } from "../seo/useSeo";
 import { SectionHeader } from "../components/layout/SectionHeader";
 import { ColorSection } from "./design-system/ColorSection";
@@ -20,7 +20,10 @@ export default function DesignSystem(): React.JSX.Element {
 	useSeo({ name: "design-system" });
 
 	return (
-		<Container size="wide" className="py-section lg:py-section-lg">
+		<SectionFrame
+			surfaceClass="bg-cream"
+			innerClassName="py-section lg:py-section-lg px-4 sm:px-6 lg:px-8"
+		>
 			<SectionHeader
 				as="h1"
 				eyebrow="OnTable Studio"
@@ -29,7 +32,7 @@ export default function DesignSystem(): React.JSX.Element {
 			/>
 			<nav
 				aria-label="Sections"
-				className="bg-canvas border-surface-border sticky top-0 z-40 -mx-4 mt-8 flex gap-6 overflow-x-auto border-y px-4 py-3 lg:-mx-8 lg:px-8"
+				className="bg-canvas border-surface-border sticky top-16 z-40 -mx-4 mt-8 flex gap-6 overflow-x-auto border-y px-4 py-3 lg:top-18 lg:-mx-8 lg:px-8"
 			>
 				{SECTIONS.map((section) => (
 					<a
@@ -48,6 +51,6 @@ export default function DesignSystem(): React.JSX.Element {
 				<MotionSection />
 				<ComponentsSection />
 			</div>
-		</Container>
+		</SectionFrame>
 	);
 }
